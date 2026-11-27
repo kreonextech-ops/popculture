@@ -133,14 +133,8 @@ export default function CartDrawer() {
   const handleShiprocketCheckout = async (e: React.MouseEvent) => {
     if (items.length === 0) return;
 
-    // CUSTOMER AUTH GATE: Require customer login via Google or Email before checkout
-    // so they can see live order tracking, WhatsApp delivery updates, and order history
-    if (!user) {
-      setPendingCheckoutEvent(e);
-      setShowAuthModal(true);
-      return;
-    }
-
+    // Direct 1-Click Checkout: No forced login gate.
+    // Shiprocket Headless Checkout handles guest OTP, address, and payments directly.
     setLoadingCheckout(true);
     setCheckoutError(null);
 
