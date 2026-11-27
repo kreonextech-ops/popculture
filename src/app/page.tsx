@@ -290,8 +290,8 @@ const pinkSaltScatterPieces: ScatterPieceData[] = [
 const creamOnionScatterPieces: ScatterPieceData[] = [
   {
     id: 501,
-    src: "/scatter/plain/05_makhana_with_leaves.png",
-    alt: "Makhana with Leaves Top-Left",
+    src: "/scatter/cream-and-onion/01_cream_dip.png",
+    alt: "Sour Cream Dip Bowl Top-Left",
     desktop: { x: -335, y: -140, rotate: -20, scale: 1.08 },
     mobile: { x: -185, y: -100, rotate: -20, scale: 0.78 },
     size: "w-16 h-16 sm:w-22 sm:h-22 md:w-26 md:h-26",
@@ -300,8 +300,8 @@ const creamOnionScatterPieces: ScatterPieceData[] = [
   },
   {
     id: 502,
-    src: "/scatter/plain/08_makhana_leaf_cluster.png",
-    alt: "Leaf Cluster Top-Right",
+    src: "/scatter/cream-and-onion/02_fresh_onion.png",
+    alt: "Fresh Red Onion Top-Right",
     desktop: { x: 335, y: -140, rotate: 20, scale: 1.08 },
     mobile: { x: 185, y: -100, rotate: 20, scale: 0.78 },
     size: "w-16 h-16 sm:w-22 sm:h-22 md:w-26 md:h-26",
@@ -310,8 +310,8 @@ const creamOnionScatterPieces: ScatterPieceData[] = [
   },
   {
     id: 503,
-    src: "/scatter/plain/03_cracked_makhana.png",
-    alt: "Cracked Crunchy Makhana Mid-Left",
+    src: "/scatter/cream-and-onion/03_onion_rings.png",
+    alt: "Crisp Sliced Onion Rings Mid-Left",
     desktop: { x: -355, y: 12, rotate: 12, scale: 1.05 },
     mobile: { x: -198, y: 10, rotate: 12, scale: 0.76 },
     size: "w-16 h-16 sm:w-22 sm:h-22 md:w-26 md:h-26",
@@ -320,8 +320,8 @@ const creamOnionScatterPieces: ScatterPieceData[] = [
   },
   {
     id: 504,
-    src: "/scatter/plain/06_large_makhana_with_crumbs.png",
-    alt: "Popped Makhana Mid-Right",
+    src: "/scatter/cream-and-onion/08_seasoned_makhana.png",
+    alt: "Seasoned Cream & Onion Makhana Mid-Right",
     desktop: { x: 355, y: 12, rotate: -12, scale: 1.05 },
     mobile: { x: 198, y: 10, rotate: -12, scale: 0.76 },
     size: "w-16 h-16 sm:w-22 sm:h-22 md:w-26 md:h-26",
@@ -330,8 +330,8 @@ const creamOnionScatterPieces: ScatterPieceData[] = [
   },
   {
     id: 505,
-    src: "/scatter/plain/01_single_makhana.png",
-    alt: "Single Makhana Lower-Left",
+    src: "/scatter/cream-and-onion/09_cream_splash.png",
+    alt: "Velvety Cream Splash Lower-Left",
     desktop: { x: -325, y: 165, rotate: -16, scale: 1.02 },
     mobile: { x: -182, y: 125, rotate: -16, scale: 0.74 },
     size: "w-16 h-16 sm:w-22 sm:h-22 md:w-26 md:h-26",
@@ -340,8 +340,8 @@ const creamOnionScatterPieces: ScatterPieceData[] = [
   },
   {
     id: 506,
-    src: "/scatter/plain/02_three_makhana_cluster.png",
-    alt: "Three Makhana Cluster Lower-Right",
+    src: "/scatter/cream-and-onion/10_herb_onion_garnish.png",
+    alt: "Herb and Onion Garnish Lower-Right",
     desktop: { x: 325, y: 165, rotate: 22, scale: 1.02 },
     mobile: { x: 182, y: 125, rotate: 22, scale: 0.74 },
     size: "w-16 h-16 sm:w-22 sm:h-22 md:w-26 md:h-26",
