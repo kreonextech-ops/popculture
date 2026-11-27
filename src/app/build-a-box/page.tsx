@@ -31,6 +31,8 @@ interface FlavourOption {
   themeColor: string;
   accentBg: string;
   badge: string;
+  price: number;
+  weight: string;
   notes: string[];
 }
 
@@ -44,6 +46,8 @@ const FLAVOURS: FlavourOption[] = [
     themeColor: "#E53925",
     accentBg: "#ED0006",
     badge: "🔥 HOT & SPICY",
+    price: 149,
+    weight: "55g Pouch",
     notes: ["African Bird's Eye Chili", "Slow-Roasted Lotus Seeds", "Zero Palm Oil"],
   },
   {
@@ -55,6 +59,8 @@ const FLAVOURS: FlavourOption[] = [
     themeColor: "#F79E1B",
     accentBg: "#FAC537",
     badge: "🧀 VELVET MELT",
+    price: 149,
+    weight: "55g Pouch",
     notes: ["Real Aged Cheddar Powder", "Melt-in-Mouth Texture", "High Protein"],
   },
   {
@@ -66,6 +72,8 @@ const FLAVOURS: FlavourOption[] = [
     themeColor: "#E1366C",
     accentBg: "#F472B6",
     badge: "🌸 CLEAN CRUNCH",
+    price: 149,
+    weight: "55g Pouch",
     notes: ["84 Trace Minerals", "Pure Light Roast", "Gluten-Free"],
   },
   {
@@ -77,18 +85,22 @@ const FLAVOURS: FlavourOption[] = [
     themeColor: "#8B1E3F",
     accentBg: "#9E1B42",
     badge: "🧅 SOUR CREAM CRUNCH",
+    price: 149,
+    weight: "55g Pouch",
     notes: ["Real Sour Cream & Chives", "14.2g Dietary Fibre", "100% Roasted"],
   },
   {
     id: "raw-makhana",
-    name: "100% Raw Foxnuts",
-    tagline: "Jumbo Grade Handpicked Lotus Seeds",
+    name: "100% Raw Foxnuts (250g Jumbo)",
+    tagline: "Handpicked Premium 5-Suta Jumbo Seeds",
     emoji: "🍃",
     image: "/packets/raw-makhana-pouch.png",
     themeColor: "#2D6A4F",
     accentBg: "#52B788",
-    badge: "🍃 ZERO ADDITIVES",
-    notes: ["Jumbo 5-Suta Grade", "Naturally Sun-Dried", "DIY Roasting Ready"],
+    badge: "🍃 250G JUMBO • ₹399",
+    price: 399,
+    weight: "250g Jumbo Pouch",
+    notes: ["Jumbo 5-Suta Grade (250g)", "Naturally Sun-Dried", "Authentic ₹399 Pack"],
   },
 ];
 
@@ -291,6 +303,19 @@ export default function BuildABoxPage() {
     }
   };
 
+  // Dynamic total box price: raw makhana = ₹399, roasted flavours = ₹149
+  const totalBoxPrice = useMemo(() => {
+    let sum = 0;
+    slots.forEach((id) => {
+      const flv = FLAVOURS.find((f) => f.id === id);
+      sum += flv ? flv.price : 149;
+    });
+    // For any unselected slots up to selectedSize, calculate at standard ₹149
+    const remaining = Math.max(0, selectedSize - slots.length);
+    sum += remaining * 149;
+    return sum;
+  }, [slots, selectedSize]);
+
   // Add custom box to cart
   const handleAddBoxToCart = () => {
     if (slots.length < selectedSize) {
@@ -304,7 +329,7 @@ export default function BuildABoxPage() {
       .filter(([_, count]) => count > 0)
       .map(([id, count]) => {
         const item = FLAVOURS.find((f) => f.id === id);
-        return `${count}× ${item?.name || id}`;
+        return `${count}× ${item?.name || id} (${item?.weight || "55g"})`;
       })
       .join(", ");
 
@@ -313,13 +338,13 @@ export default function BuildABoxPage() {
       slug: `custom-box-${selectedSize}`,
       name: `CUSTOM ${selectedSize}-PACK BOX`,
       variantLabel: parts,
-      price: tier.price,
-      originalPrice: tier.originalPrice,
+      price: totalBoxPrice,
+      originalPrice: totalBoxPrice,
       image: FLAVOURS.find((f) => f.id === slots[0])?.image || "/packets/peri peri.svg",
     };
 
     addItem(customItem, 1, true);
-    setToastMsg(`Custom ${selectedSize}-Pack Box added to your cart! 🎁`);
+    setToastMsg(`Custom ${selectedSize}-Pack Box (₹${totalBoxPrice}) added to your cart! 🎁`);
     setTimeout(() => setToastMsg(null), 3000);
   };
 
@@ -530,9 +555,11 @@ export default function BuildABoxPage() {
                   </div>
 
                   <div className="mt-4 pt-3 border-t border-current/10 flex items-baseline justify-between">
-                    <span className="text-xl sm:text-2xl font-black">₹{t.price}</span>
+                    <span className="text-xl sm:text-2xl font-black">
+                      {active ? `₹${totalBoxPrice}` : `From ₹${t.price}`}
+                    </span>
                     <span className="text-[11px] font-bold opacity-80">
-                      ₹149 / pack
+                      {active && (counts["raw-makhana"] || 0) > 0 ? "Includes 250g Raw" : "₹149 / pack"}
                     </span>
                   </div>
                 </button>
@@ -787,12 +814,22 @@ export default function BuildABoxPage() {
                     </div>
 
                     {/* Title & Notes */}
-                    <h3 className="font-display text-base sm:text-lg font-black uppercase text-[#25100E] mt-2">
-                      {f.name}
-                    </h3>
-                    <p className="text-[11px] font-bold text-[#522C28]/70 mt-0.5">
-                      {f.tagline}
-                    </p>
+                    <div className="flex items-center justify-between gap-2 mt-2">
+                      <h3 className="font-display text-base sm:text-lg font-black uppercase text-[#25100E]">
+                        {f.name}
+                      </h3>
+                      <span className="shrink-0 px-2 py-0.5 rounded-md bg-[#25100E] text-[#FFCD3C] font-mono text-xs font-black">
+                        ₹{f.price}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between gap-1 mt-0.5">
+                      <p className="text-[11px] font-bold text-[#522C28]/70">
+                        {f.tagline}
+                      </p>
+                      <span className="text-[10px] font-black text-[#E53925] uppercase tracking-wider shrink-0">
+                        {f.weight}
+                      </span>
+                    </div>
 
                     <div className="mt-3 pt-2.5 border-t border-[#522C28]/10 flex flex-col gap-0.5">
                       {f.notes.map((n, i) => (
@@ -863,9 +900,9 @@ export default function BuildABoxPage() {
               </h3>
             </div>
             <div className="flex items-center gap-2 bg-[#FFF8EE] px-4 py-1.5 rounded-full border border-[#25100E]/10">
-              <span className="text-xs font-bold text-[#522C28]/70">Pack Price:</span>
+              <span className="text-xs font-bold text-[#522C28]/70">Flavours:</span>
               <span className="font-display text-base font-black text-[#E53925]">
-                ₹149 / pack
+                {(counts["raw-makhana"] || 0) > 0 ? `Roasted ₹149 | Raw ₹399` : `₹149 / pack`}
               </span>
             </div>
           </div>
@@ -881,11 +918,13 @@ export default function BuildABoxPage() {
               </span>
             </div>
             <div className="bg-[#FFF8EE]/60 p-3.5 rounded-2xl border border-[#25100E]/08">
-              <span className="text-[10px] font-bold uppercase text-[#522C28]/60 block">Price Per Pack</span>
-              <span className="font-display text-base sm:text-lg font-black text-[#25100E] mt-0.5 block">
-                ₹149
+              <span className="text-[10px] font-bold uppercase text-[#522C28]/60 block">Raw Makhana</span>
+              <span className="font-display text-base sm:text-lg font-black text-[#2D6A4F] mt-0.5 block">
+                {counts["raw-makhana"] || 0} × 250g
               </span>
-              <span className="text-[10px] text-[#522C28]/70">Standard ₹149 per 55g pack</span>
+              <span className="text-[10px] text-[#522C28]/70">
+                {(counts["raw-makhana"] || 0) > 0 ? `Adds ₹${(counts["raw-makhana"] || 0) * 399} (@ ₹399)` : "None added yet"}
+              </span>
             </div>
             <div className="bg-[#FFF8EE]/60 p-3.5 rounded-2xl border border-[#25100E]/08">
               <span className="text-[10px] font-bold uppercase text-[#522C28]/60 block">Shipping</span>
@@ -899,10 +938,12 @@ export default function BuildABoxPage() {
             <div className="bg-[#25100E] p-3.5 rounded-2xl text-white">
               <span className="text-[10px] font-bold uppercase text-white/60 block">Total Box Price</span>
               <span className="font-display text-xl sm:text-2xl font-black text-[#FFCD3C] mt-0.5 block">
-                ₹{tier.price}
+                ₹{totalBoxPrice}
               </span>
               <span className="text-[10px] text-white/80">
-                {selectedSize} × ₹149
+                {(counts["raw-makhana"] || 0) > 0
+                  ? `${slots.length - (counts["raw-makhana"] || 0)}×₹149 + ${counts["raw-makhana"]}×₹399`
+                  : `${selectedSize} × ₹149`}
               </span>
             </div>
           </div>
@@ -942,11 +983,16 @@ export default function BuildABoxPage() {
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-display text-xl sm:text-2xl font-black text-[#25100E]">
-                  ₹{tier.price}
+                  ₹{totalBoxPrice}
                 </span>
+                {(counts["raw-makhana"] || 0) > 0 && (
+                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-[#2D6A4F] text-white">
+                    {counts["raw-makhana"]}× Raw 250g
+                  </span>
+                )}
               </div>
               <p className="text-[11px] text-[#522C28]/70 font-semibold mt-0.5">
-                {slots.length} of {selectedSize} packs chosen • <span className="text-[#E53925] font-black">₹149 / pack</span> • {tier.title}
+                {slots.length} of {selectedSize} packs chosen • {(counts["raw-makhana"] || 0) > 0 ? "Dynamic crate pricing" : "₹149 / pack"} • {tier.title}
               </p>
             </div>
 
@@ -1010,8 +1056,8 @@ export default function BuildABoxPage() {
               <ShoppingBag className="w-4 h-4" />
               <span>
                 {isBoxFull
-                  ? `Add Custom Box to Cart • ₹${tier.price}`
-                  : `Pack ${selectedSize - slots.length} More Pack${selectedSize - slots.length > 1 ? "s" : ""} (₹${tier.price})`}
+                  ? `Add Custom Box to Cart • ₹${totalBoxPrice}`
+                  : `Pack ${selectedSize - slots.length} More Pack${selectedSize - slots.length > 1 ? "s" : ""} (₹${totalBoxPrice})`}
               </span>
             </button>
           </div>

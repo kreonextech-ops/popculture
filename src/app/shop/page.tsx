@@ -768,7 +768,7 @@ export default function ShopPage() {
                             </span>
                           </div>
                           <span className="text-[10px] text-[#522C28]/70 font-semibold">
-                            {product.pricing.single.count} (Pack of 3: ₹{product.pricing.trio.price})
+                            {product.pricing.single.count} • {product.pricing.trio.label}: ₹{product.pricing.trio.price}
                           </span>
                         </div>
                       </div>

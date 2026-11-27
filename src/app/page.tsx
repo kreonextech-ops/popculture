@@ -1197,34 +1197,31 @@ export default function BiteJoyPage() {
 
           {/* Cards Grid / Mobile Horizontal Snap Carousel */}
           <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4.5 overflow-x-auto sm:overflow-visible snap-x snap-mandatory scrollbar-none pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
-            {/* Card 1: Ultimate Trio Variety Pack */}
+            {/* Card 1: All 4 Flavours Discovery Box (4 Packs) */}
             <div className="w-[82vw] max-w-[290px] shrink-0 snap-center sm:w-auto sm:max-w-none bg-white border border-[#25100E]/12 hover:border-[#E53925]/50 rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_16px_rgba(37,16,14,0.06)] hover:shadow-[0_12px_28px_rgba(229,57,37,0.12)] group relative">
-              <Link href="/product/ultimate-trio-pack" className="block cursor-pointer">
+              <Link href="/product/all-4-flavours-box" className="block cursor-pointer">
                 {/* Image Frame */}
                 <div className="bg-[#FFF5E5] rounded-xl overflow-hidden h-40 sm:h-44 flex items-center justify-center p-3 relative border border-[#25100E]/08 group-hover:bg-[#FFF0D9] transition-colors">
                   {/* Badge Top Left */}
                   <span className="absolute top-2 left-2 z-30 px-2 py-0.5 rounded-md bg-[#E53925] text-white text-[9px] font-black uppercase tracking-wider shadow-sm">
-                    BEST SELLER
+                    4-PACK DISCOVERY
                   </span>
 
-                  {/* Clean 3-Flavour Trio Presentation (Fully contained, no clipping) */}
+                  {/* Clean 3-Flavour Trio Presentation */}
                   <div className="relative flex items-end justify-center h-full w-full pb-1">
-                    {/* Left: Cheddar Cheese */}
                     <img
                       src="/packets/cheddar-cheese.png"
                       alt="Cheddar Cheese"
                       className="h-[95px] sm:h-[105px] w-auto max-h-full object-contain drop-shadow-md -rotate-[10deg] -mr-4 translate-y-1 z-10 transition-transform duration-300 group-hover:-translate-x-1"
                     />
-                    {/* Center: Peri Peri (Hero, 100% visible top to bottom) */}
                     <img
                       src="/packets/peri-peri.png"
-                      alt="Ultimate Trio Variety Pack"
+                      alt="All 4 Flavours Discovery Box"
                       className="h-[120px] sm:h-[132px] w-auto max-h-full object-contain drop-shadow-xl z-20 transition-transform duration-300 group-hover:scale-105"
                     />
-                    {/* Right: Himalayan Pink Salt */}
                     <img
-                      src="/packets/himalayan-salt.png"
-                      alt="Himalayan Pink Salt"
+                      src="/packets/sour-cream.png"
+                      alt="Cream & Onion"
                       className="h-[95px] sm:h-[105px] w-auto max-h-full object-contain drop-shadow-md rotate-[10deg] -ml-4 translate-y-1 z-10 transition-transform duration-300 group-hover:translate-x-1"
                     />
                   </div>
@@ -1233,16 +1230,16 @@ export default function BiteJoyPage() {
                 {/* Info */}
                 <div className="mt-3">
                   <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-[#522C28]/60">
-                    <span>VARIETY BOX • 3 PACKS</span>
+                    <span>DISCOVERY • 4 PACKS</span>
                     <span className="text-[#E53925] font-bold flex items-center gap-1">
                       <Star className="w-3 h-3 fill-[#E53925]" /> 4.9
                     </span>
                   </div>
                   <h3 className="font-display text-sm sm:text-base font-black uppercase text-[#25100E] leading-snug mt-1 group-hover:text-[#E53925] transition-colors">
-                    ULTIMATE TRIO VARIETY PACK
+                    ALL 4 FLAVOURS BOX
                   </h3>
                   <p className="text-[11px] text-[#522C28]/70 mt-0.5 line-clamp-1">
-                    1× Peri Peri + 1× Cheese + 1× Pink Salt
+                    1× Peri Peri + 1× Cheese + 1× Onion + 1× Pink Salt
                   </p>
                 </div>
               </Link>
@@ -1250,7 +1247,7 @@ export default function BiteJoyPage() {
               {/* Price & Buy */}
               <div className="mt-3 pt-2.5 border-t border-[#25100E]/10 flex items-center justify-between">
                 <div className="flex items-baseline">
-                  <span className="text-base sm:text-lg font-black text-[#25100E]">₹447</span>
+                  <span className="text-base sm:text-lg font-black text-[#25100E]">₹596</span>
                 </div>
                 <button
                   type="button"
@@ -1259,11 +1256,11 @@ export default function BiteJoyPage() {
                     addItem(
                       {
                         variantId: 10000401,
-                        slug: "ultimate-trio-pack",
-                        name: "ULTIMATE TRIO VARIETY PACK",
-                        variantLabel: "3 × 55g Pouches (165g)",
-                        price: 447,
-                        originalPrice: 447,
+                        slug: "all-4-flavours-box",
+                        name: "ALL 4 FLAVOURS DISCOVERY BOX",
+                        variantLabel: "4 × 55g Pouches (220g)",
+                        price: 596,
+                        originalPrice: 596,
                         image: "/packets/peri-peri.png",
                       },
                       1,
@@ -1278,32 +1275,29 @@ export default function BiteJoyPage() {
               </div>
             </div>
 
-            {/* Card 2: Party Crunch Bundle */}
+            {/* Card 2: Bestseller Crunch Bundle (6 Packs) */}
             <div className="w-[82vw] max-w-[290px] shrink-0 snap-center sm:w-auto sm:max-w-none bg-white border border-[#25100E]/12 hover:border-[#E53925]/50 rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_16px_rgba(37,16,14,0.06)] hover:shadow-[0_12px_28px_rgba(229,57,37,0.12)] group relative">
-              <Link href="/product/party-crunch-box" className="block cursor-pointer">
+              <Link href="/product/bestseller-crunch-bundle" className="block cursor-pointer">
                 {/* Image Frame */}
                 <div className="bg-[#FFF5E5] rounded-xl overflow-hidden h-40 sm:h-44 flex items-center justify-center p-3 relative border border-[#25100E]/08 group-hover:bg-[#FFF0D9] transition-colors">
                   <span className="absolute top-2 left-2 z-30 px-2 py-0.5 rounded-md bg-[#F79E1B] text-[#25100E] text-[9px] font-black uppercase tracking-wider shadow-sm">
-                    2× EACH FLAVOUR
+                    POPULAR • 6 PACKS
                   </span>
 
                   <div className="relative flex items-end justify-center h-full w-full pb-1">
-                    {/* Left: Peri Peri */}
                     <img
                       src="/packets/peri-peri.png"
                       alt="Peri Peri"
                       className="h-[95px] sm:h-[105px] w-auto max-h-full object-contain drop-shadow-md -rotate-[10deg] -mr-4 translate-y-1 z-10 transition-transform duration-300 group-hover:-translate-x-1"
                     />
-                    {/* Center: Cheddar Cheese (Hero, 100% visible top to bottom) */}
                     <img
                       src="/packets/cheddar-cheese.png"
-                      alt="Party Crunch Bundle"
+                      alt="Bestseller Crunch Bundle"
                       className="h-[120px] sm:h-[132px] w-auto max-h-full object-contain drop-shadow-xl z-20 transition-transform duration-300 group-hover:scale-105"
                     />
-                    {/* Right: Himalayan Pink Salt */}
                     <img
-                      src="/packets/himalayan-salt.png"
-                      alt="Himalayan Pink Salt"
+                      src="/packets/sour-cream.png"
+                      alt="Cream & Onion"
                       className="h-[95px] sm:h-[105px] w-auto max-h-full object-contain drop-shadow-md rotate-[10deg] -ml-4 translate-y-1 z-10 transition-transform duration-300 group-hover:translate-x-1"
                     />
                   </div>
@@ -1312,16 +1306,16 @@ export default function BiteJoyPage() {
                 {/* Info */}
                 <div className="mt-3">
                   <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-[#522C28]/60">
-                    <span>PARTY PACK • 6 PACKS</span>
+                    <span>BESTSELLER • 6 PACKS</span>
                     <span className="text-[#E53925] font-bold flex items-center gap-1">
                       <Star className="w-3 h-3 fill-[#E53925]" /> 5.0
                     </span>
                   </div>
                   <h3 className="font-display text-sm sm:text-base font-black uppercase text-[#25100E] leading-snug mt-1 group-hover:text-[#E53925] transition-colors">
-                    PARTY CRUNCH BUNDLE
+                    BESTSELLER CRUNCH BUNDLE
                   </h3>
                   <p className="text-[11px] text-[#522C28]/70 mt-0.5 line-clamp-1">
-                    2× Peri Peri + 2× Cheese + 2× Pink Salt
+                    2× Peri Peri + 2× Cheese + 2× Cream &amp; Onion
                   </p>
                 </div>
               </Link>
@@ -1338,8 +1332,8 @@ export default function BiteJoyPage() {
                     addItem(
                       {
                         variantId: 10000501,
-                        slug: "party-crunch-box",
-                        name: "PARTY CRUNCH BUNDLE",
+                        slug: "bestseller-crunch-bundle",
+                        name: "BESTSELLER CRUNCH BUNDLE",
                         variantLabel: "6 × 55g Pouches (330g)",
                         price: 894,
                         originalPrice: 894,
@@ -1357,9 +1351,80 @@ export default function BiteJoyPage() {
               </div>
             </div>
 
-            {/* Card 3: Mega Muncher 12-Pack */}
+            {/* Card 3: Cheese & Spice Fiesta (8 Packs) */}
             <div className="w-[82vw] max-w-[290px] shrink-0 snap-center sm:w-auto sm:max-w-none bg-white border border-[#25100E]/12 hover:border-[#E53925]/50 rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_16px_rgba(37,16,14,0.06)] hover:shadow-[0_12px_28px_rgba(229,57,37,0.12)] group relative">
-              <Link href="/product/mega-muncher-stash" className="block cursor-pointer">
+              <Link href="/product/cheese-and-spice-fiesta" className="block cursor-pointer">
+                {/* Image Frame */}
+                <div className="bg-[#FFF5E5] rounded-xl overflow-hidden h-40 sm:h-44 flex items-center justify-center p-3 relative border border-[#25100E]/08 group-hover:bg-[#FFF0D9] transition-colors">
+                  <span className="absolute top-2 left-2 z-30 px-2 py-0.5 rounded-md bg-[#E53925] text-white text-[9px] font-black uppercase tracking-wider shadow-sm">
+                    FIESTA • 8 PACKS
+                  </span>
+
+                  <div className="relative flex items-end justify-center h-full w-full pb-1">
+                    <img
+                      src="/packets/cheddar-cheese.png"
+                      alt="Cheddar Cheese"
+                      className="h-[100px] sm:h-[110px] w-auto max-h-full object-contain drop-shadow-md -rotate-[10deg] -mr-4 translate-y-1 z-10 transition-transform duration-300 group-hover:-translate-x-1"
+                    />
+                    <img
+                      src="/packets/peri-peri.png"
+                      alt="Cheese & Spice Fiesta"
+                      className="h-[120px] sm:h-[132px] w-auto max-h-full object-contain drop-shadow-xl z-20 transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                </div>
+
+                {/* Info */}
+                <div className="mt-3">
+                  <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-[#522C28]/60">
+                    <span>PARTY FIESTA • 8 PACKS</span>
+                    <span className="text-[#E53925] font-bold flex items-center gap-1">
+                      <Star className="w-3 h-3 fill-[#E53925]" /> 4.9
+                    </span>
+                  </div>
+                  <h3 className="font-display text-sm sm:text-base font-black uppercase text-[#25100E] leading-snug mt-1 group-hover:text-[#E53925] transition-colors">
+                    CHEESE &amp; SPICE FIESTA
+                  </h3>
+                  <p className="text-[11px] text-[#522C28]/70 mt-0.5 line-clamp-1">
+                    4× Peri Peri + 4× Cheddar Cheese
+                  </p>
+                </div>
+              </Link>
+
+              {/* Price & Buy */}
+              <div className="mt-3 pt-2.5 border-t border-[#25100E]/10 flex items-center justify-between">
+                <div className="flex items-baseline">
+                  <span className="text-base sm:text-lg font-black text-[#25100E]">₹1,192</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addItem(
+                      {
+                        variantId: 10000701,
+                        slug: "cheese-and-spice-fiesta",
+                        name: "CHEESE & SPICE FIESTA",
+                        variantLabel: "8 × 55g Pouches (440g)",
+                        price: 1192,
+                        originalPrice: 1192,
+                        image: "/packets/peri-peri.png",
+                      },
+                      1,
+                      true
+                    );
+                  }}
+                  className="px-3 py-1.5 rounded-lg bg-[#E53925] hover:bg-[#C92328] text-white text-[11px] font-black uppercase tracking-wider transition-all duration-200 flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
+                >
+                  <ShoppingBag className="w-3.5 h-3.5" />
+                  <span>Add</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Card 4: Mega Crunch Party Stash (12 Packs) */}
+            <div className="w-[82vw] max-w-[290px] shrink-0 snap-center sm:w-auto sm:max-w-none bg-white border border-[#25100E]/12 hover:border-[#E53925]/50 rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_16px_rgba(37,16,14,0.06)] hover:shadow-[0_12px_28px_rgba(229,57,37,0.12)] group relative">
+              <Link href="/product/mega-crunch-party-stash" className="block cursor-pointer">
                 {/* Image Frame */}
                 <div className="bg-[#FFF5E5] rounded-xl overflow-hidden h-40 sm:h-44 flex items-center justify-center p-3 relative border border-[#25100E]/08 group-hover:bg-[#FFF0D9] transition-colors">
                   <span className="absolute top-2 left-2 z-30 px-2 py-0.5 rounded-md bg-[#3CA837] text-white text-[9px] font-black uppercase tracking-wider shadow-sm">
@@ -1367,19 +1432,16 @@ export default function BiteJoyPage() {
                   </span>
 
                   <div className="relative flex items-end justify-center h-full w-full pb-1">
-                    {/* Left: Cheddar Cheese */}
                     <img
                       src="/packets/cheddar-cheese.png"
                       alt="Cheddar Cheese"
                       className="h-[95px] sm:h-[105px] w-auto max-h-full object-contain drop-shadow-md -rotate-[10deg] -mr-4 translate-y-1 z-10 transition-transform duration-300 group-hover:-translate-x-1"
                     />
-                    {/* Center: Himalayan Pink Salt (Hero, 100% visible top to bottom) */}
                     <img
                       src="/packets/himalayan-salt.png"
-                      alt="Mega Muncher 12-Pack Stash"
+                      alt="Mega Crunch Party Stash"
                       className="h-[120px] sm:h-[132px] w-auto max-h-full object-contain drop-shadow-xl z-20 transition-transform duration-300 group-hover:scale-105"
                     />
-                    {/* Right: Peri Peri */}
                     <img
                       src="/packets/peri-peri.png"
                       alt="Peri Peri"
@@ -1397,10 +1459,10 @@ export default function BiteJoyPage() {
                     </span>
                   </div>
                   <h3 className="font-display text-sm sm:text-base font-black uppercase text-[#25100E] leading-snug mt-1 group-hover:text-[#E53925] transition-colors">
-                    MEGA MUNCHER 12-PACK
+                    MEGA CRUNCH PARTY STASH
                   </h3>
                   <p className="text-[11px] text-[#522C28]/70 mt-0.5 line-clamp-1">
-                    4× Peri Peri + 4× Cheese + 4× Pink Salt
+                    3× Peri Peri + 3× Cheese + 3× Onion + 3× Salt
                   </p>
                 </div>
               </Link>
@@ -1417,8 +1479,8 @@ export default function BiteJoyPage() {
                     addItem(
                       {
                         variantId: 10000601,
-                        slug: "mega-muncher-stash",
-                        name: "MEGA MUNCHER 12-PACK STASH",
+                        slug: "mega-crunch-party-stash",
+                        name: "MEGA CRUNCH PARTY STASH",
                         variantLabel: "12 × 55g Pouches (660g)",
                         price: 1788,
                         originalPrice: 1788,
