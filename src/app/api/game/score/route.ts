@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
   const user = await getCurrentUser();
   if (!user) {
     return NextResponse.json(
-      { error: "Sign in to save your Fox Runner score and earn Crunch Points." },
+      { error: "Sign in to save your Fox Runner score to the Monthly Hamper Leaderboard." },
       { status: 401 }
     );
   }

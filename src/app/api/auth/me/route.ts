@@ -72,6 +72,7 @@ export async function PUT(req: NextRequest) {
     const body = (await req.json()) as {
       fullName?: string;
       phone?: string;
+      favorites?: string[];
       savedAddress?: {
         line1: string;
         line2?: string;
@@ -90,6 +91,7 @@ export async function PUT(req: NextRequest) {
       ...baseUser,
       fullName: body.fullName !== undefined ? body.fullName.trim() : baseUser.fullName,
       phone: body.phone !== undefined ? body.phone.trim() : baseUser.phone,
+      favorites: body.favorites !== undefined ? body.favorites : baseUser.favorites,
       savedAddress:
         body.savedAddress !== undefined ? body.savedAddress : baseUser.savedAddress,
       updatedAt: now,

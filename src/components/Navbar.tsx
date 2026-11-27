@@ -20,11 +20,12 @@ import {
   Gamepad2,
   ChevronDown,
   Loader2,
+  Heart,
 } from "lucide-react";
 import { useCart } from "./CartContext";
 import { useAuth } from "./AuthContext";
 import { smoothScrollTo } from "./LenisProvider";
-import { startGoogleOAuth } from "@/lib/supabaseBrowser";
+import { launchGoogleSignIn } from "@/lib/supabaseBrowser";
 
 interface SearchProduct {
   id: number;
@@ -136,7 +137,7 @@ export default function Navbar() {
     setMenuError(null);
     setGoogleBusy(true);
     try {
-      const res = await startGoogleOAuth(pathname && pathname !== "/login" ? pathname : "/account");
+      const res = await launchGoogleSignIn(pathname && pathname !== "/login" ? pathname : "/account");
       if (!res.ok) {
         setMenuError(res.error || "Unable to start Google Sign-In.");
         setGoogleBusy(false);
@@ -179,7 +180,7 @@ export default function Navbar() {
     { href: "/shop", label: "Shop All" },
     { href: "/build-a-box", label: "Build a Box" },
     { href: "/about", label: "Our Story" },
-    { href: "/#discover", label: "Play" },
+    { href: "/play", label: "Play" },
   ];
 
   const isActive = (href: string) => {
@@ -263,6 +264,27 @@ export default function Navbar() {
               <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5]" />
             </button>
 
+            {/* Favorites Button (Desktop Only) */}
+            <Link
+              href="/favorites"
+              className={`hidden md:inline-flex relative p-1.5 sm:p-2 rounded-full border backdrop-blur-md transition-[transform,background-color,color,border-color] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 active:scale-95 cursor-pointer shadow-2xs ${t.iconBtn}`}
+              aria-label="View Favorites"
+              title="My Favorite Snacks"
+            >
+              <Heart
+                className={`w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.3] ${
+                  user?.favorites && user.favorites.length > 0
+                    ? "text-[#D73B3A] fill-[#D73B3A]"
+                    : "text-[#522C28]"
+                }`}
+              />
+              {user?.favorites && user.favorites.length > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#D73B3A] text-white text-[9px] font-black rounded-full flex items-center justify-center">
+                  {user.favorites.length}
+                </span>
+              )}
+            </Link>
+
             {/* Top-Right Customer Profile & Login Menu (Desktop Only) */}
             <div className="hidden md:block relative" ref={accountMenuRef}>
               {!loading && user ? (
@@ -343,6 +365,21 @@ export default function Navbar() {
                       >
                         <UserCircle2 className="w-4 h-4 text-[#D73B3A]" />
                         <span>Profile Details</span>
+                      </Link>
+                      <Link
+                        href="/favorites"
+                        onClick={() => setAccountOpen(false)}
+                        className="flex items-center justify-between px-4 py-2.5 hover:bg-[#FFF8EE] hover:text-[#D73B3A] transition-colors"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <Heart className="w-4 h-4 text-[#D73B3A] fill-[#D73B3A]" />
+                          <span>My Favorites</span>
+                        </div>
+                        {user.favorites && user.favorites.length > 0 && (
+                          <span className="px-2 py-0.5 rounded-full bg-[#D73B3A] text-white text-[10px] font-black">
+                            {user.favorites.length}
+                          </span>
+                        )}
                       </Link>
                       <Link
                         href="/account?tab=orders"
@@ -663,22 +700,30 @@ export default function Navbar() {
                     {user.gameHighScore || 0}m
                   </span>
                 </div>
-                <div className="grid grid-cols-2 gap-1 pt-1">
+                <div className="grid grid-cols-3 gap-1 pt-1">
+                  <Link
+                    href="/favorites"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center justify-center gap-1 py-1.5 rounded-lg bg-[#FFF8EE] text-[10px] font-bold text-[#522C28]"
+                  >
+                    <Heart className="w-3 h-3 text-[#D73B3A] fill-[#D73B3A]" />
+                    <span>Favorites</span>
+                  </Link>
                   <Link
                     href="/account?tab=orders"
                     onClick={() => setMobileOpen(false)}
-                    className="flex items-center justify-center gap-1 py-1.5 rounded-lg bg-[#FFF8EE] text-[11px] font-bold text-[#522C28]"
+                    className="flex items-center justify-center gap-1 py-1.5 rounded-lg bg-[#FFF8EE] text-[10px] font-bold text-[#522C28]"
                   >
                     <Package className="w-3 h-3 text-[#D73B3A]" />
-                    <span>My Orders</span>
+                    <span>Orders</span>
                   </Link>
                   <Link
                     href="/account?tab=rewards"
                     onClick={() => setMobileOpen(false)}
-                    className="flex items-center justify-center gap-1 py-1.5 rounded-lg bg-[#FFF8EE] text-[11px] font-bold text-[#522C28]"
+                    className="flex items-center justify-center gap-1 py-1.5 rounded-lg bg-[#FFF8EE] text-[10px] font-bold text-[#522C28]"
                   >
                     <Gamepad2 className="w-3 h-3 text-[#D73B3A]" />
-                    <span>Hamper Contest</span>
+                    <span>Hamper</span>
                   </Link>
                 </div>
                 <button

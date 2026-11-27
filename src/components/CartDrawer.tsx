@@ -12,11 +12,11 @@ import {
   Zap,
   ShieldCheck,
   Loader2,
-  Coins,
   Truck,
 } from "lucide-react";
 import { useCart } from "./CartContext";
 import { useAuth } from "./AuthContext";
+import AuthModal from "./AuthModal";
 
 declare global {
   interface Window {
@@ -53,9 +53,21 @@ export default function CartDrawer() {
   const router = useRouter();
   const { user, refreshUser } = useAuth();
   const [config, setConfig] = useState<ShiprocketPublicConfig | null>(null);
-  const [redeemPoints, setRedeemPoints] = useState(false);
   const [loadingCheckout, setLoadingCheckout] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [pendingCheckoutEvent, setPendingCheckoutEvent] = useState<React.MouseEvent | null>(null);
+
+  // Sync active cart items to user's profile in real time for admin visibility
+  useEffect(() => {
+    if (user && items) {
+      fetch("/api/cart/sync", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items }),
+      }).catch(() => {});
+    }
+  }, [user, items]);
 
   // Demo fallback checkout form when Shiprocket API credentials are not yet configured
   const [showDemoForm, setShowDemoForm] = useState(false);
@@ -116,15 +128,19 @@ export default function CartDrawer() {
     loadShiprocket();
   }, []);
 
-  const maxRedeemablePoints =
-    user && user.loyaltyPoints > 0
-      ? Math.min(user.loyaltyPoints, Math.floor(subtotal * 0.2))
-      : 0;
-  const pointsDiscount = redeemPoints ? maxRedeemablePoints : 0;
-  const finalTotal = Math.max(0, subtotal - pointsDiscount);
+  const finalTotal = subtotal;
 
   const handleShiprocketCheckout = async (e: React.MouseEvent) => {
     if (items.length === 0) return;
+
+    // CUSTOMER AUTH GATE: Require customer login via Google or Email before checkout
+    // so they can see live order tracking, WhatsApp delivery updates, and order history
+    if (!user) {
+      setPendingCheckoutEvent(e);
+      setShowAuthModal(true);
+      return;
+    }
+
     setLoadingCheckout(true);
     setCheckoutError(null);
 
@@ -140,7 +156,6 @@ export default function CartDrawer() {
             price: i.price,
             image_url: i.image,
           })),
-          redeem_points: redeemPoints,
         }),
       });
 
@@ -200,7 +215,6 @@ export default function CartDrawer() {
             price: i.price,
             image_url: i.image,
           })),
-          redeem_points: redeemPoints,
           demo_confirm: true,
           customer: demoCustomer,
         }),
@@ -502,44 +516,6 @@ export default function CartDrawer() {
                   </div>
                 </div>
               ))}
-
-              {/* Crunch Points Redemption */}
-              {user ? (
-                <div className="p-3 rounded-2xl bg-[#FFFDF9] border border-[#FAC537] flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <Coins className="w-4 h-4 text-[#D73B3A] shrink-0" />
-                    <div className="min-w-0">
-                      <p className="text-xs font-black text-[#25100E]">
-                        Use Crunch Points ({user.loyaltyPoints} available)
-                      </p>
-                      <p className="text-[10px] font-bold text-[#522C28]/70">
-                        {maxRedeemablePoints > 0
-                          ? `Save ₹${maxRedeemablePoints} on this order (up to 20% off)`
-                          : "Add items or earn points in Fox Runner"}
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    disabled={maxRedeemablePoints === 0}
-                    onClick={() => setRedeemPoints((v) => !v)}
-                    className={`px-3 py-1.5 rounded-full text-[10px] font-black uppercase cursor-pointer disabled:opacity-40 ${
-                      redeemPoints
-                        ? "bg-[#3CA837] text-white"
-                        : "bg-[#FAC537] text-[#522C28]"
-                    }`}
-                  >
-                    {redeemPoints ? `Applied -₹${pointsDiscount}` : "Redeem"}
-                  </button>
-                </div>
-              ) : (
-                <div className="p-2.5 rounded-xl bg-white/80 border border-[#522C28]/10 text-[11px] font-bold text-[#522C28]/80 flex items-center justify-between">
-                  <span>Have Crunch Points from Fox Runner?</span>
-                  <Link href="/login" onClick={closeCart} className="text-[#D73B3A] font-black underline">
-                    Sign In
-                  </Link>
-                </div>
-              )}
             </>
           )}
 
@@ -558,12 +534,6 @@ export default function CartDrawer() {
                 <span>Subtotal</span>
                 <span>₹{subtotal}</span>
               </div>
-              {pointsDiscount > 0 && (
-                <div className="flex justify-between text-[#3CA837]">
-                  <span>Crunch Points Discount</span>
-                  <span>-₹{pointsDiscount}</span>
-                </div>
-              )}
               <div className="flex justify-between text-base font-black text-[#25100E] pt-1.5 border-t border-[#522C28]/10">
                 <span>Total Payable</span>
                 <span>₹{finalTotal}</span>
@@ -598,6 +568,25 @@ export default function CartDrawer() {
           </div>
         )}
       </aside>
+
+      {/* Customer Login Gate Modal before Checkout */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => {
+          setShowAuthModal(false);
+          setPendingCheckoutEvent(null);
+        }}
+        intent="checkout"
+        title="Sign In To Checkout"
+        subtitle="Sign in with Google or Email so you can view live order status, WhatsApp delivery updates, and save your favorites."
+        onSuccess={() => {
+          setShowAuthModal(false);
+          if (pendingCheckoutEvent) {
+            void handleShiprocketCheckout(pendingCheckoutEvent);
+            setPendingCheckoutEvent(null);
+          }
+        }}
+      />
     </>
   );
 }

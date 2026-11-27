@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ShoppingBag,
   Star,
@@ -14,18 +15,35 @@ import {
   Filter,
   SlidersHorizontal,
   Plus,
+  Heart,
 } from "lucide-react";
 import { PRODUCTS, COMBOS, ProductDetails, ComboItem } from "@/data/products";
 import { useCart } from "@/components/CartContext";
+import { useAuth } from "@/components/AuthContext";
 import Navbar from "@/components/Navbar";
+import InfiniteAssetMarquee from "@/components/InfiniteAssetMarquee";
 import type { StoreProduct } from "@/lib/store";
 
 export default function ShopPage() {
+  const router = useRouter();
   const [activeFilter, setActiveFilter] = useState<"all" | "flavours" | "combos">("all");
   const [sortBy, setSortBy] = useState<"featured" | "price-asc" | "price-desc">("featured");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [customProducts, setCustomProducts] = useState<StoreProduct[]>([]);
   const { totalCount, openCart, addItem } = useCart();
+  const { isFavorite, toggleFavorite } = useAuth();
+
+  const recordFlavourClick = (flavourSlug: string) => {
+    try {
+      void fetch("/api/analytics/click", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ flavourSlug }),
+      });
+    } catch {
+      // non-blocking
+    }
+  };
 
   useEffect(() => {
     fetch("/api/catalog")
@@ -161,6 +179,7 @@ export default function ShopPage() {
     originalPrice?: number;
     image: string;
   }) => {
+    recordFlavourClick(item.slug);
     addItem(item, 1, false);
     setToastMessage(`Added 1 × ${item.name} (₹${item.price}) to your cart! 🍿`);
     setTimeout(() => setToastMessage(null), 2500);
@@ -179,7 +198,7 @@ export default function ShopPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#FFF8EE] text-[#522C28] font-sans antialiased selection:bg-[#D73B3A] selection:text-white">
+    <div className="min-h-screen bg-[#FFF8EE] text-[#522C28] font-sans antialiased selection:bg-[#D73B3A] selection:text-white overflow-x-hidden">
       <Navbar />
 
       {/* Floating Cart Notification Toast */}
@@ -196,41 +215,110 @@ export default function ShopPage() {
       {/* =========================================================================
           HERO BANNER & TRUST TICKER
           ========================================================================= */}
-      <section className="relative w-full pt-8 pb-10 sm:pt-14 sm:pb-14 bg-gradient-to-b from-[#FFF3E3] to-[#FFF8EE] border-b border-[#522C28]/10 text-center overflow-hidden">
-        {/* Subtle Decorative Background Accents */}
+      <section className="relative w-full pt-8 pb-10 sm:pt-12 sm:pb-14 bg-gradient-to-b from-[#FFF3E3] via-[#FFF8EE] to-[#FFF8EE] border-b border-[#522C28]/10 overflow-hidden">
+        {/* Landscape Dune Background Illustration */}
+        <picture className="absolute inset-0 w-full h-full pointer-events-none opacity-30 mix-blend-multiply select-none">
+          <source media="(max-width: 640px)" srcSet="/shop/shop-hero-mobile-bg.png" />
+          <img src="/shop/shop-hero-bg.png" alt="" className="w-full h-full object-cover object-bottom" />
+        </picture>
+
+        {/* Ambient Glows */}
         <div className="absolute -top-24 -left-24 w-80 h-80 rounded-full bg-[#D73B3A]/10 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -right-24 w-80 h-80 rounded-full bg-[#FAC537]/15 blur-3xl pointer-events-none" />
+        <div className="absolute top-1/2 -right-24 w-80 h-80 rounded-full bg-[#FAC537]/20 blur-3xl pointer-events-none" />
 
-        <div className="max-w-4xl mx-auto px-4 relative z-10">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D73B3A]/10 text-[#D73B3A] text-[11px] font-black uppercase tracking-widest border border-[#D73B3A]/20 mb-3">
-            <span>✦</span>
-            <span>ALL NATURAL ROASTED FOXNUTS</span>
-            <span>✦</span>
-          </span>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+            
+            {/* Left Column: Brand Copy & Trust Highlights */}
+            <div className="lg:col-span-7 text-center lg:text-left flex flex-col items-center lg:items-start">
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#D73B3A]/10 text-[#D73B3A] text-[11px] font-black uppercase tracking-widest border border-[#D73B3A]/20 mb-3 shadow-2xs">
+                <Sparkles className="w-3.5 h-3.5 text-[#D73B3A]" />
+                <span>ALL NATURAL ROASTED FOXNUTS</span>
+              </span>
 
-          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tight text-[#25100E] drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]">
-            THE MUNCH SHOP
-          </h1>
+              <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-black uppercase tracking-tight text-[#25100E] leading-[0.95] drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]">
+                THE MUNCH <span className="text-[#D73B3A]">SHOP.</span>
+              </h1>
 
-          <p className="font-sans text-sm sm:text-base md:text-lg text-[#522C28]/85 font-semibold max-w-xl mx-auto mt-2 leading-relaxed">
-            Small bites, big goodness. Explore our individual signature flavours and value-packed
-            combo boxes—slow-roasted to crunchy perfection.
-          </p>
+              <p className="font-sans text-sm sm:text-base md:text-lg text-[#522C28]/85 font-semibold max-w-xl mt-3 leading-relaxed">
+                Small bites, big goodness. Explore our 4 signature flavours and value-packed
+                combo boxes—slow-roasted to crunchy perfection with 0g trans fat and zero palm oil.
+              </p>
 
-          {/* 4 Trust Highlights Strip */}
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-6 mt-6 pt-5 border-t border-[#522C28]/10 text-[10px] sm:text-xs font-black uppercase text-[#522C28]">
-            <span className="flex items-center gap-1.5 bg-white/80 px-3 py-1 rounded-full border border-[#522C28]/10 shadow-2xs">
-              <span className="text-[#3CA837]">✔</span> 100% Slow-Roasted, Never Fried
-            </span>
-            <span className="flex items-center gap-1.5 bg-white/80 px-3 py-1 rounded-full border border-[#522C28]/10 shadow-2xs">
-              <span className="text-[#3CA837]">✔</span> 0g Trans Fat & Gluten Free
-            </span>
-            <span className="flex items-center gap-1.5 bg-white/80 px-3 py-1 rounded-full border border-[#522C28]/10 shadow-2xs">
-              <span className="text-[#3CA837]">✔</span> Free Delivery Above ₹699+
-            </span>
-            <span className="flex items-center gap-1.5 bg-white/80 px-3 py-1 rounded-full border border-[#522C28]/10 shadow-2xs">
-              <span className="text-[#3CA837]">✔</span> Ships within 24 Hours
-            </span>
+              {/* 4 Trust Highlights Strip */}
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-2.5 mt-5 text-[10px] sm:text-xs font-black uppercase text-[#522C28]">
+                <span className="flex items-center gap-1.5 bg-white/90 backdrop-blur-xs px-3 py-1.5 rounded-full border border-[#522C28]/10 shadow-2xs">
+                  <span className="text-[#3CA837]">✔</span> 100% Slow-Roasted, Never Fried
+                </span>
+                <span className="flex items-center gap-1.5 bg-white/90 backdrop-blur-xs px-3 py-1.5 rounded-full border border-[#522C28]/10 shadow-2xs">
+                  <span className="text-[#3CA837]">✔</span> 0g Trans Fat & Gluten Free
+                </span>
+                <span className="flex items-center gap-1.5 bg-white/90 backdrop-blur-xs px-3 py-1.5 rounded-full border border-[#522C28]/10 shadow-2xs">
+                  <span className="text-[#3CA837]">✔</span> Free Delivery Above ₹699+
+                </span>
+                <span className="flex items-center gap-1.5 bg-white/90 backdrop-blur-xs px-3 py-1.5 rounded-full border border-[#522C28]/10 shadow-2xs">
+                  <span className="text-[#3CA837]">✔</span> Ships within 24 Hours
+                </span>
+              </div>
+            </div>
+
+            {/* Right Column: Hero Showcase Image (Fox + 4 Signature Packets) */}
+            <div className="lg:col-span-5 relative flex items-center justify-center pt-2 lg:pt-0">
+              {/* Golden Ambient Halo */}
+              <div className="absolute inset-0 m-auto w-60 sm:w-72 h-60 sm:h-72 bg-[#FAC537]/30 rounded-full blur-3xl pointer-events-none" />
+
+              {/* Floating Badge */}
+              <div className="absolute -top-3 right-4 sm:right-6 z-30 bg-[#25100E] text-[#FAC537] border-2 border-[#FAC537] px-3.5 py-1 rounded-full shadow-lg font-display text-[11px] sm:text-xs font-black uppercase tracking-wider rotate-3 animate-pulse">
+                ✦ 100% CRUNCH ✦
+              </div>
+
+              {/* 4 Packets + Mascot Staging */}
+              <div className="relative flex items-end justify-center w-full max-w-sm sm:max-w-md h-52 sm:h-64 lg:h-72">
+                {/* 1. Cheddar Cheese */}
+                <div className="relative -mr-6 sm:-mr-8 z-10 -rotate-12 transition-transform duration-300 hover:scale-110 hover:z-40">
+                  <img
+                    src="/packets/cheddar-cheese.png"
+                    alt="Cheddar Cheese"
+                    className="h-36 sm:h-44 lg:h-52 w-auto object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.35)]"
+                  />
+                </div>
+
+                {/* 2. Peri Peri */}
+                <div className="relative -mr-5 sm:-mr-7 z-20 -rotate-4 -translate-y-2 transition-transform duration-300 hover:scale-110 hover:z-40">
+                  <img
+                    src="/packets/peri-peri.png"
+                    alt="Peri Peri"
+                    className="h-40 sm:h-48 lg:h-56 w-auto object-contain drop-shadow-[0_16px_28px_rgba(0,0,0,0.4)]"
+                  />
+                </div>
+
+                {/* 3. Cream & Onion */}
+                <div className="relative -mr-5 sm:-mr-7 z-30 rotate-3 -translate-y-2.5 transition-transform duration-300 hover:scale-110 hover:z-40">
+                  <img
+                    src="/packets/cream-n-onion.png"
+                    alt="Cream & Onion"
+                    className="h-40 sm:h-48 lg:h-56 w-auto object-contain drop-shadow-[0_16px_28px_rgba(0,0,0,0.4)]"
+                  />
+                </div>
+
+                {/* 4. Himalayan Pink Salt */}
+                <div className="relative z-10 rotate-12 transition-transform duration-300 hover:scale-110 hover:z-40">
+                  <img
+                    src="/packets/himalayan-salt.png"
+                    alt="Himalayan Pink Salt"
+                    className="h-36 sm:h-44 lg:h-52 w-auto object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.35)]"
+                  />
+                </div>
+
+                {/* Fox mascot in front */}
+                <img
+                  src="/Sunglasses Fox With Sweeping Tail.png"
+                  alt="Pop Culture Fox Mascot"
+                  className="pointer-events-none select-none absolute -bottom-2 -left-4 sm:-left-8 z-40 w-[120px] sm:w-[150px] lg:w-[175px] h-auto object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.3)]"
+                />
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
@@ -312,48 +400,101 @@ export default function ShopPage() {
         
         {/* SECTION 1: COMBOS & VALUE BUNDLES (Shown if "all" or "combos") */}
         {(activeFilter === "all" || activeFilter === "combos") && (
-          <div className="mb-14 sm:mb-20">
-            <div className="flex items-center justify-between mb-6 pb-2 border-b border-[#522C28]/10">
+          <section className="mb-14 sm:mb-20 rounded-3xl p-6 sm:p-8 md:p-10 bg-gradient-to-br from-[#FFF5DE] via-[#FFF8EE] to-[#FFEEC4] border-2 sm:border-3 border-[#FAC537]/60 shadow-xl relative overflow-hidden">
+            {/* Ambient Lighting & Texture */}
+            <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-[#FAC537]/25 blur-3xl pointer-events-none -mr-16 -mt-16" />
+            <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-[#D73B3A]/10 blur-2xl pointer-events-none -ml-16 -mb-16" />
+
+            <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between mb-8 pb-3 border-b border-[#522C28]/15 gap-3">
               <div>
-                <span className="text-[11px] font-black uppercase tracking-widest text-[#D73B3A]">
-                  ✦ VALUE PACKS ✦
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D73B3A] text-white text-[11px] font-black uppercase tracking-widest mb-2 shadow-xs">
+                  <span>🎁</span>
+                  <span>VALUE BUNDLES & SAVINGS</span>
                 </span>
-                <h2 className="font-display text-2xl sm:text-4xl font-black uppercase text-[#25100E] mt-0.5">
+                <h2 className="font-display text-2xl sm:text-4xl font-black uppercase text-[#25100E] mt-0.5 tracking-tight">
                   Combos & Variety Bundles
                 </h2>
               </div>
-              <span className="text-xs font-bold text-[#3CA837] bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 hidden sm:inline-block">
+              <span className="text-xs font-black text-[#25100E] bg-[#FAC537] px-4 py-1.5 rounded-full border border-[#25100E]/15 shadow-xs self-start sm:self-auto">
                 Save up to 22% on bundles
               </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+            <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
               {sortedCombos.map((combo) => (
                 <div
                   key={combo.slug}
-                  className="rounded-3xl bg-white border-2 border-[#522C28]/15 shadow-md hover:shadow-xl transition-[transform,box-shadow] duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] flex flex-col justify-between overflow-hidden group hover:-translate-y-1.5 will-change-transform"
+                  onClick={(e) => {
+                    if ((e.target as HTMLElement).closest("button, a")) return;
+                    recordFlavourClick(combo.slug);
+                    router.push(`/product/${combo.slug}`);
+                  }}
+                  className="rounded-3xl bg-white border-2 border-[#522C28]/15 shadow-md hover:shadow-2xl transition-[transform,box-shadow] duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] flex flex-col justify-between overflow-hidden group hover:-translate-y-1.5 will-change-transform cursor-pointer"
                 >
                   {/* Top Badge Strip */}
-                  <div className="p-5 pb-0 flex items-start justify-between">
-                    <span className="px-3 py-1 rounded-full bg-[#FFF8EE] text-[#25100E] text-[11px] font-black uppercase tracking-wider border border-[#25100E]/15">
-                      {combo.badge}
-                    </span>
-                    {combo.savingsBadge && (
-                      <span className="px-2.5 py-0.5 rounded-full bg-[#D73B3A] text-white text-[10px] font-black uppercase tracking-wider shadow-xs">
-                        {combo.savingsBadge}
+                  <div className="p-5 pb-0 flex items-start justify-between relative z-20">
+                    <div className="flex items-center gap-2">
+                      <span className="px-3 py-1 rounded-full bg-[#FFF8EE] text-[#25100E] text-[11px] font-black uppercase tracking-wider border border-[#25100E]/15">
+                        {combo.badge}
                       </span>
-                    )}
+                      {combo.savingsBadge && (
+                        <span className="px-2.5 py-0.5 rounded-full bg-[#D73B3A] text-white text-[10px] font-black uppercase tracking-wider shadow-xs">
+                          {combo.savingsBadge}
+                        </span>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        void toggleFavorite(combo.slug);
+                      }}
+                      className="p-1.5 rounded-full bg-[#FFF8EE] border border-[#522C28]/15 hover:border-[#D73B3A] text-[#522C28] hover:text-[#D73B3A] transition-colors cursor-pointer"
+                      title={isFavorite(combo.slug) ? "Remove from favorites" : "Save to favorites"}
+                    >
+                      <Heart
+                        className={`w-4 h-4 ${
+                          isFavorite(combo.slug) ? "fill-[#D73B3A] text-[#D73B3A]" : ""
+                        }`}
+                      />
+                    </button>
                   </div>
 
-                  {/* Packet Showcase Image Stage */}
-                  <div className="relative h-56 sm:h-64 flex items-center justify-center p-4 my-2">
+                  {/* Packet Showcase Image Stage with Responsive Background Wave Layer (Mobile + Desktop) */}
+                  <Link
+                    href={`/product/${combo.slug}`}
+                    onClick={() => recordFlavourClick(combo.slug)}
+                    className="relative h-56 sm:h-64 flex items-center justify-center p-4 my-2 overflow-hidden rounded-2xl mx-4 cursor-pointer group/stage block"
+                  >
+                    {/* Responsive Flavour Background Wave Layer (Mobile + Desktop) */}
+                    {combo.bgSvg && (
+                      <div className="absolute inset-0 w-full h-full overflow-hidden">
+                        <picture>
+                          {combo.bgMobileSvg && (
+                            <source
+                              media="(max-width: 640px)"
+                              srcSet={combo.bgMobileSvg}
+                            />
+                          )}
+                          <img
+                            src={combo.bgSvg}
+                            alt={`${combo.name} background`}
+                            className="w-full h-full object-cover opacity-90 transition-transform duration-700 ease-out group-hover:scale-105"
+                          />
+                        </picture>
+                        {/* Soft ambient gradient overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-black/10 pointer-events-none" />
+                      </div>
+                    )}
+
                     <div
                       style={{ backgroundColor: combo.themeColor }}
-                      className="absolute inset-8 rounded-full opacity-15 blur-2xl group-hover:opacity-25 transition-opacity"
+                      className="absolute inset-8 rounded-full opacity-35 blur-2xl group-hover:opacity-50 transition-opacity"
                     />
 
                     {/* Balanced Variety Showcase */}
-                    <div className="relative flex items-end justify-center h-48 sm:h-56 w-full pt-4">
+                    <div className="relative z-10 flex items-end justify-center h-48 sm:h-56 w-full pt-4">
                       {combo.secondaryImage && (
                         <img
                           src={combo.secondaryImage}
@@ -367,12 +508,12 @@ export default function ShopPage() {
                         className="h-44 sm:h-52 w-auto object-contain drop-shadow-xl z-20 transition-transform duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
                       />
                       <img
-                        src="/packets/pink-salt-pouch.png"
+                        src="/packets/himalayan-salt.png"
                         alt=""
                         className="h-38 sm:h-44 w-auto object-contain drop-shadow-md rotate-[10deg] -ml-6 sm:-ml-8 translate-y-2 z-10 transition-transform duration-300 group-hover:translate-x-1"
                       />
                     </div>
-                  </div>
+                  </Link>
 
                   {/* Details & Actions */}
                   <div className="p-5 sm:p-6 bg-[#FFF8EE]/60 border-t border-[#522C28]/10 flex flex-col flex-1 justify-between">
@@ -385,9 +526,11 @@ export default function ShopPage() {
                         </span>
                       </div>
 
-                      <h3 className="font-display text-xl font-black uppercase text-[#25100E] leading-snug">
-                        {combo.name}
-                      </h3>
+                      <Link href={`/product/${combo.slug}`} onClick={() => recordFlavourClick(combo.slug)}>
+                        <h3 className="font-display text-xl font-black uppercase text-[#25100E] hover:text-[#D73B3A] transition-colors leading-snug">
+                          {combo.name}
+                        </h3>
+                      </Link>
 
                       <p className="text-xs font-bold text-[#D73B3A] mt-1">
                         {combo.tagline}
@@ -414,7 +557,7 @@ export default function ShopPage() {
                     </div>
 
                     {/* Price & Add to Cart */}
-                    <div className="mt-5 pt-4 border-t border-[#522C28]/15 flex items-center justify-between">
+                    <div className="mt-5 pt-4 border-t border-[#522C28]/15 flex items-center justify-between gap-2">
                       <div>
                         <div className="flex items-baseline">
                           <span className="text-2xl font-black text-[#25100E]">
@@ -426,79 +569,154 @@ export default function ShopPage() {
                         </span>
                       </div>
 
-                      <button
-                        onClick={() =>
-                          handleAddToCart({
-                            variantId: combo.variantId,
-                            slug: combo.slug,
-                            name: combo.name,
-                            variantLabel: combo.packCountText,
-                            price: combo.price,
-                            originalPrice: combo.originalPrice,
-                            image: combo.packImage,
-                          })
-                        }
-                        className="px-4 py-2.5 rounded-full bg-[#25100E] text-[#FAC537] hover:bg-[#1A0A09] font-black text-xs uppercase tracking-wider shadow-sm hover:scale-105 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer ring-2 ring-[#FAC537]/50"
-                      >
-                        <Plus className="w-3.5 h-3.5 stroke-[3]" />
-                        <span>Add Box</span>
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddToCart({
+                              variantId: combo.variantId,
+                              slug: combo.slug,
+                              name: combo.name,
+                              variantLabel: combo.packCountText,
+                              price: combo.price,
+                              originalPrice: combo.originalPrice,
+                              image: combo.packImage,
+                            });
+                          }}
+                          className="px-4 py-2.5 rounded-full bg-[#25100E] text-[#FAC537] hover:bg-[#1A0A09] font-black text-xs uppercase tracking-wider shadow-sm hover:scale-105 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer ring-2 ring-[#FAC537]/50"
+                        >
+                          <Plus className="w-3.5 h-3.5 stroke-[3]" />
+                          <span>Add Box</span>
+                        </button>
+                        <Link
+                          href={`/product/${combo.slug}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            recordFlavourClick(combo.slug);
+                          }}
+                          className="px-3 py-2.5 rounded-full bg-white hover:bg-[#FFF8EE] text-[#25100E] border-2 border-[#25100E]/20 hover:border-[#25100E] font-bold text-xs uppercase tracking-wider transition-colors flex items-center gap-1"
+                        >
+                          <span>Details</span>
+                          <ArrowRight className="w-3 h-3" />
+                        </Link>
+                      </div>
                     </div>
 
                   </div>
                 </div>
               ))}
             </div>
+          </section>
+        )}
+
+        {/* MID-PAGE INFINITE MARQUEE STRIP (Shown in "all" view to separate Combos & Flavours) */}
+        {activeFilter === "all" && (
+          <div className="my-10 sm:my-14 w-screen relative left-1/2 -translate-x-1/2 overflow-hidden">
+            <InfiniteAssetMarquee text="POP CULTURE" />
           </div>
         )}
 
         {/* SECTION 2: INDIVIDUAL SIGNATURE FLAVOURS (Shown if "all" or "flavours") */}
         {(activeFilter === "all" || activeFilter === "flavours") && (
-          <div>
-            <div className="flex items-center justify-between mb-6 pb-2 border-b border-[#522C28]/10">
+          <section className="mb-14 sm:mb-20 rounded-3xl p-6 sm:p-8 md:p-10 bg-gradient-to-br from-[#FFF9F2] via-[#FFF8EE] to-[#FFF1E8] border-2 sm:border-3 border-[#D73B3A]/30 shadow-xl relative overflow-hidden">
+            {/* Ambient Lighting */}
+            <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-[#D73B3A]/10 blur-3xl pointer-events-none -mr-16 -mt-16" />
+            <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-[#FAC537]/15 blur-3xl pointer-events-none -ml-16 -mb-16" />
+
+            <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between mb-8 pb-3 border-b border-[#522C28]/15 gap-3">
               <div>
-                <span className="text-[11px] font-black uppercase tracking-widest text-[#D73B3A]">
-                  ✦ SIGNATURE POUCHES ✦
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#25100E] text-[#FAC537] text-[11px] font-black uppercase tracking-widest mb-2 shadow-xs">
+                  <span>✦</span>
+                  <span>100% SLOW ROASTED SIGNATURES</span>
+                  <span>✦</span>
                 </span>
-                <h2 className="font-display text-2xl sm:text-4xl font-black uppercase text-[#25100E] mt-0.5">
+                <h2 className="font-display text-2xl sm:text-4xl font-black uppercase text-[#25100E] mt-0.5 tracking-tight">
                   Single Flavours & Packs
                 </h2>
               </div>
-              <span className="text-xs font-bold text-[#522C28]/70 hidden sm:inline-block">
-                Choose single pouch, 3-pack, or 6-pack box
+              <span className="text-xs font-bold text-[#522C28]/80 bg-white/80 px-3.5 py-1.5 rounded-full border border-[#522C28]/15 shadow-xs self-start sm:self-auto">
+                Choose 1 pouch, 3-pack, or 6-pack box
               </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+            <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
               {sortedProducts.map((product) => (
                 <div
                   key={product.slug}
-                  className="rounded-3xl bg-white border-2 border-[#522C28]/15 shadow-md hover:shadow-xl transition-[transform,box-shadow] duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] flex flex-col justify-between overflow-hidden group hover:-translate-y-1.5 will-change-transform"
+                  onClick={(e) => {
+                    if ((e.target as HTMLElement).closest("button, a")) return;
+                    recordFlavourClick(product.slug);
+                    router.push(`/product/${product.slug}`);
+                  }}
+                  className="rounded-3xl bg-white border-2 border-[#522C28]/15 shadow-md hover:shadow-2xl transition-[transform,box-shadow] duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] flex flex-col justify-between overflow-hidden group hover:-translate-y-1.5 will-change-transform cursor-pointer"
                 >
-                  {/* Top Badge Strip */}
-                  <div className="p-5 pb-0 flex items-start justify-between">
-                    <span className="px-3 py-1 rounded-full bg-[#FFF8EE] text-[#25100E] text-[11px] font-black uppercase tracking-wider border border-[#25100E]/15">
-                      {product.badge}
-                    </span>
-                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
-                      <Check className="w-3 h-3 stroke-[3]" />
-                      <span>100% ROASTED</span>
-                    </span>
-                  </div>
-
-                  {/* Packet Showcase Image Stage */}
+                  {/* Packet Showcase Image Stage with Official Snack Wave Background (Desktop & Mobile) */}
                   <Link
                     href={`/product/${product.slug}`}
-                    className="relative h-56 sm:h-64 flex items-center justify-center p-4 my-2 cursor-pointer"
+                    onClick={() => recordFlavourClick(product.slug)}
+                    className="relative h-60 sm:h-68 flex items-center justify-center p-4 overflow-hidden cursor-pointer group/stage"
                   >
+                    {/* Responsive Flavour Background Wave Layer (Mobile + Desktop) */}
+                    {product.bgSvg && (
+                      <div className="absolute inset-0 w-full h-full overflow-hidden">
+                        <picture>
+                          {product.bgMobileSvg && (
+                            <source
+                              media="(max-width: 640px)"
+                              srcSet={product.bgMobileSvg}
+                            />
+                          )}
+                          <img
+                            src={product.bgSvg}
+                            alt={`${product.name} background`}
+                            className="w-full h-full object-cover opacity-90 transition-transform duration-700 ease-out group-hover:scale-105"
+                          />
+                        </picture>
+                        {/* Soft ambient gradient overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-black/10 pointer-events-none" />
+                      </div>
+                    )}
+
+                    {/* Flavour theme glow */}
                     <div
                       style={{ backgroundColor: product.themeColor }}
-                      className="absolute inset-8 rounded-full opacity-15 blur-2xl group-hover:opacity-25 transition-opacity"
+                      className="absolute inset-8 rounded-full opacity-35 blur-2xl group-hover:opacity-50 transition-opacity"
                     />
+
+                    {/* Top Floating Badge Strip over the background */}
+                    <div className="absolute top-4 inset-x-4 flex items-start justify-between z-20">
+                      <div className="flex items-center gap-1.5 pointer-events-none">
+                        <span className="px-3 py-1 rounded-full bg-white/90 backdrop-blur-xs text-[#25100E] text-[11px] font-black uppercase tracking-wider border border-white/60 shadow-sm">
+                          {product.badge}
+                        </span>
+                        <span className="px-2.5 py-1 rounded-full bg-emerald-600/95 backdrop-blur-xs text-white text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-sm">
+                          <Check className="w-3 h-3 stroke-[3]" />
+                          <span>100% ROASTED</span>
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          void toggleFavorite(product.slug);
+                        }}
+                        className="p-1.5 rounded-full bg-white/90 backdrop-blur-xs border border-white/60 text-[#522C28] hover:text-[#D73B3A] shadow-sm transition-colors cursor-pointer"
+                        title={isFavorite(product.slug) ? "Remove from favorites" : "Save to favorites"}
+                      >
+                        <Heart
+                          className={`w-4 h-4 ${
+                            isFavorite(product.slug) ? "fill-[#D73B3A] text-[#D73B3A]" : ""
+                          }`}
+                        />
+                      </button>
+                    </div>
+
+                    {/* 3D Pouch Image */}
                     <img
                       src={product.packImage}
                       alt={product.name}
-                      className="h-44 sm:h-52 w-auto object-contain drop-shadow-xl z-10 transition-transform duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.07]"
+                      className="relative z-10 h-44 sm:h-52 w-auto object-contain drop-shadow-[0_16px_28px_rgba(0,0,0,0.45)] transition-transform duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08] will-change-transform mt-6"
                     />
                   </Link>
 
@@ -557,7 +775,8 @@ export default function ShopPage() {
 
                       <div className="flex items-center gap-2">
                         <button
-                          onClick={() =>
+                          onClick={(e) => {
+                            e.stopPropagation();
                             handleAddToCart({
                               variantId: product.variantIds.single,
                               slug: product.slug,
@@ -566,8 +785,8 @@ export default function ShopPage() {
                               price: product.pricing.single.price,
                               originalPrice: product.pricing.single.originalPrice,
                               image: product.packImage,
-                            })
-                          }
+                            });
+                          }}
                           className="flex-1 py-2.5 rounded-full bg-[#25100E] text-[#FAC537] hover:bg-[#1A0A09] font-black text-xs uppercase tracking-wider shadow-sm hover:scale-102 active:scale-98 transition-all flex items-center justify-center gap-1.5 cursor-pointer ring-2 ring-[#FAC537]/50"
                         >
                           <ShoppingBag className="w-3.5 h-3.5" />
@@ -576,6 +795,7 @@ export default function ShopPage() {
 
                         <Link
                           href={`/product/${product.slug}`}
+                          onClick={() => recordFlavourClick(product.slug)}
                           className="px-4 py-2.5 rounded-full bg-white hover:bg-[#FFF8EE] text-[#25100E] border-2 border-[#25100E]/20 hover:border-[#25100E] font-bold text-xs uppercase tracking-wider transition-colors flex items-center gap-1"
                         >
                           <span>Details</span>
@@ -588,62 +808,125 @@ export default function ShopPage() {
                 </div>
               ))}
             </div>
-          </div>
+          </section>
         )}
 
         {/* =========================================================================
             CUSTOM BUNDLE BUILDER TEASER BANNER
             ========================================================================= */}
-        <section className="mt-16 sm:mt-24 rounded-3xl bg-[#25100E] text-[#FFF8EE] p-8 sm:p-12 relative overflow-hidden border-4 border-[#FAC537] shadow-xl text-center sm:text-left">
-          <div className="relative z-10 max-w-xl">
-            <span className="px-3 py-1 rounded-full bg-[#D73B3A] text-white text-[11px] font-black uppercase tracking-widest inline-block mb-3">
-              ✦ BUILD YOUR OWN CRUNCH BOX ✦
-            </span>
-            <h3 className="font-display text-3xl sm:text-4xl font-black uppercase text-[#FAC537] leading-tight">
-              Want Custom Flavour Ratios?
-            </h3>
-            <p className="font-sans text-xs sm:text-sm text-white/85 font-medium mt-2 leading-relaxed">
-              Mix and match your favorite pouches. Pick any 6 or 12 packs and get an instant
-              20% discount plus free express delivery!
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3 justify-center sm:justify-start">
-              <Link
-                href="/product/peri-peri"
-                className="px-6 py-3 rounded-full bg-[#FAC537] text-[#25100E] font-black text-xs sm:text-sm uppercase tracking-wider shadow-md hover:bg-white transition-colors"
-              >
-                <span>Pick Flavours & Save 20%</span>
-              </Link>
-              <Link
-                href="/"
-                className="px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm uppercase tracking-wider border border-white/30 transition-colors"
-              >
-                <span>Back to Homepage</span>
-              </Link>
-            </div>
-          </div>
+        <section className="mt-16 sm:mt-24 rounded-3xl bg-gradient-to-br from-[#7D1212] via-[#B91C1C] to-[#5A0C0E] text-[#FFF8EE] p-6 sm:p-10 lg:p-12 relative overflow-hidden border-2 sm:border-3 border-[#FAC537] shadow-2xl">
+          {/* Subtle Ambient Lighting and Dot Texture */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[#FAC537]/15 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+          <div className="absolute bottom-0 left-0 w-80 h-80 bg-black/25 rounded-full blur-2xl pointer-events-none -ml-20 -mb-20" />
+          <div
+            className="absolute inset-0 opacity-[0.04] pointer-events-none"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 2px 2px, white 1px, transparent 0)",
+              backgroundSize: "24px 24px",
+            }}
+          />
 
-          {/* Decorative Floaters */}
-          <div className="hidden lg:flex absolute right-12 top-1/2 -translate-y-1/2 items-center gap-3 pointer-events-none opacity-90">
-            <img
-              src="/packets/peri peri.svg"
-              alt=""
-              className="h-44 w-auto object-contain drop-shadow-2xl -rotate-6"
-            />
-            <img
-              src="/packets/cheese.svg"
-              alt=""
-              className="h-52 w-auto object-contain drop-shadow-2xl z-10"
-            />
-            <img
-              src="/packets/pink-salt-pouch.png"
-              alt=""
-              className="h-48 w-auto object-contain drop-shadow-2xl rotate-3"
-            />
-            <img
-              src="/packets/raw-makhana-pouch.png"
-              alt=""
-              className="h-44 w-auto object-contain drop-shadow-2xl rotate-6"
-            />
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
+            {/* Left Content Column */}
+            <div className="lg:col-span-7 text-center lg:text-left flex flex-col items-center lg:items-start">
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#FAC537] text-[#25100E] text-[11px] font-black uppercase tracking-wider shadow-sm mb-4">
+                <Sparkles className="w-3.5 h-3.5 text-[#25100E]" />
+                <span>Build Your Own Crunch Box</span>
+              </span>
+
+              <h3 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black uppercase text-white leading-tight tracking-tight">
+                Want Custom <span className="text-[#FAC537]">Flavour Ratios?</span>
+              </h3>
+
+              <p className="font-sans text-xs sm:text-sm md:text-base text-white/90 font-medium mt-3 leading-relaxed max-w-lg">
+                Mix and match your favourite pouches in any ratio you love. Handpick 4, 6, or 12 packs and unlock an instant <strong className="text-[#FAC537] font-black">20% discount</strong> with free express delivery!
+              </p>
+
+              {/* 3 Value Pillars */}
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 sm:gap-3 mt-5">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/25 border border-white/15 text-[11px] sm:text-xs font-bold text-white/95">
+                  <span className="text-[#FAC537]">✦</span> Any Flavour Combo
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/25 border border-white/15 text-[11px] sm:text-xs font-bold text-white/95">
+                  <span className="text-[#FAC537]">✦</span> Flat 20% Bundle Savings
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/25 border border-white/15 text-[11px] sm:text-xs font-bold text-white/95">
+                  <span className="text-[#FAC537]">✦</span> Free Express Shipping
+                </span>
+              </div>
+
+              {/* CTAs */}
+              <div className="mt-7 flex flex-wrap gap-3.5 justify-center lg:justify-start w-full sm:w-auto">
+                <Link
+                  href="/build-a-box"
+                  className="px-7 py-3.5 rounded-full bg-[#FAC537] hover:bg-[#FFE07D] text-[#25100E] font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg hover:shadow-xl hover:scale-102 active:scale-98 transition-all inline-flex items-center justify-center gap-2 group w-full sm:w-auto"
+                >
+                  <span>Build A Box & Save 20%</span>
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+                <button
+                  onClick={() => {
+                    setActiveFilter("combos");
+                    window.scrollTo({ top: 380, behavior: "smooth" });
+                  }}
+                  className="px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm uppercase tracking-wider border border-white/25 hover:border-white/50 backdrop-blur-xs transition-all inline-flex items-center justify-center gap-2 cursor-pointer w-full sm:w-auto"
+                >
+                  <Gift className="w-4 h-4 text-[#FAC537]" />
+                  <span>View Pre-Made Combos</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Right Visual Column: Balanced 4-Flavour Fan Cluster */}
+            <div className="lg:col-span-5 relative flex items-center justify-center pt-4 lg:pt-0">
+              {/* Warm Backlight Halo */}
+              <div className="absolute inset-0 m-auto w-52 sm:w-64 h-52 sm:h-64 bg-[#FAC537]/20 rounded-full blur-2xl pointer-events-none" />
+
+              {/* Floating Discount Tag */}
+              <div className="absolute -top-2 right-4 sm:right-8 z-30 bg-[#25100E] text-[#FAC537] border-2 border-[#FAC537] px-3 py-1 rounded-full shadow-xl font-display text-[11px] sm:text-xs font-black uppercase tracking-wider -rotate-6 animate-pulse">
+                ✦ 20% OFF ✦
+              </div>
+
+              {/* 4 Balanced Pouches */}
+              <div className="relative flex items-end justify-center h-48 sm:h-56 lg:h-64 w-full max-w-sm sm:max-w-md">
+                {/* 1. Cheddar Cheese */}
+                <div className="relative -mr-6 sm:-mr-8 z-10 -rotate-12 transition-transform duration-300 hover:scale-110 hover:z-40">
+                  <img
+                    src="/packets/cheddar-cheese.png"
+                    alt="Cheddar Cheese"
+                    className="h-32 sm:h-40 lg:h-48 w-auto object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.45)]"
+                  />
+                </div>
+
+                {/* 2. Peri Peri */}
+                <div className="relative -mr-5 sm:-mr-7 z-20 -rotate-4 -translate-y-2 transition-transform duration-300 hover:scale-110 hover:z-40">
+                  <img
+                    src="/packets/peri-peri.png"
+                    alt="Peri Peri"
+                    className="h-36 sm:h-44 lg:h-52 w-auto object-contain drop-shadow-[0_16px_28px_rgba(0,0,0,0.5)]"
+                  />
+                </div>
+
+                {/* 3. Cream & Onion */}
+                <div className="relative -mr-5 sm:-mr-7 z-30 rotate-3 -translate-y-2.5 transition-transform duration-300 hover:scale-110 hover:z-40">
+                  <img
+                    src="/packets/cream-n-onion.png"
+                    alt="Cream & Onion"
+                    className="h-36 sm:h-44 lg:h-52 w-auto object-contain drop-shadow-[0_16px_28px_rgba(0,0,0,0.5)]"
+                  />
+                </div>
+
+                {/* 4. Himalayan Pink Salt */}
+                <div className="relative z-10 rotate-12 transition-transform duration-300 hover:scale-110 hover:z-40">
+                  <img
+                    src="/packets/himalayan-salt.png"
+                    alt="Himalayan Pink Salt"
+                    className="h-32 sm:h-40 lg:h-48 w-auto object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.45)]"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -652,23 +935,7 @@ export default function ShopPage() {
       {/* =========================================================================
           BOTTOM STRAIGHT MARQUEE RIBBON
           ========================================================================= */}
-      <div className="relative z-20 w-full bg-gradient-to-r from-[#C92328] via-[#E23E3E] to-[#C92328] border-t-2 border-[#FFF8EE]/40 border-b-2 border-[#1A0A09]/20 shadow-lg py-2 sm:py-3.5 md:py-4 overflow-hidden select-none">
-        <div className="flex w-max animate-wave-marquee">
-          {[0, 1].map((dup) => (
-            <div key={dup} className="flex shrink-0 items-center gap-5 sm:gap-7 pr-5 sm:pr-7">
-              {[...Array(6)].map((_, i) => (
-                <span
-                  key={i}
-                  className="inline-flex items-center gap-5 sm:gap-7 font-display text-[15px] sm:text-[24px] md:text-[28px] text-[#FFF8EE] uppercase font-bold whitespace-nowrap"
-                >
-                  <span className="font-display tracking-[0.09em]">THE COOLEST WAY TO SNACK BETTER</span>
-                  <span className="font-display text-[#FFCD3C] leading-none">✦</span>
-                </span>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
+      <InfiniteAssetMarquee text="POP CULTURE" />
     </div>
   );
 }

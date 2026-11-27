@@ -21,19 +21,76 @@ export async function sendMail(params: {
   replyTo?: string;
 }): Promise<{ ok: boolean; reason?: string }> {
   const store = readStore();
+  const resendApiKey =
+    process.env.RESEND_API_KEY ||
+    (store.settings as unknown as { resendApiKey?: string })?.resendApiKey ||
+    "";
+  const fromEmail =
+    process.env.RESEND_FROM_EMAIL ||
+    "Pop Culture Snacks <onboarding@resend.dev>";
+
+  // 1. Prioritize Resend API when API key is provided
+  if (resendApiKey) {
+    try {
+      const res = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${resendApiKey.trim()}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: fromEmail,
+          to: [params.to],
+          subject: params.subject,
+          html: params.html,
+          ...(params.replyTo ? { reply_to: params.replyTo } : {}),
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || data.error || "Failed sending via Resend");
+      }
+
+      appendWebhookLog(store, {
+        direction: "OUTBOUND",
+        event: params.eventTag,
+        endpoint: `resend://${params.to}`,
+        httpStatus: 200,
+        ok: true,
+        summary: `Sent email via Resend to ${params.to}: ${params.subject}`,
+      });
+      writeStore(store);
+      return { ok: true };
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Failed sending Resend email";
+      appendWebhookLog(store, {
+        direction: "OUTBOUND",
+        event: params.eventTag,
+        endpoint: `resend://${params.to}`,
+        httpStatus: 500,
+        ok: false,
+        summary: `Resend error: ${msg}`,
+      });
+      writeStore(store);
+      return { ok: false, reason: msg };
+    }
+  }
+
+  // 2. Fallback to Gmail SMTP if configured
   const cfg = getGmailConfig(store.settings.gmailUser);
 
   if (!cfg.configured) {
     appendWebhookLog(store, {
       direction: "OUTBOUND",
       event: params.eventTag,
-      endpoint: `gmail://${params.to}`,
+      endpoint: `resend://${params.to}`,
       httpStatus: 0,
       ok: false,
-      summary: `Email skipped (GMAIL_USER / GMAIL_APP_PASSWORD not set): ${params.subject}`,
+      summary: `Email skipped (RESEND_API_KEY not configured): ${params.subject}`,
     });
     writeStore(store);
-    return { ok: false, reason: "Gmail SMTP credentials not configured" };
+    return { ok: false, reason: "Neither Resend nor Gmail SMTP configured" };
   }
 
   try {

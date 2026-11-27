@@ -17,6 +17,7 @@ import {
   Zap,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import InfiniteAssetMarquee from "@/components/InfiniteAssetMarquee";
 import { useCart } from "@/components/CartContext";
 
 type BoxSize = 4 | 6 | 12;
@@ -39,7 +40,7 @@ const FLAVOURS: FlavourOption[] = [
     name: "Peri Peri Punch",
     tagline: "Fiery, Tangy & Irresistibly Bold",
     emoji: "🌶️",
-    image: "/packets/peri peri.svg",
+    image: "/packets/peri-peri.png",
     themeColor: "#E53925",
     accentBg: "#ED0006",
     badge: "🔥 HOT & SPICY",
@@ -50,7 +51,7 @@ const FLAVOURS: FlavourOption[] = [
     name: "Cheddar Cheese Melt",
     tagline: "Velvety, Savoury & Golden Crunch",
     emoji: "🧀",
-    image: "/packets/cheese.svg",
+    image: "/packets/cheddar-cheese.png",
     themeColor: "#F79E1B",
     accentBg: "#FAC537",
     badge: "🧀 VELVET MELT",
@@ -61,11 +62,22 @@ const FLAVOURS: FlavourOption[] = [
     name: "Himalayan Pink Salt",
     tagline: "Crisp, Mineral-Rich & Pure",
     emoji: "🌸",
-    image: "/packets/pink-salt-pouch.png",
+    image: "/packets/himalayan-salt.png",
     themeColor: "#E1366C",
     accentBg: "#F472B6",
     badge: "🌸 CLEAN CRUNCH",
     notes: ["84 Trace Minerals", "Pure Light Roast", "Gluten-Free"],
+  },
+  {
+    id: "cream-and-onion",
+    name: "Cream & Onion",
+    tagline: "Smooth, Tangy & Irresistibly Creamy",
+    emoji: "🧅",
+    image: "/packets/cream-n-onion.png",
+    themeColor: "#8B1E3F",
+    accentBg: "#9E1B42",
+    badge: "🧅 SOUR CREAM CRUNCH",
+    notes: ["Real Sour Cream & Chives", "14.2g Dietary Fibre", "100% Roasted"],
   },
   {
     id: "raw-makhana",
@@ -325,22 +337,154 @@ export default function BuildABoxPage() {
         </div>
       )}
 
-      {/* Main Container */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-36 pb-28">
-        
-        {/* Header Hero */}
-        <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E53925]/10 text-[#E53925] text-xs font-black uppercase tracking-widest mb-3">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Interactive Snack Studio</span>
-          </div>
-          <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-[#25100E]">
-            BUILD YOUR OWN BOX
-          </h1>
-          <p className="text-sm sm:text-base text-[#522C28]/80 mt-2 font-medium">
-            Mix and match your dream flavour combination. Pack more, unlock big bulk savings, and get it delivered straight to your door.
-          </p>
+      {/* =========================================================================
+          BUILD A BOX HERO SECTION (With Responsive Desktop & Mobile Artwork Stage)
+          ========================================================================= */}
+      <section className="relative overflow-hidden pt-28 sm:pt-36 pb-12 sm:pb-16 border-b-2 border-[#25100E]">
+        {/* Background Image Layer (Responsive Desktop & Mobile Dunes) */}
+        <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden">
+          <picture className="w-full h-full block">
+            <source media="(max-width: 768px)" srcSet="/box/box-hero-mobile-bg.png" />
+            <img
+              src="/box/box-hero-bg.png"
+              alt="Build Your Own Box Background"
+              loading="eager"
+              decoding="async"
+              className="w-full h-full object-cover object-bottom"
+            />
+          </picture>
+          {/* Legibility Scrim Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#FFF8EE]/90 via-[#FFF8EE]/60 to-[#FFF8EE]/95" />
         </div>
+
+        {/* Hero Content Stage */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            
+            {/* Left Hero Column: Copy & Value Propositions */}
+            <div className="lg:col-span-7 text-center lg:text-left flex flex-col items-center lg:items-start">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E53925]/10 border border-[#E53925]/20 text-[#E53925] text-xs font-black uppercase tracking-widest mb-4 shadow-xs">
+                <Sparkles className="w-3.5 h-3.5 text-[#FFCD3C] fill-[#FFCD3C]" />
+                <span>POP CULTURE CUSTOM CRATE</span>
+              </div>
+
+              <h1 className="flex flex-col text-balance">
+                <span className="font-sans font-extrabold text-sm sm:text-lg md:text-xl uppercase tracking-[0.15em] text-[#522C28]/85 mb-1.5 sm:mb-2">
+                  SNACK SMART · SNACK COOL
+                </span>
+                <span className="font-display font-black text-4xl sm:text-6xl md:text-7xl uppercase tracking-tight text-[#25100E] leading-[1.03]">
+                  BUILD YOUR <span className="text-[#D73B3A]">OWN BOX</span>
+                </span>
+              </h1>
+
+              <p className="mt-4 sm:mt-5 text-sm sm:text-base md:text-lg text-[#522C28]/85 font-medium max-w-xl leading-relaxed text-balance">
+                Mix and match your favourite slow-roasted flavours. Pack 4, 6, or 12 pouches, unlock bulk savings, and get your custom crunch crate shipped free straight to your doorstep!
+              </p>
+
+              {/* 3 Key Brand Pillars */}
+              <div className="mt-6 flex flex-wrap items-center justify-center lg:justify-start gap-3 text-xs font-bold text-[#25100E]">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/80 border border-[#522C28]/15 shadow-xs">
+                  <Check className="w-3.5 h-3.5 text-[#3CA837]" />
+                  <span>100% Slow-Roasted</span>
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/80 border border-[#522C28]/15 shadow-xs">
+                  <Check className="w-3.5 h-3.5 text-[#3CA837]" />
+                  <span>Zero Palm Oil</span>
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/80 border border-[#522C28]/15 shadow-xs">
+                  <Truck className="w-3.5 h-3.5 text-[#D73B3A]" />
+                  <span>Free Express Shipping</span>
+                </span>
+              </div>
+
+              {/* Quick Jump CTA */}
+              <div className="mt-7 flex items-center gap-3">
+                <a
+                  href="#box-builder-steps"
+                  className="px-6 py-3 rounded-full bg-[#D73B3A] text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-md hover:bg-[#c9302f] hover:shadow-lg transition-all inline-flex items-center gap-2 group cursor-pointer"
+                >
+                  <span>Start Packing Your Crate</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </a>
+                <span className="text-xs font-mono font-bold text-[#522C28]/60 uppercase">
+                  Step 1 of 2 Below ↓
+                </span>
+              </div>
+            </div>
+
+            {/* Right Hero Column: Visual Hero Stage (All 4 Packets Elevated & Visible + Mascot Fox) */}
+            <div className="lg:col-span-5 flex justify-center items-center">
+              <div className="relative w-full max-w-lg flex flex-col items-center justify-center -translate-y-2 sm:-translate-y-4">
+                {/* Warm Studio Glow */}
+                <div className="absolute inset-0 m-auto w-64 sm:w-80 h-64 sm:h-80 bg-gradient-to-tr from-[#FAC537]/40 via-[#E53925]/25 to-transparent rounded-full blur-3xl pointer-events-none" />
+
+                {/* Floating Bundle Badge */}
+                <div className="relative z-30 mb-4 bg-[#25100E] text-[#FAC537] border-2 border-[#FAC537] px-4 py-1.5 rounded-full shadow-xl flex items-center gap-1.5 rotate-[-2deg] self-center lg:self-start">
+                  <Sparkles className="w-3.5 h-3.5 text-[#FFCD3C] fill-[#FFCD3C]" />
+                  <span className="font-display text-xs uppercase font-black text-[#FFCD3C] tracking-wide">
+                    CUSTOM 4, 6 OR 12 PACK
+                  </span>
+                </div>
+
+                {/* 4 Packets Lineup + Mascot Staging - All 4 Packets Elevated & 100% Clearly Visible */}
+                <div className="relative flex items-end justify-center w-full max-w-sm sm:max-w-md h-52 sm:h-64 lg:h-72">
+                  {/* 1. Cheddar Cheese (Left fan) */}
+                  <div className="relative -mr-6 sm:-mr-8 z-10 -rotate-12 transition-transform duration-300 hover:scale-110 hover:z-40">
+                    <img
+                      src="/packets/cheddar-cheese.png"
+                      alt="Cheddar Cheese"
+                      className="h-36 sm:h-44 lg:h-52 w-auto object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.35)]"
+                    />
+                  </div>
+
+                  {/* 2. Peri Peri (Center-Left) */}
+                  <div className="relative -mr-5 sm:-mr-7 z-20 -rotate-4 -translate-y-2 transition-transform duration-300 hover:scale-110 hover:z-40">
+                    <img
+                      src="/packets/peri-peri.png"
+                      alt="Peri Peri"
+                      className="h-40 sm:h-48 lg:h-56 w-auto object-contain drop-shadow-[0_16px_28px_rgba(0,0,0,0.4)]"
+                    />
+                  </div>
+
+                  {/* 3. Cream & Onion (Center-Right) */}
+                  <div className="relative -mr-5 sm:-mr-7 z-30 rotate-3 -translate-y-2.5 transition-transform duration-300 hover:scale-110 hover:z-40">
+                    <img
+                      src="/packets/cream-n-onion.png"
+                      alt="Cream & Onion"
+                      className="h-40 sm:h-48 lg:h-56 w-auto object-contain drop-shadow-[0_16px_28px_rgba(0,0,0,0.4)]"
+                    />
+                  </div>
+
+                  {/* 4. Himalayan Pink Salt (Right - 100% visible, not hidden behind anything) */}
+                  <div className="relative z-10 rotate-12 transition-transform duration-300 hover:scale-110 hover:z-40">
+                    <img
+                      src="/packets/himalayan-salt.png"
+                      alt="Himalayan Pink Salt"
+                      className="h-36 sm:h-44 lg:h-52 w-auto object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.35)]"
+                    />
+                  </div>
+
+                  {/* Mascot Fox with Sunglasses in Front */}
+                  <img
+                    src="/Sunglasses Fox With Sweeping Tail.png"
+                    alt="Pop Culture Fox Mascot"
+                    className="pointer-events-none select-none absolute -bottom-3 -left-4 sm:-left-8 z-40 w-[120px] sm:w-[155px] lg:w-[180px] h-auto object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.3)]"
+                  />
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* Edge-to-edge Marquee underneath Hero */}
+      <div className="w-screen relative left-1/2 -translate-x-1/2 overflow-hidden border-b-2 border-[#25100E] shadow-sm select-none">
+        <InfiniteAssetMarquee text="BUILD YOUR OWN BOX" />
+      </div>
+
+      {/* Main Container */}
+      <main id="box-builder-steps" className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-32 sm:pb-40">
 
         {/* STEP 1: Select Box Size */}
         <div className="mb-10">
@@ -789,25 +933,6 @@ export default function BuildABoxPage() {
 
       </main>
 
-      {/* BOTTOM STRAIGHT MARQUEE RIBBON */}
-      <div className="relative z-20 w-full bg-gradient-to-r from-[#C92328] via-[#E23E3E] to-[#C92328] border-t-2 border-[#FFF8EE]/40 border-b-2 border-[#1A0A09]/20 shadow-lg py-2 sm:py-3.5 md:py-4 overflow-hidden select-none mb-20 sm:mb-24">
-        <div className="flex w-max animate-wave-marquee">
-          {[0, 1].map((dup) => (
-            <div key={dup} className="flex shrink-0 items-center gap-5 sm:gap-7 pr-5 sm:pr-7">
-              {[...Array(6)].map((_, i) => (
-                <span
-                  key={i}
-                  className="inline-flex items-center gap-5 sm:gap-7 font-display text-[15px] sm:text-[24px] md:text-[28px] text-[#FFF8EE] uppercase font-bold whitespace-nowrap"
-                >
-                  <span className="font-display tracking-[0.09em]">THE COOLEST WAY TO SNACK BETTER</span>
-                  <span className="font-display text-[#FFCD3C] leading-none">✦</span>
-                </span>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Floating Bottom Bar (Clear, Interactive, Unblocked) */}
       <aside aria-label="Build a box summary" className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t-2 border-[#522C28]/15 px-4 sm:px-8 py-3 sm:py-3.5 shadow-[0_-8px_30px_rgba(0,0,0,0.12)]">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
@@ -893,6 +1018,9 @@ export default function BuildABoxPage() {
 
         </div>
       </aside>
+
+      {/* BOTTOM SINGLE SIGNATURE MARQUEE RIBBON */}
+      <InfiniteAssetMarquee text="THE COOLEST WAY TO SNACK BETTER" />
     </div>
   );
 }

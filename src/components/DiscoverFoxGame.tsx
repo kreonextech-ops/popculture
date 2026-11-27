@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useAuth } from "./AuthContext";
+import AuthModal from "./AuthModal";
 
 interface LeaderboardEntry {
   rank: number;
@@ -62,6 +63,11 @@ export default function DiscoverFoxGame() {
   const [savingScore, setSavingScore] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+
+  // Guest vs Login & Play Mode
+  const [isGuestMode, setIsGuestMode] = useState(false);
+  const isGuestModeRef = useRef(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const scoreLoadedRef = useRef(false);
 
@@ -757,7 +763,8 @@ export default function DiscoverFoxGame() {
               return best;
             });
 
-            if (userRef.current) {
+            // Only record to leaderboard & profile if user is logged in AND not playing in guest mode
+            if (userRef.current && !isGuestModeRef.current) {
               setSavingScore(true);
               fetch("/api/game/score", {
                 method: "POST",
@@ -1244,65 +1251,101 @@ export default function DiscoverFoxGame() {
         />
 
         {/* =========================================================================
-            READY TO PLAY OVERLAY (Minimal, focused on conversion)
+            READY TO PLAY OVERLAY (Guest vs Login & Play Dual Mode)
             ========================================================================= */}
         {!gameStarted && !gameOver && (
           <div
-            onClick={(e) => {
-              if ((e.target as HTMLElement)?.closest("button, a")) return;
-              triggerJump();
-            }}
-            className="absolute inset-0 z-35 flex items-center justify-center cursor-pointer pointer-events-auto px-4"
+            className="absolute inset-0 z-35 flex items-center justify-center pointer-events-auto px-4 bg-black/25 backdrop-blur-[1px]"
           >
-            <div className="px-5 sm:px-7 py-3 sm:py-4 rounded-3xl bg-white/95 backdrop-blur-md shadow-2xl border-2 border-[#522C28]/15 flex flex-col items-center gap-2 sm:gap-3 text-center max-w-sm sm:max-w-md hover:scale-105 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]">
-              <div className="flex items-center gap-3">
-                <span className="text-2xl sm:text-3xl animate-float-gentle">🏃</span>
-                <span className="font-display text-sm sm:text-base text-[#522C28] uppercase tracking-wide block font-black">
-                  Tap anywhere to Play!
-                </span>
+            <div className="p-5 sm:p-7 rounded-3xl bg-white/95 backdrop-blur-md shadow-2xl border-2 border-[#522C28]/20 flex flex-col items-center gap-3 sm:gap-4 text-center max-w-sm sm:max-w-md w-full">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAC537]/30 text-[#522C28] text-[10px] sm:text-[11px] font-black uppercase tracking-wider border border-[#FAC537]">
+                <span className="text-base">🏆</span>
+                <span>MONTHLY HAMPER CONTEST — TOP RUNNERS WIN!</span>
               </div>
 
-              {!isDesktopScreen && (
-                <div className="flex items-center gap-2 text-[10px] sm:text-[11px] font-bold text-[#522C28]/80 bg-[#FFF8EE] px-3 py-1 rounded-full border border-[#522C28]/10">
-                  <span className="text-[#D73B3A]">↑ Swipe Up / Tap: Jump</span>
-                  <span>•</span>
-                  <span className="text-[#F37D20]">↓ Swipe Down: Slide</span>
-                </div>
-              )}
+              <div>
+                <h3 className="font-display text-2xl sm:text-3xl text-[#25100E] uppercase tracking-tight font-black">
+                  POP FOX RUNNER
+                </h3>
+                <p className="text-[11px] sm:text-xs text-[#522C28]/80 font-medium mt-1">
+                  Dodge the samosas & jalebis! High scorers on the leaderboard receive free monthly snack hampers.
+                </p>
+              </div>
 
-              {!isDesktopScreen && !isLandscapeMode && (
+              {/* 2 Clear Game Launch Choices */}
+              <div className="flex flex-col gap-2.5 w-full mt-1">
+                {/* 1. Login & Play (Ranked, saves score) */}
                 <button
                   type="button"
-                  onTouchEnd={(e) => {
-                    e.stopPropagation();
-                    enterLandscape();
-                  }}
                   onClick={(e) => {
                     e.stopPropagation();
-                    enterLandscape();
+                    if (!user) {
+                      setShowAuthModal(true);
+                      return;
+                    }
+                    isGuestModeRef.current = false;
+                    setIsGuestMode(false);
+                    triggerJump();
                   }}
-                  className="w-full sm:w-auto mt-1 sm:mt-0 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#FFCD3C] to-[#F37D20] text-[#522C28] font-display text-[11px] uppercase tracking-wider shadow-sm font-black flex items-center justify-center gap-1 active:scale-95 cursor-pointer z-50 relative pointer-events-auto"
+                  className="w-full py-3 px-4 rounded-2xl bg-[#D73B3A] hover:bg-[#c9302f] active:scale-95 text-white font-display text-xs sm:text-sm uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 cursor-pointer transition-all"
                 >
-                  <span>🎮 Play Landscape</span>
+                  <span>🏆</span>
+                  <span>
+                    {user
+                      ? `Start Ranked Run (${user.fullName.split(" ")[0]})`
+                      : "Login & Play (Compete For Prizes)"}
+                  </span>
                 </button>
-              )}
+
+                {/* 2. Play as Guest (Casual, no score saved) */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    isGuestModeRef.current = true;
+                    setIsGuestMode(true);
+                    triggerJump();
+                  }}
+                  className="w-full py-2.5 px-4 rounded-2xl bg-white hover:bg-slate-50 border-2 border-[#522C28]/20 text-[#522C28] font-display text-xs uppercase tracking-wider shadow-xs flex items-center justify-center gap-2 cursor-pointer transition-all"
+                >
+                  <span>🎮</span>
+                  <span>Play as Guest (Casual • No Score Recorded)</span>
+                </button>
+
+                {!isDesktopScreen && !isLandscapeMode && (
+                  <button
+                    type="button"
+                    onTouchEnd={(e) => {
+                      e.stopPropagation();
+                      enterLandscape();
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      enterLandscape();
+                    }}
+                    className="w-full mt-1 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#FFCD3C] to-[#F37D20] text-[#522C28] font-display text-[11px] uppercase tracking-wider shadow-sm font-black flex items-center justify-center gap-1 active:scale-95 cursor-pointer z-50 relative pointer-events-auto"
+                  >
+                    <span>🔄 Rotate to Landscape</span>
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         )}
 
         {/* =========================================================================
-            GAME OVER MODAL
+            GAME OVER MODAL (With Guest vs Ranked Feedback)
             ========================================================================= */}
         {gameOver && (
-          <div className="animate-panel-pop absolute inset-0 bg-black/45 backdrop-blur-[2px] z-40 flex flex-col items-center justify-center p-4">
-            <div className="bg-white rounded-3xl p-5 sm:p-8 text-center shadow-2xl flex flex-col items-center gap-3 sm:gap-4 border-2 border-[#522C28]/10 max-w-xs sm:max-w-sm mx-auto">
+          <div className="animate-panel-pop absolute inset-0 bg-black/50 backdrop-blur-[2px] z-40 flex flex-col items-center justify-center p-4">
+            <div className="bg-white rounded-3xl p-5 sm:p-7 text-center shadow-2xl flex flex-col items-center gap-3 sm:gap-4 border-2 border-[#522C28]/10 max-w-xs sm:max-w-sm w-full mx-auto">
               <span className="text-4xl sm:text-5xl animate-float-gentle">💥</span>
               <div>
                 <h4 className="font-display text-xl sm:text-2xl text-[#D73B3A] uppercase tracking-wide font-black">
                   Game Over!
                 </h4>
                 <p className="text-[11px] sm:text-xs text-[#522C28]/80 font-sans mt-0.5">
-                  You tripped over a snack!
+                  You tripped over a street snack!
                 </p>
                 <div className="mt-2.5 flex items-center justify-center gap-4 sm:gap-5 py-2 px-5 rounded-2xl bg-[#FFF8EE] border border-[#522C28]/10">
                   <div className="text-center">
@@ -1316,20 +1359,31 @@ export default function DiscoverFoxGame() {
                   </div>
                 </div>
 
-                {user ? (
+                {isGuestMode ? (
+                  <div className="mt-2.5 p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold text-center">
+                    <span>🎮 Played as Guest — Score not recorded.</span>
+                    <button
+                      type="button"
+                      onClick={() => setShowAuthModal(true)}
+                      className="mt-1 block w-full text-center text-[11px] font-black text-[#D73B3A] underline cursor-pointer"
+                    >
+                      Login to save scores & win prizes →
+                    </button>
+                  </div>
+                ) : user ? (
                   <div className="mt-2.5 px-3 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-black">
                     {savingScore
                       ? "Submitting run to Monthly Leaderboard..."
-                      : `Signed in as ${user.fullName} — Score recorded for Monthly Hamper! 🎁`}
+                      : `🏆 Ranked run recorded for ${user.fullName}! Checked against Monthly Hamper prize list.`}
                   </div>
                 ) : (
-                  <Link
-                    href="/login?next=/#discover"
-                    onClick={(e) => e.stopPropagation()}
-                    className="mt-2.5 block px-3 py-2 rounded-xl bg-[#FAC537]/30 border border-[#FAC537] text-[#522C28] text-[11px] font-black hover:bg-[#FAC537]/50 transition-colors"
+                  <button
+                    type="button"
+                    onClick={() => setShowAuthModal(true)}
+                    className="mt-2.5 block w-full px-3 py-2 rounded-xl bg-[#FAC537]/30 border border-[#FAC537] text-[#522C28] text-[11px] font-black hover:bg-[#FAC537]/50 transition-colors cursor-pointer"
                   >
-                    Sign in to join Monthly Hamper Contest (Top runner wins a Snack Hamper!) 🎁 →
-                  </Link>
+                    Sign in to join Monthly Hamper Contest 🎁 →
+                  </button>
                 )}
               </div>
               <div className="flex flex-col gap-2 w-full mt-1">
@@ -1417,6 +1471,21 @@ export default function DiscoverFoxGame() {
             </div>
           </div>
         )}
+
+        {/* Game Login Modal */}
+        <AuthModal
+          isOpen={showAuthModal}
+          onClose={() => setShowAuthModal(false)}
+          intent="game"
+          title="Login & Compete For Prizes"
+          subtitle="Sign in with Google or Email to record your run on the Monthly Leaderboard. Top scorers win free snack hampers!"
+          onSuccess={() => {
+            setShowAuthModal(false);
+            isGuestModeRef.current = false;
+            setIsGuestMode(false);
+            resetToRun();
+          }}
+        />
       </div>
     </div>
   );

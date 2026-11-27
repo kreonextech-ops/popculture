@@ -25,6 +25,7 @@ export interface AuthUser {
     state: string;
     pincode: string;
   } | null;
+  favorites?: string[];
   createdAt: string;
   updatedAt: string;
 }
@@ -34,6 +35,8 @@ interface AuthContextValue {
   loading: boolean;
   refreshUser: () => Promise<AuthUser | null>;
   setUser: React.Dispatch<React.SetStateAction<AuthUser | null>>;
+  toggleFavorite: (slug: string) => Promise<boolean>;
+  isFavorite: (slug: string) => boolean;
   logout: () => Promise<void>;
 }
 
@@ -99,6 +102,49 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, [refreshUser]);
 
+  const [guestFavorites, setGuestFavorites] = useState<string[]>([]);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("popculture_guest_favorites");
+      if (saved) setGuestFavorites(JSON.parse(saved));
+    } catch {}
+  }, []);
+
+  const isFavorite = useCallback(
+    (slug: string): boolean => {
+      if (user?.favorites) return user.favorites.includes(slug);
+      return guestFavorites.includes(slug);
+    },
+    [user, guestFavorites]
+  );
+
+  const toggleFavorite = useCallback(
+    async (slug: string): Promise<boolean> => {
+      const current = user?.favorites || guestFavorites;
+      const exists = current.includes(slug);
+      const next = exists ? current.filter((s) => s !== slug) : [...current, slug];
+
+      if (user) {
+        setUser((prev) => (prev ? { ...prev, favorites: next } : prev));
+        try {
+          await fetch("/api/auth/me", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ favorites: next }),
+          });
+        } catch {}
+      } else {
+        setGuestFavorites(next);
+        try {
+          localStorage.setItem("popculture_guest_favorites", JSON.stringify(next));
+        } catch {}
+      }
+      return !exists;
+    },
+    [user, guestFavorites]
+  );
+
   const logout = useCallback(async () => {
     await Promise.all([
       fetch("/api/auth/logout", { method: "POST" }).catch(() => {}),
@@ -108,7 +154,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, refreshUser, setUser, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        refreshUser,
+        setUser,
+        toggleFavorite,
+        isFavorite,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

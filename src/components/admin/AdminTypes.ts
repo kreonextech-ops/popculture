@@ -4,6 +4,7 @@ import type {
   StoreOrder,
   StoreCoupon,
   WebhookLog,
+  StoreUser,
 } from "@/lib/store";
 import type { ShiprocketEnv } from "@/lib/shiprocket";
 
@@ -17,6 +18,8 @@ export interface AdminStats {
   lowStockVariants: number;
   totalUsers?: number;
   totalGameRuns?: number;
+  activeCartsCount?: number;
+  activeCartsValue?: number;
 }
 
 export interface AdminSettingsView {
@@ -42,4 +45,6 @@ export interface AdminOverviewResponse {
   coupons?: StoreCoupon[];
   webhookLogs: WebhookLog[];
   settings: AdminSettingsView;
+  users?: StoreUser[];
+  flavourClicks?: Record<string, number>;
 }

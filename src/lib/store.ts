@@ -139,6 +139,17 @@ export interface LoyaltyAccount {
   blocked: Record<string, number>; // order_id -> points
 }
 
+export interface CustomerCartItem {
+  variantId: number;
+  slug: string;
+  name: string;
+  variantLabel: string;
+  price: number;
+  originalPrice?: number;
+  image: string;
+  quantity: number;
+}
+
 export interface StoreUser {
   id: string;
   email: string;
@@ -151,9 +162,16 @@ export interface StoreUser {
   totalDistance: number;
   savedAddress?: {
     line1?: string;
+    line2?: string;
     city?: string;
+    state?: string;
     pincode?: string;
   } | null;
+  favorites?: string[]; // Array of product/flavour slugs (e.g. ['peri-peri', 'cheddar-cheese'])
+  cartItems?: CustomerCartItem[]; // Live cart contents
+  cartUpdatedAt?: string;
+  mostClickedFlavour?: string;
+  flavourClicks?: Record<string, number>;
   passwordHash: string;
   createdAt: string;
   updatedAt: string;
@@ -188,6 +206,7 @@ export interface StoreData {
   users: StoreUser[];
   coupons: StoreCoupon[];
   gameRuns: StoreGameRun[];
+  flavourClicks?: Record<string, number>; // Global analytics of flavour/product interest
 }
 
 const DATA_DIR = process.env.VERCEL

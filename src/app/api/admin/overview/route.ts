@@ -33,6 +33,19 @@ export async function GET() {
 
   const gmailCfg = getGmailConfig(store.settings.gmailUser);
 
+  // Calculate live customer cart metrics
+  const usersWithCart = (store.users || []).filter(
+    (u) => Array.isArray(u.cartItems) && u.cartItems.length > 0
+  );
+  const activeCartsCount = usersWithCart.length;
+  const activeCartsValue = usersWithCart.reduce((sum, u) => {
+    const userCartVal = (u.cartItems || []).reduce(
+      (s, item) => s + (Number(item.price) || 0) * (Number(item.quantity) || 1),
+      0
+    );
+    return sum + userCartVal;
+  }, 0);
+
   return NextResponse.json({
     ok: true,
     stats: {
@@ -45,12 +58,16 @@ export async function GET() {
       lowStockVariants,
       totalUsers: store.users.length,
       totalGameRuns: (store.gameRuns || []).length,
+      activeCartsCount,
+      activeCartsValue,
     },
     products: store.products,
     collections: store.collections,
     orders: store.orders,
     coupons: store.coupons || [],
     webhookLogs: store.webhookLogs,
+    users: store.users || [],
+    flavourClicks: store.flavourClicks || {},
     settings: {
       environment: store.settings.environment,
       apiKey: store.settings.apiKey,

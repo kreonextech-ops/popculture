@@ -15,21 +15,25 @@ import {
   CheckCircle2,
   ShoppingBag,
   RefreshCw,
-  Tag,
-  Copy,
-  Check,
   RotateCcw,
   Sparkles,
   LayoutDashboard,
   Clock,
-  IndianRupee,
+  Heart,
+  Truck,
+  ShieldCheck,
+  ExternalLink,
+  Phone,
+  AlertCircle,
+  Plus,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { useAuth } from "@/components/AuthContext";
 import { useCart } from "@/components/CartContext";
-import type { StoreCoupon, StoreGameRun, StoreOrder } from "@/lib/store";
+import { PRODUCTS, COMBOS } from "@/data/products";
+import type { StoreGameRun, StoreOrder } from "@/lib/store";
 
-type DashboardTab = "overview" | "orders" | "profile" | "rewards";
+type DashboardTab = "overview" | "orders" | "favorites" | "profile" | "rewards";
 type OrderFilter = "all" | "active" | "completed";
 
 interface DashboardStats {
@@ -37,19 +41,17 @@ interface DashboardStats {
   activeOrders: number;
   completedOrders: number;
   totalSpent: number;
-  totalSaved: number;
 }
 
 function AccountDashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab") as DashboardTab | null;
-  const { user, loading, logout, refreshUser } = useAuth();
+  const { user, loading, logout, refreshUser, isFavorite, toggleFavorite } = useAuth();
   const { addItem } = useCart();
 
   const [orders, setOrders] = useState<StoreOrder[]>([]);
   const [recentRuns, setRecentRuns] = useState<StoreGameRun[]>([]);
-  const [coupons, setCoupons] = useState<StoreCoupon[]>([]);
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [fetching, setFetching] = useState(true);
   const [activeTab, setActiveTab] = useState<DashboardTab>("overview");
@@ -58,6 +60,7 @@ function AccountDashboardContent() {
     if (
       tabParam === "overview" ||
       tabParam === "orders" ||
+      tabParam === "favorites" ||
       tabParam === "profile" ||
       tabParam === "rewards"
     ) {
@@ -65,7 +68,6 @@ function AccountDashboardContent() {
     }
   }, [tabParam]);
   const [orderFilter, setOrderFilter] = useState<OrderFilter>("all");
-  const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
@@ -84,7 +86,6 @@ function AccountDashboardContent() {
       const d = await res.json();
       if (Array.isArray(d.orders)) setOrders(d.orders);
       if (Array.isArray(d.recentRuns)) setRecentRuns(d.recentRuns);
-      if (Array.isArray(d.coupons)) setCoupons(d.coupons);
       if (d.stats) setStats(d.stats as DashboardStats);
     } catch {
       // Keep UI usable even on transient error
@@ -142,16 +143,6 @@ function AccountDashboardContent() {
     }
   };
 
-  const handleCopyCoupon = async (code: string) => {
-    try {
-      await navigator.clipboard.writeText(code);
-      setCopiedCode(code);
-      setTimeout(() => setCopiedCode(null), 1800);
-    } catch {
-      // Ignore clipboard permission errors
-    }
-  };
-
   const handleReorder = (order: StoreOrder) => {
     const items = order.cart_data?.items || [];
     if (items.length === 0) return;
@@ -178,7 +169,7 @@ function AccountDashboardContent() {
       <div className="min-h-screen bg-[#FFF8EE] text-[#522C28]">
         <Navbar />
         <div className="max-w-4xl mx-auto py-24 text-center font-black uppercase text-sm">
-          Loading your Crunch Club dashboard...
+          Loading your customer dashboard...
         </div>
       </div>
     );
@@ -198,9 +189,6 @@ function AccountDashboardContent() {
   const computedTotalSpent =
     stats?.totalSpent ??
     orders.reduce((sum, o) => sum + (Number(o.total_amount_payable) || 0), 0);
-  const computedTotalSaved =
-    stats?.totalSaved ??
-    orders.reduce((sum, o) => sum + (Number(o.total_discount) || 0), 0);
   const computedActiveOrders =
     stats?.activeOrders ??
     orders.filter((o) => {
@@ -222,11 +210,65 @@ function AccountDashboardContent() {
     return "bg-amber-100 text-amber-800 border border-amber-300";
   };
 
+  const getFavoriteProduct = (slug: string) => {
+    const p = Object.values(PRODUCTS).find((item) => item.slug === slug);
+    if (p) {
+      return {
+        slug: p.slug,
+        name: p.name,
+        badge: p.badge,
+        tagline: p.tagline,
+        packImage: p.packImage,
+        price: p.pricing.single.price,
+        packText: p.pricing.single.count,
+        variantId: p.variantIds.single,
+        isCombo: false,
+      };
+    }
+    const c = Object.values(COMBOS).find((item) => item.slug === slug);
+    if (c) {
+      return {
+        slug: c.slug,
+        name: c.name,
+        badge: c.badge,
+        tagline: c.tagline,
+        packImage: c.packImage,
+        price: c.price,
+        packText: c.packCountText,
+        variantId: c.variantId,
+        isCombo: true,
+      };
+    }
+    return null;
+  };
+
+  const handleAddFavoriteToCart = (item: NonNullable<ReturnType<typeof getFavoriteProduct>>) => {
+    addItem(
+      {
+        variantId: item.variantId,
+        slug: item.slug,
+        name: item.name,
+        variantLabel: item.packText,
+        price: item.price,
+        image: item.packImage,
+      },
+      1,
+      true
+    );
+  };
+
   const renderOrderCard = (order: StoreOrder) => {
     const addr = order.shipping_address as Record<string, unknown> | null | undefined;
     const addrLine = addr
       ? [addr.line1, addr.city, addr.pincode].filter(Boolean).join(", ")
       : "";
+
+    const isPaid =
+      (order.status || "").toUpperCase() === "SUCCESS" ||
+      (order.payment_status || "").toUpperCase() === "PAID";
+    const isCOD =
+      (order.payment_type || "").toUpperCase().includes("COD") ||
+      (!isPaid && (order.status || "").toUpperCase() === "INITIATED");
 
     return (
       <div
@@ -237,27 +279,51 @@ function AccountDashboardContent() {
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <span className="font-black text-sm text-[#25100E]">#{order.order_id}</span>
-              <span
-                className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${getStatusBadgeStyle(
-                  order.status || "INITIATED"
-                )}`}
-              >
-                {order.status || "INITIATED"}
-              </span>
-              {order.payment_type && (
-                <span className="px-2 py-0.5 rounded-full bg-white border border-[#522C28]/15 text-[10px] font-bold uppercase text-[#522C28]/75">
-                  {order.payment_type}
+
+              {/* Payment Status Pill */}
+              {isPaid ? (
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-100 text-emerald-800 border border-emerald-300 inline-flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                  <span>PAID (Prepaid Online)</span>
+                </span>
+              ) : isCOD ? (
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-100 text-amber-800 border border-amber-300 inline-flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3 text-amber-600" />
+                  <span>COD (Cash on Delivery)</span>
+                </span>
+              ) : (
+                <span
+                  className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${getStatusBadgeStyle(
+                    order.status || "INITIATED"
+                  )}`}
+                >
+                  {order.status || "INITIATED"}
                 </span>
               )}
+
+              {/* Delivery Step Badge */}
+              <span className="px-2 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-blue-800 text-[10px] font-black uppercase inline-flex items-center gap-1">
+                <Truck className="w-3 h-3 text-blue-600" />
+                <span>
+                  {order.status === "DELIVERED"
+                    ? "Delivered"
+                    : order.status === "SHIPPED"
+                    ? "In Transit (Shiprocket)"
+                    : "Confirmed & Packing"}
+                </span>
+              </span>
+
               {order.isDemo && (
                 <span className="px-2 py-0.5 rounded-full bg-[#FAC537]/30 text-[10px] font-black uppercase text-[#522C28]">
                   Demo
                 </span>
               )}
             </div>
-            <p className="text-[11px] text-[#522C28]/60 mt-1 flex items-center gap-1.5">
-              <Clock className="w-3 h-3" />
+
+            <p className="text-[11px] text-[#522C28]/60 mt-1 flex flex-wrap items-center gap-1.5">
+              <Clock className="w-3 h-3 shrink-0" />
               <span>{new Date(order.created_at).toLocaleString()}</span>
+              {order.phone && <span>• Mobile: +91 {order.phone}</span>}
               {order.edd ? <span>• Est. Delivery: {order.edd}</span> : null}
             </p>
           </div>
@@ -266,14 +332,46 @@ function AccountDashboardContent() {
             <p className="font-black text-lg text-[#25100E]">
               ₹{order.total_amount_payable ?? order.subtotal_price ?? 0}
             </p>
-            {(order.total_discount ?? 0) > 0 && (
-              <p className="text-[11px] font-bold text-[#3CA837]">
-                Saved ₹{order.total_discount}
-                {order.coupon_codes && order.coupon_codes.length > 0
-                  ? ` (${order.coupon_codes.join(", ")})`
-                  : ""}
-              </p>
-            )}
+          </div>
+        </div>
+
+        {/* Order Fulfillment Stepper */}
+        <div className="bg-white/80 rounded-xl border border-[#522C28]/10 p-2.5">
+          <div className="grid grid-cols-4 gap-1 text-center text-[10px] font-black uppercase">
+            <div className="text-emerald-700 bg-emerald-50 rounded-lg py-1 border border-emerald-200">
+              ✓ 1. Placed
+            </div>
+            <div
+              className={`${
+                isPaid
+                  ? "text-emerald-700 bg-emerald-50 border-emerald-200"
+                  : isCOD
+                  ? "text-amber-700 bg-amber-50 border-amber-200"
+                  : "text-[#522C28]/60 bg-[#FFF8EE] border-[#522C28]/10"
+              } rounded-lg py-1 border`}
+            >
+              {isPaid ? "✓ 2. Paid" : isCOD ? "2. COD Due" : "2. Payment"}
+            </div>
+            <div
+              className={`${
+                order.status === "SHIPPED" || order.status === "DELIVERED"
+                  ? "text-blue-700 bg-blue-50 border-blue-200"
+                  : "text-[#522C28]/50 bg-[#FFF8EE]/60 border-[#522C28]/10"
+              } rounded-lg py-1 border`}
+            >
+              {order.status === "SHIPPED" || order.status === "DELIVERED"
+                ? "✓ 3. Shipped"
+                : "3. Dispatch"}
+            </div>
+            <div
+              className={`${
+                order.status === "DELIVERED"
+                  ? "text-emerald-700 bg-emerald-50 border-emerald-200"
+                  : "text-[#522C28]/50 bg-[#FFF8EE]/60 border-[#522C28]/10"
+              } rounded-lg py-1 border`}
+            >
+              {order.status === "DELIVERED" ? "✓ 4. Delivered" : "4. Delivery"}
+            </div>
           </div>
         </div>
 
@@ -300,9 +398,10 @@ function AccountDashboardContent() {
         <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
           <Link
             href={`/checkout/status?oid=${encodeURIComponent(order.order_id)}&ost=${order.status}`}
-            className="text-xs font-black text-[#D73B3A] hover:underline"
+            className="text-xs font-black text-[#D73B3A] hover:underline inline-flex items-center gap-1"
           >
-            View Receipt & Tracking →
+            <span>Live Delivery Status & Tracking</span>
+            <ExternalLink className="w-3 h-3" />
           </Link>
 
           {(order.cart_data?.items || []).length > 0 && (
@@ -330,7 +429,7 @@ function AccountDashboardContent() {
           <div>
             <span className="inline-flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-[#D73B3A]">
               <LayoutDashboard className="w-3.5 h-3.5" />
-              <span>Customer Dashboard • Crunch Club</span>
+              <span>Customer Dashboard</span>
             </span>
             <h1 className="font-display text-3xl sm:text-4xl uppercase text-[#25100E] mt-1">
               Hey, {user.fullName}!
@@ -379,24 +478,29 @@ function AccountDashboardContent() {
           </div>
         </div>
 
-        {/* 4 Highlight Stat Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white rounded-2xl border-2 border-[#FAC537] p-5 shadow-xs flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#FAC537]/25 text-[#D73B3A] flex items-center justify-center shrink-0">
-              <Coins className="w-6 h-6" />
+        {/* 3 Highlight Stat Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <button
+            type="button"
+            onClick={() => setActiveTab("favorites")}
+            className="bg-white rounded-2xl border-2 border-[#D73B3A]/30 hover:border-[#D73B3A] p-5 shadow-xs flex items-center gap-4 text-left cursor-pointer transition-all hover:scale-102 group"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-rose-50 text-[#D73B3A] flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+              <Heart className="w-6 h-6 fill-[#D73B3A]" />
             </div>
             <div>
               <p className="text-[11px] font-black uppercase text-[#522C28]/60">
-                Crunch Points Wallet
+                My Favorites
               </p>
               <p className="font-display text-2xl sm:text-3xl text-[#25100E]">
-                {user.loyaltyPoints} pts
+                {user.favorites?.length || 0} saved
               </p>
-              <p className="text-[11px] font-bold text-[#3CA837]">
-                Worth ₹{user.loyaltyPoints} off orders
+              <p className="text-[11px] font-bold text-[#D73B3A] flex items-center gap-1">
+                <span>View favorites</span>
+                <span>→</span>
               </p>
             </div>
-          </div>
+          </button>
 
           <div className="bg-white rounded-2xl border border-[#522C28]/15 p-5 shadow-xs flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-[#3CA837] flex items-center justify-center shrink-0">
@@ -409,21 +513,6 @@ function AccountDashboardContent() {
               </p>
               <p className="text-[11px] font-bold text-[#522C28]/70">
                 {computedActiveOrders} active • ₹{computedTotalSpent} spent
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-2xl border border-[#522C28]/15 p-5 shadow-xs flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#D73B3A]/10 text-[#D73B3A] flex items-center justify-center shrink-0">
-              <IndianRupee className="w-6 h-6" />
-            </div>
-            <div>
-              <p className="text-[11px] font-black uppercase text-[#522C28]/60">Total Saved</p>
-              <p className="font-display text-2xl sm:text-3xl text-[#25100E]">
-                ₹{computedTotalSaved}
-              </p>
-              <p className="text-[11px] font-bold text-[#522C28]/70">
-                Coupons & Crunch Points
               </p>
             </div>
           </div>
@@ -446,48 +535,14 @@ function AccountDashboardContent() {
           </div>
         </div>
 
-        {/* Active Member Coupons Strip */}
-        {coupons.length > 0 && (
-          <div className="bg-white rounded-2xl border border-[#522C28]/15 px-5 py-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <Tag className="w-4 h-4 text-[#D73B3A] shrink-0" />
-              <span className="text-xs font-black uppercase text-[#25100E]">
-                Your Active Crunch Club Offers:
-              </span>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              {coupons.map((c) => (
-                <button
-                  key={c.code}
-                  type="button"
-                  onClick={() => void handleCopyCoupon(c.code)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FFF8EE] border border-[#FAC537] hover:border-[#D73B3A] text-xs font-black text-[#25100E] cursor-pointer transition-colors"
-                  title="Click to copy promo code"
-                >
-                  <span className="text-[#D73B3A]">{c.code}</span>
-                  <span className="text-[10px] font-bold text-[#522C28]/70">
-                    (
-                    {c.discountType === "percent" ? `${c.value}% OFF` : `₹${c.value} OFF`}
-                    {c.minOrder > 0 ? ` • Min ₹${c.minOrder}` : ""})
-                  </span>
-                  {copiedCode === c.code ? (
-                    <Check className="w-3 h-3 text-[#3CA837]" />
-                  ) : (
-                    <Copy className="w-3 h-3 text-[#522C28]/50" />
-                  )}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* Dashboard Section Tabs */}
         <div className="flex flex-wrap items-center gap-2">
           {[
             { id: "overview" as const, label: "Overview" },
             { id: "orders" as const, label: `My Orders (${orders.length})` },
+            { id: "favorites" as const, label: `Favorites (${user.favorites?.length || 0})` },
             { id: "profile" as const, label: "Profile & Address" },
-            { id: "rewards" as const, label: "Fox Runner & Points" },
+            { id: "rewards" as const, label: "Fox Runner Contest" },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -650,7 +705,7 @@ function AccountDashboardContent() {
                           <p className="font-mono font-black text-base text-[#25100E]">
                             {run.distance}m
                           </p>
-                          <p className="font-bold text-[#3CA837]">+{run.pointsEarned} Crunch Pts</p>
+                          <p className="font-bold text-[#D73B3A] text-[10px] uppercase">Contest Run</p>
                         </div>
                       ))}
                     </div>
@@ -780,6 +835,118 @@ function AccountDashboardContent() {
           </form>
         )}
 
+        {/* Dedicated Favorites Tab */}
+        {activeTab === "favorites" && (
+          <div className="bg-white rounded-3xl border border-[#522C28]/15 p-6 sm:p-8 shadow-xs space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h2 className="font-display text-2xl uppercase text-[#25100E] flex items-center gap-2">
+                  <Heart className="w-5 h-5 text-[#D73B3A] fill-[#D73B3A]" />
+                  <span>My Favorite Flavours & Bundles</span>
+                </h2>
+                <p className="text-xs font-semibold text-[#522C28]/70 mt-0.5">
+                  Your saved snacks for easy 1-click reordering and checkout.
+                </p>
+              </div>
+              <Link
+                href="/shop"
+                className="px-4 py-2 rounded-full bg-[#D73B3A] text-white text-xs font-black uppercase inline-flex items-center gap-1.5 self-start shadow-xs hover:bg-[#FB0008] transition-colors"
+              >
+                <ShoppingBag className="w-3.5 h-3.5" />
+                <span>Explore Flavours</span>
+              </Link>
+            </div>
+
+            {!user.favorites || user.favorites.length === 0 ? (
+              <div className="py-12 text-center bg-[#FFF8EE]/60 rounded-3xl border border-[#522C28]/10 px-4">
+                <div className="w-16 h-16 mx-auto rounded-full bg-[#D73B3A]/10 flex items-center justify-center text-[#D73B3A] mb-3">
+                  <Heart className="w-8 h-8 stroke-[1.5]" />
+                </div>
+                <h3 className="font-display text-xl uppercase text-[#25100E]">
+                  No Favorites Saved Yet
+                </h3>
+                <p className="text-xs font-semibold text-[#522C28]/70 max-w-md mx-auto mt-1 mb-5">
+                  Click the heart icon on any flavour or bundle in our shop to save your go-to
+                  snacks here!
+                </p>
+                <Link
+                  href="/shop"
+                  className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-full bg-[#25100E] text-[#FAC537] text-xs font-black uppercase hover:bg-black transition-colors"
+                >
+                  <span>Browse All Snacks</span>
+                </Link>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {user.favorites.map((slug) => {
+                  const item = getFavoriteProduct(slug);
+                  if (!item) return null;
+                  return (
+                    <div
+                      key={slug}
+                      onClick={(e) => {
+                        if ((e.target as HTMLElement).closest("button, a")) return;
+                        router.push(`/product/${slug}`);
+                      }}
+                      className="p-4 sm:p-5 rounded-2xl bg-[#FFF8EE]/80 border-2 border-[#522C28]/15 hover:border-[#D73B3A]/50 transition-all shadow-xs flex flex-col justify-between group cursor-pointer"
+                    >
+                      <div>
+                        <div className="flex items-start justify-between gap-2 mb-2">
+                          <span className="px-2.5 py-0.5 rounded-full bg-white border border-[#522C28]/15 text-[10px] font-black uppercase text-[#25100E]">
+                            {item.badge}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              void toggleFavorite(slug);
+                            }}
+                            className="p-1.5 rounded-full bg-white border border-[#522C28]/15 text-[#D73B3A] hover:bg-red-50 transition-colors cursor-pointer"
+                            title="Remove from favorites"
+                          >
+                            <Heart className="w-4 h-4 fill-[#D73B3A]" />
+                          </button>
+                        </div>
+
+                        <Link href={`/product/${slug}`} className="h-40 flex items-center justify-center py-2 block">
+                          <img
+                            src={item.packImage}
+                            alt={item.name}
+                            className="h-36 w-auto object-contain drop-shadow-md group-hover:scale-105 transition-transform"
+                          />
+                        </Link>
+
+                        <Link href={`/product/${slug}`}>
+                          <h4 className="font-display text-lg uppercase text-[#25100E] mt-2 hover:text-[#D73B3A] transition-colors">
+                            {item.name}
+                          </h4>
+                        </Link>
+                        <p className="text-xs font-bold text-[#D73B3A]">{item.tagline}</p>
+                        <p className="text-[11px] text-[#522C28]/70 mt-1">{item.packText}</p>
+                      </div>
+
+                      <div className="mt-4 pt-3 border-t border-[#522C28]/10 flex items-center justify-between">
+                        <span className="font-black text-lg text-[#25100E]">₹{item.price}</span>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddFavoriteToCart(item);
+                          }}
+                          className="px-4 py-2 rounded-full bg-[#25100E] text-[#FAC537] hover:bg-black text-xs font-black uppercase inline-flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 transition-all"
+                        >
+                          <Plus className="w-3.5 h-3.5 stroke-[3]" />
+                          <span>Add to Cart</span>
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Dedicated Fox Runner & Rewards Tab */}
         {activeTab === "rewards" && (
           <div className="bg-white rounded-3xl border border-[#522C28]/15 p-6 sm:p-8 shadow-xs space-y-5">
@@ -809,7 +976,7 @@ function AccountDashboardContent() {
                   href="/#discover"
                   className="inline-block mt-3 px-5 py-2 rounded-full bg-[#D73B3A] text-white text-xs font-black uppercase"
                 >
-                  Start Running & Earning
+                  Start Running & Compete
                 </Link>
               </div>
             ) : (
@@ -820,8 +987,8 @@ function AccountDashboardContent() {
                     className="p-4 rounded-2xl bg-[#FFF8EE] border border-[#522C28]/15 space-y-1"
                   >
                     <p className="font-mono font-black text-xl text-[#25100E]">{run.distance}m</p>
-                    <p className="text-xs font-black text-[#3CA837]">
-                      +{run.pointsEarned} Crunch Pts earned
+                    <p className="text-xs font-black text-[#D73B3A] uppercase">
+                      Contest Run
                     </p>
                     <p className="text-[10px] font-semibold text-[#522C28]/55">
                       {new Date(run.createdAt).toLocaleString()}
@@ -844,7 +1011,7 @@ export default function AccountPage() {
         <div className="min-h-screen bg-[#FFF8EE] text-[#522C28]">
           <Navbar />
           <div className="max-w-4xl mx-auto py-24 text-center font-black uppercase text-sm">
-            Loading your Crunch Club dashboard...
+            Loading your customer dashboard...
           </div>
         </div>
       }

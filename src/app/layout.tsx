@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Manrope } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Footer from "@/components/Footer";
 import { CartProvider } from "@/components/CartContext";
@@ -41,6 +42,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${lilita.variable} ${manrope.variable} overflow-x-clip`}>
       <body className="bg-bitejoy-bg text-bitejoy-text antialiased overflow-x-clip w-full max-w-full font-sans">
+        <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" />
         <LenisProvider>
           <AuthProvider>
             <CartProvider>

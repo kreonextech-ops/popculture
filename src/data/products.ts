@@ -32,6 +32,7 @@ export interface ProductDetails {
   gradient: string;
   packImage: string;
   bgSvg: string;
+  bgMobileSvg?: string;
   accentColor: string;
   servingSize: string;
   ingredients: string;
@@ -60,6 +61,8 @@ export interface ComboItem {
   shortDesc: string;
   packImage: string;
   secondaryImage?: string;
+  bgSvg?: string;
+  bgMobileSvg?: string;
   includedFlavours: string[];
   themeColor: string;
   accentBg: string;
@@ -84,36 +87,10 @@ export const COMBOS: Record<string, ComboItem> = {
     tagline: "1 × Peri Peri + 1 × Cheddar Cheese + 1 × Pink Salt",
     shortDesc:
       "Can’t pick just one? Taste all three signature Pop Culture flavours in one exciting box. The perfect crunch discovery kit!",
-    packImage: "/packets/peri peri.svg",
-    secondaryImage: "/packets/cheese.svg",
-    includedFlavours: [
-      "1 × Peri Peri Punch (55g)",
-      "1 × Cheddar Cheese Melt (55g)",
-      "1 × Himalayan Pink Salt (55g)",
-    ],
-    themeColor: "#D73B3A",
-    accentBg: "#ED0006",
-    price: 447,
-    originalPrice: 447,
-    savingsBadge: "",
-    rating: 4.9,
-    reviewsCount: 312,
-    packCountText: "3 × 55g Pouches (165g)",
-    isBestSeller: true,
-  },
-  "trio-variety-pack": {
-    slug: "trio-variety-pack",
-    id: "combo-trio",
-    numericId: 100004,
-    variantId: 10000401,
-    name: "ULTIMATE TRIO VARIETY PACK",
-    badge: "🎁 TRIO PACK (3 PACKS)",
-    emoji: "🎁",
-    tagline: "1 × Peri Peri + 1 × Cheddar Cheese + 1 × Pink Salt",
-    shortDesc:
-      "Can’t pick just one? Taste all three signature Pop Culture flavours in one exciting box. The perfect crunch discovery kit!",
-    packImage: "/packets/peri peri.svg",
-    secondaryImage: "/packets/cheese.svg",
+    packImage: "/packets/peri-peri.png",
+    secondaryImage: "/packets/cheddar-cheese.png",
+    bgSvg: "/product-bg/peri-peri.webp",
+    bgMobileSvg: "/product-bg/mobile-peri-peri.webp",
     includedFlavours: [
       "1 × Peri Peri Punch (55g)",
       "1 × Cheddar Cheese Melt (55g)",
@@ -140,8 +117,10 @@ export const COMBOS: Record<string, ComboItem> = {
     tagline: "2 × Peri Peri + 2 × Cheddar Cheese + 2 × Pink Salt",
     shortDesc:
       "Stock up for movie nights, late-night gaming, and guilt-free couch munching. Double the crunch for the whole crew.",
-    packImage: "/packets/cheese.svg",
-    secondaryImage: "/packets/peri peri.svg",
+    packImage: "/packets/cheddar-cheese.png",
+    secondaryImage: "/packets/peri-peri.png",
+    bgSvg: "/product-bg/cheese.webp",
+    bgMobileSvg: "/product-bg/mobile-cheese.webp",
     includedFlavours: [
       "2 × Peri Peri Punch (55g)",
       "2 × Cheddar Cheese Melt (55g)",
@@ -168,8 +147,10 @@ export const COMBOS: Record<string, ComboItem> = {
     tagline: "4 × Peri Peri + 4 × Cheddar Cheese + 4 × Pink Salt",
     shortDesc:
       "The ultimate pantry supply for healthy homes and offices. Maximum flavour variety and free express delivery.",
-    packImage: "/packets/pink-salt-pouch.png",
-    secondaryImage: "/packets/peri peri.svg",
+    packImage: "/packets/himalayan-salt.png",
+    secondaryImage: "/packets/peri-peri.png",
+    bgSvg: "/product-bg/pink-salt.webp",
+    bgMobileSvg: "/product-bg/mobile-pink-salt.webp",
     includedFlavours: [
       "4 × Peri Peri Punch (55g)",
       "4 × Cheddar Cheese Melt (55g)",
@@ -214,8 +195,9 @@ export const PRODUCTS: Record<string, ProductDetails> = {
     themeColor: "#D73B3A", // Scarlet Rush
     accentBg: "#ED0006", // Accent Vibrant Red
     gradient: "from-[#D73B3A] via-[#ED0006] to-[#522C28]",
-    packImage: "/packets/peri peri.svg",
+    packImage: "/packets/peri-peri.png",
     bgSvg: "/product-bg/peri-peri.webp",
+    bgMobileSvg: "/product-bg/mobile-peri-peri.webp",
     accentColor: "#FAC537", // Accent Warm Yellow
     servingSize: "20g",
     borderAccentColor: "#F97316", // Vibrant Orange as seen in packaging
@@ -301,8 +283,9 @@ export const PRODUCTS: Record<string, ProductDetails> = {
     themeColor: "#FAC537", // Accent Warm Yellow
     accentBg: "#F79E1B",
     gradient: "from-[#FAC537] via-[#F79E1B] to-[#522C28]",
-    packImage: "/packets/cheese.svg",
+    packImage: "/packets/cheddar-cheese.png",
     bgSvg: "/product-bg/cheese.webp",
+    bgMobileSvg: "/product-bg/mobile-cheese.webp",
     accentColor: "#522C28", // Espresso
     servingSize: "20g",
     borderAccentColor: "#A855F7", // Purple Accent as seen in packaging image
@@ -388,8 +371,9 @@ export const PRODUCTS: Record<string, ProductDetails> = {
     themeColor: "#E1366C",
     accentBg: "#E1366C",
     gradient: "from-[#F05A89] via-[#E1366C] to-[#522C28]",
-    packImage: "/packets/pink-salt-pouch.png",
+    packImage: "/packets/himalayan-salt.png",
     bgSvg: "/product-bg/pink-salt.webp",
+    bgMobileSvg: "/product-bg/mobile-pink-salt.webp",
     accentColor: "#FAC537",
     servingSize: "25g",
     borderAccentColor: "#F97316",
@@ -478,6 +462,7 @@ export const PRODUCTS: Record<string, ProductDetails> = {
     gradient: "from-[#93BF56] via-[#3CA837] to-[#522C28]",
     packImage: "/packets/raw-makhana-pouch.png",
     bgSvg: "/product-bg/plain.webp",
+    bgMobileSvg: "/product-bg/mobile-plain.webp",
     accentColor: "#93BF56", // Accent Lime Green
     servingSize: "20g",
     borderAccentColor: "#10B981", // Fresh Green Accent
@@ -533,6 +518,92 @@ export const PRODUCTS: Record<string, ProductDetails> = {
         title: "Naturally crisp and pure",
         comment: "I love that there are no synthetic seasonings. Just pure roasted makhana that tastes fresh.",
         date: "3 weeks ago",
+      },
+    ],
+  },
+
+  "cream-and-onion": {
+    slug: "cream-and-onion",
+    id: "cream-and-onion",
+    numericId: 100008,
+    variantIds: { single: 10000801, trio: 10000802, party: 10000803 },
+    name: "CREAM & ONION",
+    badge: "🧅 CREAM & ONION",
+    emoji: "🧅",
+    tagline: "Smooth, Tangy & Irresistibly Creamy",
+    shortDesc:
+      "A velvety swirl of rich sour cream, sweet white onion powder, and garden parsley gently dusted over slow-roasted jumbo lotus pops. Classic comfort with a modern crunch.",
+    flavorProfile: {
+      crunch: 5,
+      spice: 1,
+      tangy: 4,
+      cheesiness: 3,
+    },
+    keyBenefits: [
+      "Rich Sour Cream & Onion Seasoning",
+      "Slow-Roasted, Never Deep-Fried",
+      "Rich in Dietary Fibre (14.2g)",
+      "Zero Trans Fat & 0.0g Cholesterol",
+    ],
+    themeColor: "#8B1E3F", // Rich Wine / Crimson
+    accentBg: "#9E1B42",
+    gradient: "from-[#8B1E3F] via-[#B31B4B] to-[#522C28]",
+    packImage: "/packets/cream-n-onion.png",
+    bgSvg: "/product-bg/cream-and-onion.png",
+    bgMobileSvg: "/product-bg/mobile-cream-and-onion.png",
+    accentColor: "#84CC16", // Bright Lime Green from packaging nutrition border
+    servingSize: "20g",
+    borderAccentColor: "#84CC16", // Lime Green
+    ingredients:
+      "Foxnut (Makhana) , Edible Vegetable Oil (Rice Bran Oil, Olive Oil), Sour Cream & Onion Seasoning [Sugar, Iodized Salt, White Onion Powder, Modified Starch (INS 1400), Cheese Powder, Milk Powder, Cream Powder, Parsley Leaves, Flavour Enhancer (INS 635), Anticaking Agent (INS 551)].\nCONTAINS ADDED FLAVOURS (NATURAL & NATURE IDENTICAL).",
+    allergen: "CONTAINS MILK. MAY CONTAIN NUTS.",
+    disclaimer:
+      "*%RDA Values Are Based On A 2000 Kcal Diet As Per Fssai Guidelines. Actual Needs May Vary Based On Individual Dietary Requirements.",
+    nutrition: [
+      { label: "Energy", amount: "440.31 kcal", dailyValue: "4.80%", isBold: true },
+      { label: "Protein", amount: "8.62g", isBold: true },
+      { label: "Dietary Fibre", amount: "14.21g", isIndent: true },
+      { label: "Carbohydrates", amount: "59.4g", isBold: true },
+      { label: "Total Sugar", amount: "-", isIndent: true },
+      { label: "Total Fat", amount: "15.09g", dailyValue: "5.50%", isBold: true },
+      { label: "Unsaturated Fat", amount: "10.61g", dailyValue: "-", isIndent: true },
+      { label: "Trans Fat", amount: "0.0g", isBold: true },
+      { label: "Cholesterol", amount: "0.0g", isBold: true },
+      { label: "Sodium", amount: "567.29mg", dailyValue: "2.90%", isBold: true },
+    ],
+    pricing: {
+      single: { label: "1 Pouch", count: "55g Pouch", price: 149, originalPrice: 149 },
+      trio: { label: "Pack of 3", count: "3 × 55g (165g)", price: 447, originalPrice: 447 },
+      party: { label: "Pack of 6", count: "6 × 55g (330g)", price: 894, originalPrice: 894 },
+    },
+    faqs: [
+      {
+        q: "What makes Cream & Onion so creamy?",
+        a: "We blend genuine cream powder, milk powder, and real cheese powder with sweet white onion and parsley for a rich, silky savoury finish.",
+      },
+      {
+        q: "Is it fried or roasted?",
+        a: "100% slow-roasted in rice bran and olive oil. Never deep-fried.",
+      },
+      {
+        q: "How much fibre is in each serving?",
+        a: "It delivers an incredible 14.21g of natural dietary fibre per 100g, making it a satisfying, gut-healthy snack.",
+      },
+    ],
+    reviews: [
+      {
+        name: "Devika P.",
+        rating: 5,
+        title: "Hands down my new favourite!",
+        comment: "The sour cream tang is perfection. It beats every potato chip out there with way fewer calories.",
+        date: "Just now",
+      },
+      {
+        name: "Arjun M.",
+        rating: 5,
+        title: "So smooth and crunchy",
+        comment: "The seasoning is generously coated and the crunch stays fresh. 10/10!",
+        date: "1 day ago",
       },
     ],
   },

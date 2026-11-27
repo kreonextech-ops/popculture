@@ -98,6 +98,48 @@ export function verifyUserSessionToken(token: string | undefined): string | null
   return verifyUserSessionPayload(token)?.uid || null;
 }
 
+export function createPasswordResetToken(userId: string, email: string): string {
+  const payload = {
+    uid: userId,
+    email: email.toLowerCase().trim(),
+    type: "pwd_reset",
+    exp: Date.now() + 60 * 60 * 1000, // 1 hour validity
+  };
+  const encoded = Buffer.from(JSON.stringify(payload), "utf8").toString("base64url");
+  const sig = crypto
+    .createHmac("sha256", getSessionSecret())
+    .update(encoded)
+    .digest("base64url");
+  return `${encoded}.${sig}`;
+}
+
+export function verifyPasswordResetToken(
+  token: string
+): { uid: string; email: string } | null {
+  if (!token) return null;
+  const [encoded, sig] = token.split(".");
+  if (!encoded || !sig) return null;
+  const expected = crypto
+    .createHmac("sha256", getSessionSecret())
+    .update(encoded)
+    .digest("base64url");
+
+  try {
+    const a = Buffer.from(sig, "utf8");
+    const b = Buffer.from(expected, "utf8");
+    if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return null;
+    const decoded = JSON.parse(
+      Buffer.from(encoded, "base64url").toString("utf8")
+    );
+    if (!decoded.uid || decoded.type !== "pwd_reset" || Date.now() > decoded.exp) {
+      return null;
+    }
+    return { uid: String(decoded.uid), email: String(decoded.email) };
+  } catch {
+    return null;
+  }
+}
+
 export type PublicUser = Omit<StoreUser, "passwordHash">;
 
 export function sanitizeUser(u: StoreUser): PublicUser {

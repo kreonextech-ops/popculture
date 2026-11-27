@@ -64,7 +64,8 @@ export default function ProductDetailPage() {
           themeColor: staticCombo.themeColor,
           accentBg: staticCombo.accentBg,
           gradient: "from-[#F79E1B] to-[#ED0006]",
-          bgSvg: "/patterns/chilli-pattern.svg",
+          bgSvg: staticCombo.bgSvg || "/product-bg/peri-peri.webp",
+          bgMobileSvg: staticCombo.bgMobileSvg || "/product-bg/mobile-peri-peri.webp",
           accentColor: staticCombo.themeColor,
           servingSize: "20g per pouch",
           ingredients:
@@ -350,10 +351,27 @@ export default function ProductDetailPage() {
               {/* Product Packet Presentation Stage */}
               <div className="relative w-full max-w-[460px] aspect-square rounded-3xl bg-gradient-to-b from-white to-[#FDF2E8] p-8 flex items-center justify-center border border-[#522C28]/15 shadow-[0_12px_36px_rgba(37,16,14,0.08)] overflow-hidden group">
                 
+                {/* Flavour Background Artwork Layer (Desktop + Mobile) */}
+                {product.bgSvg && (
+                  <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
+                    <picture>
+                      {product.bgMobileSvg && (
+                        <source media="(max-width: 640px)" srcSet={product.bgMobileSvg} />
+                      )}
+                      <img
+                        src={product.bgSvg}
+                        alt={`${product.name} backdrop`}
+                        className="w-full h-full object-cover opacity-90 transition-transform duration-700 ease-out group-hover:scale-105"
+                      />
+                    </picture>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-black/10 pointer-events-none" />
+                  </div>
+                )}
+
                 {/* Flavour color glow behind pouch */}
                 <div
                   style={{ backgroundColor: product.themeColor }}
-                  className="absolute inset-16 rounded-full opacity-20 blur-2xl group-hover:opacity-30 transition-opacity"
+                  className="absolute inset-16 rounded-full opacity-35 blur-2xl group-hover:opacity-50 transition-opacity"
                 />
 
                 {/* Main Product Pouch Image */}
@@ -793,20 +811,20 @@ export default function ProductDetailPage() {
             </h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6 max-w-6xl mx-auto">
             {otherProducts.map((other) => (
               <div
                 key={other.slug}
-                className="p-6 rounded-3xl bg-white border border-[#25100E]/15 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-[transform,box-shadow] duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] flex flex-col justify-between group"
+                className="p-5 sm:p-6 rounded-3xl bg-white border border-[#25100E]/15 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-[transform,box-shadow] duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] flex flex-col justify-between group"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <span className="px-3 py-1 rounded-full bg-[#FFF8EE] text-[#25100E] text-xs font-black uppercase tracking-wider border border-[#25100E]/15">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="px-2.5 py-0.5 rounded-full bg-[#FFF8EE] text-[#25100E] text-[10px] min-[400px]:text-xs font-black uppercase tracking-wider border border-[#25100E]/15 truncate max-w-[65%]">
                     {other.badge}
                   </span>
-                  <span className="text-xs font-black text-[#25100E]">From ₹{other.pricing.single.price}</span>
+                  <span className="text-xs font-black text-[#25100E] shrink-0">From ₹{other.pricing.single.price}</span>
                 </div>
 
-                <div className="h-44 flex items-center justify-center my-2">
+                <div className="h-36 sm:h-40 lg:h-44 flex items-center justify-center my-2">
                   <img
                     src={other.packImage}
                     alt={other.name}
@@ -814,16 +832,16 @@ export default function ProductDetailPage() {
                   />
                 </div>
 
-                <div className="mt-4">
-                  <h4 className="font-display text-xl font-black uppercase text-[#25100E]">
+                <div className="mt-3">
+                  <h4 className="font-display text-base sm:text-lg lg:text-xl font-black uppercase text-[#25100E] leading-tight">
                     {other.name}
                   </h4>
-                  <p className="text-xs text-[#522C28]/70 font-semibold line-clamp-2 mt-1">
+                  <p className="text-[11px] sm:text-xs text-[#522C28]/70 font-semibold line-clamp-2 mt-1">
                     {other.tagline}
                   </p>
                   <Link
                     href={`/product/${other.slug}`}
-                    className="mt-4 w-full py-2.5 rounded-full bg-[#25100E] text-[#FFCD3C] font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 hover:bg-[#1A0A09] transition-colors"
+                    className="mt-3.5 w-full py-2 sm:py-2.5 rounded-full bg-[#25100E] text-[#FFCD3C] font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 hover:bg-[#1A0A09] transition-colors"
                   >
                     <span>View Flavour</span>
                     <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />

@@ -3,10 +3,10 @@
 import React, { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Loader2, Sparkles, LogIn, UserPlus, ArrowRight, ExternalLink } from "lucide-react";
+import { Loader2, Sparkles, LogIn, UserPlus, ArrowRight, Lock, KeyRound } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { useAuth } from "@/components/AuthContext";
-import { startGoogleOAuth } from "@/lib/supabaseBrowser";
+import { launchGoogleSignIn } from "@/lib/supabaseBrowser";
 
 function LoginForm() {
   const router = useRouter();
@@ -14,7 +14,7 @@ function LoginForm() {
   const nextUrl = searchParams.get("next") || "/account";
   const { user, loading: authLoading, refreshUser } = useAuth();
 
-  const [mode, setMode] = useState<"login" | "register">("login");
+  const [mode, setMode] = useState<"login" | "register" | "forgot">("login");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -23,6 +23,7 @@ function LoginForm() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [oauthFallbackUrl, setOauthFallbackUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [forgotSuccess, setForgotSuccess] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -36,7 +37,7 @@ function LoginForm() {
     setGoogleLoading(true);
 
     try {
-      const res = await startGoogleOAuth(nextUrl);
+      const res = await launchGoogleSignIn(nextUrl);
       if (!res.ok) {
         setError(res.error || "Failed launching Google Sign-In.");
         setGoogleLoading(false);
@@ -51,6 +52,34 @@ function LoginForm() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed launching Google Sign-In.");
       setGoogleLoading(false);
+    }
+  };
+
+  const handleForgotSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setForgotSuccess(null);
+
+    try {
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        setError(data.error || "Failed sending reset link.");
+        setLoading(false);
+        return;
+      }
+      setForgotSuccess(
+        data.message || "Password reset link sent! Please check your inbox."
+      );
+      setLoading(false);
+    } catch {
+      setError("Network error. Please try again.");
+      setLoading(false);
     }
   };
 
@@ -88,191 +117,262 @@ function LoginForm() {
       <div className="text-center mb-6">
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAC537]/30 text-[#522C28] text-[11px] font-black uppercase tracking-wider border border-[#FAC537]">
           <Sparkles className="w-3.5 h-3.5 text-[#D73B3A]" />
-          <span>Pop Culture Crunch Club</span>
+          <span>Pop Culture Snacks</span>
         </span>
         <h1 className="font-display text-3xl sm:text-4xl uppercase text-[#25100E] mt-3">
-          {mode === "login" ? "Welcome Back!" : "Join & Get 50 Pts"}
+          {mode === "login"
+            ? "Welcome Back!"
+            : mode === "register"
+            ? "Create Account"
+            : "Reset Password"}
         </h1>
         <p className="text-xs sm:text-sm font-semibold text-[#522C28]/75 mt-1">
           {mode === "login"
-            ? "Sign in to view orders, Fox Runner high scores, and Crunch Points."
-            : "Create your account for 50 free Crunch Points & Fox Runner rewards."}
+            ? "Sign in to track orders, saved snacks, and Fox Runner high scores."
+            : mode === "register"
+            ? "Create your account to track orders and compete for the Monthly Snack Hamper."
+            : "Enter your registered email and we'll dispatch a secure reset link."}
         </p>
       </div>
 
-      {/* Google OAuth Button */}
-      <button
-        type="button"
-        onClick={handleGoogleSignIn}
-        disabled={googleLoading || loading}
-        className="w-full py-3 px-4 rounded-full bg-white hover:bg-[#FFF8EE] text-[#25100E] border-2 border-[#522C28]/15 hover:border-[#D73B3A] font-black text-xs sm:text-sm flex items-center justify-center gap-2.5 shadow-xs transition-[transform,background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer mb-4"
-      >
-        {googleLoading ? (
-          <Loader2 className="w-4 h-4 animate-spin text-[#D73B3A]" />
-        ) : (
-          <svg className="w-4 h-4" viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              fill="#4285F4"
-              d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"
-            />
-            <path
-              fill="#34A853"
-              d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24Z"
-            />
-            <path
-              fill="#FBBC05"
-              d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14Z"
-            />
-            <path
-              fill="#EA4335"
-              d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96Z"
-            />
-          </svg>
-        )}
-        <span>{googleLoading ? "Connecting to Google..." : "Continue with Google"}</span>
-      </button>
-
-      {oauthFallbackUrl && (
-        <div className="mb-3 p-3 rounded-xl bg-[#FFF8EE] border border-[#FAC537] text-center space-y-1.5">
-          <p className="text-[11px] font-bold text-[#522C28]/80">
-            Redirecting to Google Sign-In... if your browser didn&apos;t open automatically:
-          </p>
-          <a
-            href={oauthFallbackUrl}
-            target="_top"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-xs font-black text-[#D73B3A] hover:underline"
+      {mode !== "forgot" && (
+        <>
+          {/* Google OAuth Button */}
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            disabled={googleLoading || loading}
+            className="w-full py-3 px-4 rounded-full bg-white hover:bg-[#FFF8EE] text-[#25100E] border-2 border-[#522C28]/15 hover:border-[#D73B3A] font-black text-xs sm:text-sm flex items-center justify-center gap-2.5 shadow-xs transition-[transform,background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer mb-4"
           >
-            <span>Open Google Sign-In</span>
-            <ExternalLink className="w-3.5 h-3.5" />
-          </a>
-        </div>
+            {googleLoading ? (
+              <Loader2 className="w-4 h-4 animate-spin text-[#D73B3A]" />
+            ) : (
+              <svg className="w-4 h-4" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  fill="#4285F4"
+                  d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"
+                />
+                <path
+                  fill="#34A853"
+                  d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24Z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.03 0 12s.45 3.82 1.25 5.42l4.03-3.15Z"
+                />
+                <path
+                  fill="#EA4335"
+                  d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98Z"
+                />
+              </svg>
+            )}
+            <span>Continue with Google</span>
+          </button>
+
+          {oauthFallbackUrl && (
+            <div className="mb-4 p-3 rounded-2xl bg-amber-50 border border-amber-300 text-xs text-amber-900 flex items-center justify-between gap-2">
+              <span className="font-semibold">Pop-up blocked? Open Google login directly:</span>
+              <a
+                href={oauthFallbackUrl}
+                target="_top"
+                className="px-3 py-1 rounded-full bg-[#D73B3A] text-white font-black uppercase text-[10px] shrink-0"
+              >
+                Open Google →
+              </a>
+            </div>
+          )}
+
+          <div className="relative flex items-center justify-center my-4">
+            <div className="border-t border-[#522C28]/15 w-full" />
+            <span className="bg-white px-3 text-[10px] font-black uppercase text-[#522C28]/50 tracking-widest shrink-0">
+              or use email
+            </span>
+            <div className="border-t border-[#522C28]/15 w-full" />
+          </div>
+
+          {/* Mode Switch Tabs */}
+          <div className="grid grid-cols-2 p-1 rounded-2xl bg-[#FFF8EE] border border-[#522C28]/10 mb-5">
+            <button
+              type="button"
+              onClick={() => {
+                setMode("login");
+                setError(null);
+                setForgotSuccess(null);
+              }}
+              className={`py-2 rounded-xl text-xs font-black uppercase flex items-center justify-center gap-1.5 cursor-pointer transition-[background-color,color,box-shadow,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] active:scale-95 ${
+                mode === "login"
+                  ? "bg-[#25100E] text-[#FAC537] shadow-xs"
+                  : "text-[#522C28]/70 hover:text-[#522C28]"
+              }`}
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              <span>Sign In</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMode("register");
+                setError(null);
+                setForgotSuccess(null);
+              }}
+              className={`py-2 rounded-xl text-xs font-black uppercase flex items-center justify-center gap-1.5 cursor-pointer transition-[background-color,color,box-shadow,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] active:scale-95 ${
+                mode === "register"
+                  ? "bg-[#D73B3A] text-white shadow-xs"
+                  : "text-[#522C28]/70 hover:text-[#522C28]"
+              }`}
+            >
+              <UserPlus className="w-3.5 h-3.5" />
+              <span>Create Account</span>
+            </button>
+          </div>
+        </>
       )}
 
-      {error && (
-        <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-xs font-bold text-red-700">
-          {error}
-        </div>
+      {mode === "forgot" ? (
+        <form onSubmit={handleForgotSubmit} className="space-y-4">
+          <div>
+            <label className="block text-[11px] font-black uppercase text-[#522C28]/75 mb-1">
+              Registered Email Address
+            </label>
+            <input
+              type="email"
+              required
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-3.5 py-2.5 rounded-xl bg-[#FFF8EE] border border-[#522C28]/20 text-sm font-semibold focus:outline-none focus:border-[#D73B3A] transition-colors duration-200"
+            />
+          </div>
+
+          {error && (
+            <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-xs font-bold text-red-700">
+              {error}
+            </div>
+          )}
+
+          {forgotSuccess && (
+            <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs font-bold text-emerald-800">
+              {forgotSuccess}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 rounded-full bg-[#D73B3A] hover:bg-[#FB0008] text-white font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.98] disabled:opacity-60"
+          >
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+            <span>Send Reset Link</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+
+          <div className="text-center pt-2">
+            <button
+              type="button"
+              onClick={() => {
+                setMode("login");
+                setError(null);
+                setForgotSuccess(null);
+              }}
+              className="text-xs font-bold text-[#522C28]/70 hover:text-[#D73B3A] cursor-pointer transition-colors"
+            >
+              ← Back to Sign In
+            </button>
+          </div>
+        </form>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-3.5">
+          {mode === "register" && (
+            <div className="animate-panel-pop space-y-3.5">
+              <div>
+                <label className="block text-[11px] font-black uppercase text-[#522C28]/75 mb-1">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Aarav Sharma"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#FFF8EE] border border-[#522C28]/20 text-sm font-semibold focus:outline-none focus:border-[#D73B3A] transition-colors duration-200"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-black uppercase text-[#522C28]/75 mb-1">
+                  Mobile Number (for Shiprocket updates)
+                </label>
+                <input
+                  type="tel"
+                  placeholder="9876543210"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#FFF8EE] border border-[#522C28]/20 text-sm font-semibold focus:outline-none focus:border-[#D73B3A] transition-colors duration-200"
+                />
+              </div>
+            </div>
+          )}
+
+          <div>
+            <label className="block text-[11px] font-black uppercase text-[#522C28]/75 mb-1">
+              Email Address
+            </label>
+            <input
+              type="email"
+              required
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-3.5 py-2.5 rounded-xl bg-[#FFF8EE] border border-[#522C28]/20 text-sm font-semibold focus:outline-none focus:border-[#D73B3A] transition-colors duration-200"
+            />
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-[11px] font-black uppercase text-[#522C28]/75">
+                Password
+              </label>
+              {mode === "login" && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode("forgot");
+                    setError(null);
+                    setForgotSuccess(null);
+                  }}
+                  className="text-[11px] font-bold text-[#D73B3A] hover:underline cursor-pointer"
+                >
+                  Forgot Password?
+                </button>
+              )}
+            </div>
+            <input
+              type="password"
+              required
+              minLength={6}
+              placeholder="Min. 6 characters"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-3.5 py-2.5 rounded-xl bg-[#FFF8EE] border border-[#522C28]/20 text-sm font-semibold focus:outline-none focus:border-[#D73B3A] transition-colors duration-200"
+            />
+          </div>
+
+          {error && (
+            <div className="animate-panel-pop p-3 rounded-xl bg-red-50 border border-red-200 text-xs font-bold text-red-700">
+              {error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 rounded-full bg-[#D73B3A] hover:bg-[#FB0008] text-white font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 cursor-pointer transition-[transform,background-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 active:scale-[0.98]"
+          >
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+            <span>{mode === "login" ? "Sign In" : "Create Account"}</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </form>
       )}
-
-      <div className="relative flex items-center justify-center my-4">
-        <div className="border-t border-[#522C28]/15 w-full" />
-        <span className="bg-white px-3 text-[10px] font-black uppercase text-[#522C28]/50 tracking-widest">
-          or use email
-        </span>
-        <div className="border-t border-[#522C28]/15 w-full" />
-      </div>
-
-      {/* Mode Switch Tabs */}
-      <div className="grid grid-cols-2 p-1 rounded-2xl bg-[#FFF8EE] border border-[#522C28]/10 mb-5">
-        <button
-          type="button"
-          onClick={() => {
-            setMode("login");
-            setError(null);
-          }}
-          className={`py-2 rounded-xl text-xs font-black uppercase flex items-center justify-center gap-1.5 cursor-pointer transition-[background-color,color,box-shadow,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] active:scale-95 ${
-            mode === "login"
-              ? "bg-[#25100E] text-[#FAC537] shadow-xs"
-              : "text-[#522C28]/70 hover:text-[#522C28]"
-          }`}
-        >
-          <LogIn className="w-3.5 h-3.5" />
-          <span>Sign In</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setMode("register");
-            setError(null);
-          }}
-          className={`py-2 rounded-xl text-xs font-black uppercase flex items-center justify-center gap-1.5 cursor-pointer transition-[background-color,color,box-shadow,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] active:scale-95 ${
-            mode === "register"
-              ? "bg-[#D73B3A] text-white shadow-xs"
-              : "text-[#522C28]/70 hover:text-[#522C28]"
-          }`}
-        >
-          <UserPlus className="w-3.5 h-3.5" />
-          <span>Create Account</span>
-        </button>
-      </div>
-
-      <form onSubmit={handleSubmit} className="space-y-3.5">
-        {mode === "register" && (
-          <div className="animate-panel-pop space-y-3.5">
-            <div>
-              <label className="block text-[11px] font-black uppercase text-[#522C28]/75 mb-1">
-                Full Name
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="Aarav Sharma"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-[#FFF8EE] border border-[#522C28]/20 text-sm font-semibold focus:outline-none focus:border-[#D73B3A] transition-colors duration-200"
-              />
-            </div>
-            <div>
-              <label className="block text-[11px] font-black uppercase text-[#522C28]/75 mb-1">
-                Mobile Number (for Shiprocket updates)
-              </label>
-              <input
-                type="tel"
-                placeholder="9876543210"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-[#FFF8EE] border border-[#522C28]/20 text-sm font-semibold focus:outline-none focus:border-[#D73B3A] transition-colors duration-200"
-              />
-            </div>
-          </div>
-        )}
-
-        <div>
-          <label className="block text-[11px] font-black uppercase text-[#522C28]/75 mb-1">
-            Email Address
-          </label>
-          <input
-            type="email"
-            required
-            placeholder="you@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-xl bg-[#FFF8EE] border border-[#522C28]/20 text-sm font-semibold focus:outline-none focus:border-[#D73B3A] transition-colors duration-200"
-          />
-        </div>
-
-        <div>
-          <label className="block text-[11px] font-black uppercase text-[#522C28]/75 mb-1">
-            Password
-          </label>
-          <input
-            type="password"
-            required
-            minLength={6}
-            placeholder="Min. 6 characters"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-xl bg-[#FFF8EE] border border-[#522C28]/20 text-sm font-semibold focus:outline-none focus:border-[#D73B3A] transition-colors duration-200"
-          />
-        </div>
-
-        {error && (
-          <div className="animate-panel-pop p-3 rounded-xl bg-red-50 border border-red-200 text-xs font-bold text-red-700">
-            {error}
-          </div>
-        )}
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full py-3 rounded-full bg-[#D73B3A] hover:bg-[#FB0008] text-white font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 cursor-pointer transition-[transform,background-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 active:scale-[0.98]"
-        >
-          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-          <span>{mode === "login" ? "Sign In to Crunch Club" : "Create Account (+50 Pts)"}</span>
-          <ArrowRight className="w-4 h-4" />
-        </button>
-      </form>
 
       <div className="mt-5 pt-4 border-t border-[#522C28]/10 text-center text-xs font-bold text-[#522C28]/70">
         Store Owner?{" "}

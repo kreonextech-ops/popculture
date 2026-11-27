@@ -25,11 +25,18 @@ import {
   Tag,
   Mail,
   Upload,
+  Users,
+  Flame,
+  Heart,
+  Smartphone,
+  Sparkles,
+  TrendingUp,
+  UserCheck,
 } from "lucide-react";
 import type { AdminOverviewResponse } from "@/components/admin/AdminTypes";
-import type { StoreOrder, StoreProduct } from "@/lib/store";
+import type { StoreOrder, StoreProduct, StoreUser } from "@/lib/store";
 
-type TabId = "overview" | "orders" | "catalog" | "coupons" | "shiprocket";
+type TabId = "overview" | "customers" | "orders" | "catalog" | "coupons" | "shiprocket";
 
 export default function AdminPage() {
   const [authChecked, setAuthChecked] = useState(false);
@@ -47,6 +54,11 @@ export default function AdminPage() {
   const [orderStatusFilter, setOrderStatusFilter] = useState("ALL");
   const [selectedOrder, setSelectedOrder] = useState<StoreOrder | null>(null);
   const [refundAmount, setRefundAmount] = useState("");
+
+  // Customer Management & Live Carts
+  const [customerSearch, setCustomerSearch] = useState("");
+  const [customerFilter, setCustomerFilter] = useState<"ALL" | "WITH_CART" | "WITH_ORDERS">("ALL");
+  const [selectedCustomer, setSelectedCustomer] = useState<StoreUser | null>(null);
 
   // Catalog edit / add
   const [showAddProduct, setShowAddProduct] = useState(false);
@@ -518,6 +530,74 @@ export default function AdminPage() {
     },
   ];
 
+  const getCustomerOrders = (u: StoreUser) => {
+    return (data?.orders || []).filter(
+      (o) =>
+        (o.user_id && o.user_id === u.id) ||
+        (o.email && o.email.toLowerCase() === u.email.toLowerCase()) ||
+        (u.phone &&
+          o.phone &&
+          o.phone.replace(/\D/g, "").includes(u.phone.replace(/\D/g, "").slice(-10)))
+    );
+  };
+
+  const getCustomerSpend = (u: StoreUser) => {
+    const userOrders = getCustomerOrders(u);
+    return userOrders
+      .filter((o) => o.status === "SUCCESS")
+      .reduce((sum, o) => sum + (Number(o.total_amount_payable) || 0), 0);
+  };
+
+  const filteredCustomers = (data?.users || []).filter((u) => {
+    const q = customerSearch.trim().toLowerCase();
+    const matchesQ =
+      !q ||
+      (u.fullName || "").toLowerCase().includes(q) ||
+      u.email.toLowerCase().includes(q) ||
+      (u.phone || "").toLowerCase().includes(q);
+
+    if (!matchesQ) return false;
+
+    if (customerFilter === "WITH_CART") {
+      return (u.cartItems || []).length > 0;
+    }
+    if (customerFilter === "WITH_ORDERS") {
+      return getCustomerOrders(u).length > 0;
+    }
+    return true;
+  });
+
+  const knownFlavours = [
+    { slug: "peri-peri", name: "Peri Peri", emoji: "🌶️" },
+    { slug: "cheddar-cheese", name: "Cheddar Cheese", emoji: "🧀" },
+    { slug: "cream-onion", name: "Cream & Onion", emoji: "🧅" },
+    { slug: "salt-pepper", name: "Himalayan Pink Salt", emoji: "🧂" },
+    { slug: "raw-makhana", name: "Raw Organic Makhana", emoji: "🥣" },
+  ];
+
+  const rawClicks = data?.flavourClicks || {};
+  let totalRawClicks = 0;
+  knownFlavours.forEach((kf) => {
+    let c = Number(rawClicks[kf.slug]) || 0;
+    if (kf.slug === "cream-onion") c += Number(rawClicks["cream-n-onion"]) || 0;
+    if (kf.slug === "salt-pepper") c += Number(rawClicks["himalayan-salt"]) || 0;
+    totalRawClicks += c;
+  });
+  const clickDivisor = Math.max(1, totalRawClicks);
+
+  const flavourAnalytics = knownFlavours
+    .map((kf) => {
+      let count = Number(rawClicks[kf.slug]) || 0;
+      if (kf.slug === "cream-onion") count += Number(rawClicks["cream-n-onion"]) || 0;
+      if (kf.slug === "salt-pepper") count += Number(rawClicks["himalayan-salt"]) || 0;
+      return {
+        ...kf,
+        clicks: count,
+        percent: Math.round((count / clickDivisor) * 100),
+      };
+    })
+    .sort((a, b) => b.clicks - a.clicks);
+
   return (
     <div className="min-h-screen bg-[#FFF8EE] text-[#522C28] font-sans">
       {/* Top Admin Bar */}
@@ -573,7 +653,12 @@ export default function AdminPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex gap-1 overflow-x-auto pb-2">
           {(
             [
-              { id: "overview", label: "Overview", icon: LayoutDashboard },
+              { id: "overview", label: "Dashboard", icon: LayoutDashboard },
+              {
+                id: "customers",
+                label: `Customers (${data?.users?.length || data?.stats.totalUsers || 0})`,
+                icon: Users,
+              },
               { id: "orders", label: `Orders (${data?.orders.length || 0})`, icon: ShoppingCart },
               { id: "catalog", label: `Catalog (${data?.products.length || 0})`, icon: Package },
               { id: "coupons", label: `Coupons (${data?.coupons?.length || 0})`, icon: Tag },
@@ -636,40 +721,172 @@ export default function AdminPage() {
 
               <div className="p-5 rounded-3xl bg-white border-2 border-[#522C28]/15 shadow-sm">
                 <p className="text-[11px] font-black uppercase text-[#522C28]/70">
-                  Total Checkouts
+                  Total Orders
                 </p>
                 <p className="font-display text-3xl text-[#25100E] mt-1">
                   {data.stats.totalOrders}
                 </p>
                 <p className="text-[11px] font-bold text-[#522C28]/70 mt-1">
-                  {data.stats.initiatedOrders} Initiated / Pending
+                  {data.stats.initiatedOrders} Pending / COD checkouts
                 </p>
               </div>
 
               <div className="p-5 rounded-3xl bg-white border-2 border-[#522C28]/15 shadow-sm">
                 <p className="text-[11px] font-black uppercase text-[#522C28]/70">
-                  Synced Catalog
+                  Registered Customers
                 </p>
                 <p className="font-display text-3xl text-[#25100E] mt-1">
-                  {data.stats.totalProducts} Items
+                  {(data.users || []).length || data.stats.totalUsers || 0}
                 </p>
-                <p className="text-[11px] font-bold text-[#522C28]/70 mt-1">
-                  {data.stats.totalVariants} Total SKUs / Variants
+                <p className="text-[11px] font-bold text-[#3CA837] mt-1">
+                  {(data.users || []).filter((u) => u.phone).length} synced mobile profiles
                 </p>
               </div>
 
-              <div className="p-5 rounded-3xl bg-white border-2 border-[#522C28]/15 shadow-sm">
+              <div className="p-5 rounded-3xl bg-white border-2 border-[#FAC537] shadow-sm">
                 <p className="text-[11px] font-black uppercase text-[#522C28]/70">
-                  Inventory Alerts
+                  Active Live Carts
                 </p>
                 <p className="font-display text-3xl text-[#D73B3A] mt-1">
-                  {data.stats.lowStockVariants} Low Stock
+                  ₹{(data.stats.activeCartsValue || 0).toLocaleString("en-IN")}
                 </p>
                 <p className="text-[11px] font-bold text-[#522C28]/70 mt-1">
-                  SKUs with ≤ 15 packs left
+                  {data.stats.activeCartsCount || 0} shoppers currently with items
                 </p>
               </div>
             </div>
+
+            {/* Most Clicked Flavours Analytics Widget */}
+            <div className="p-6 rounded-3xl bg-white border-2 border-[#522C28]/15 shadow-sm space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <h3 className="font-display text-xl uppercase text-[#25100E] flex items-center gap-2">
+                    <Flame className="w-5 h-5 text-[#D73B3A]" />
+                    <span>Most Clicked Flavours & Product Demand</span>
+                  </h3>
+                  <p className="text-xs text-[#522C28]/70 font-semibold mt-0.5">
+                    Live analytics tracking which flavours customers view, click, and explore most.
+                  </p>
+                </div>
+                <span className="text-[11px] font-black uppercase px-3 py-1 rounded-full bg-[#FAC537]/30 text-[#25100E] border border-[#FAC537] self-start sm:self-auto">
+                  Live Flavour Ranking
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-2">
+                {flavourAnalytics.map((f, idx) => (
+                  <div
+                    key={f.slug}
+                    className={`p-4 rounded-2xl border flex flex-col justify-between relative overflow-hidden ${
+                      idx === 0
+                        ? "bg-gradient-to-b from-[#FFF5DE] to-[#FFF8EE] border-[#FAC537] shadow-sm"
+                        : "bg-[#FFF8EE] border-[#522C28]/15"
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-2xl">{f.emoji}</span>
+                        <span
+                          className={`text-[10px] font-black px-2 py-0.5 rounded-full border ${
+                            idx === 0
+                              ? "bg-[#FAC537] text-[#25100E] border-[#25100E]/20"
+                              : "bg-white text-[#25100E] border-[#522C28]/15"
+                          }`}
+                        >
+                          #{idx + 1} Rank
+                        </span>
+                      </div>
+                      <h4 className="font-display text-base uppercase text-[#25100E] mt-2 leading-tight">
+                        {f.name}
+                      </h4>
+                      <p className="font-black text-xl text-[#D73B3A] mt-1">{f.clicks} clicks</p>
+                    </div>
+                    <div className="mt-3">
+                      <div className="w-full bg-white rounded-full h-2 overflow-hidden border border-[#522C28]/10">
+                        <div
+                          className="bg-[#D73B3A] h-2 rounded-full transition-all duration-500"
+                          style={{ width: `${Math.max(6, f.percent)}%` }}
+                        />
+                      </div>
+                      <p className="text-[10px] font-bold text-[#522C28]/70 mt-1">
+                        {f.percent}% of audience interest
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Active Live Carts Shopper Feed */}
+            {(data.users || []).some((u) => (u.cartItems || []).length > 0) && (
+              <div className="p-6 rounded-3xl bg-white border-2 border-[#FAC537] shadow-sm space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <ShoppingCart className="w-5 h-5 text-[#D73B3A]" />
+                    <h3 className="font-display text-xl uppercase text-[#25100E]">
+                      Live Shopper Carts (Pre-Checkout)
+                    </h3>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setCustomerFilter("WITH_CART");
+                      setTab("customers");
+                    }}
+                    className="text-xs font-black text-[#D73B3A] hover:underline cursor-pointer"
+                  >
+                    View in Customers Tab →
+                  </button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  {(data.users || [])
+                    .filter((u) => (u.cartItems || []).length > 0)
+                    .slice(0, 3)
+                    .map((u) => {
+                      const totalCartVal = (u.cartItems || []).reduce(
+                        (sum, item) =>
+                          sum + (Number(item.price) || 0) * (Number(item.quantity) || 1),
+                        0
+                      );
+                      return (
+                        <div
+                          key={u.id}
+                          className="p-4 rounded-2xl bg-[#FFF8EE] border border-[#522C28]/15 flex flex-col justify-between"
+                        >
+                          <div>
+                            <div className="flex items-start justify-between">
+                              <div>
+                                <p className="font-black text-sm text-[#25100E]">
+                                  {u.fullName || "Customer"}
+                                </p>
+                                <p className="text-[11px] text-[#522C28]/70">{u.email}</p>
+                              </div>
+                              <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black">
+                                {(u.cartItems || []).length} items
+                              </span>
+                            </div>
+                            <p className="font-black text-base text-[#D73B3A] mt-2">
+                              Cart Total: ₹{totalCartVal}
+                            </p>
+                            <p className="text-[10px] text-[#522C28]/60 mt-0.5">
+                              {u.phone ? `Mobile: +91 ${u.phone}` : "No phone saved"}
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedCustomer(u);
+                              setTab("customers");
+                            }}
+                            className="mt-3 w-full py-1.5 rounded-xl bg-white border border-[#522C28]/20 hover:border-[#D73B3A] text-xs font-black text-[#25100E] cursor-pointer text-center"
+                          >
+                            Inspect Live Cart →
+                          </button>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+            )}
 
             {/* Shiprocket Integration Checklist Card */}
             <div className="p-6 rounded-3xl bg-[#25100E] text-[#FFF8EE] border-2 border-[#FAC537] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -805,6 +1022,175 @@ export default function AdminPage() {
                   </div>
                 )}
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* =================================================================
+            TAB: CUSTOMERS & LIVE CARTS
+            ================================================================= */}
+        {tab === "customers" && data && (
+          <div className="space-y-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center gap-2 flex-1 min-w-[260px]">
+                <div className="relative flex-1 max-w-sm">
+                  <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#522C28]/50" />
+                  <input
+                    type="text"
+                    placeholder="Search Customer Name, Email, Phone..."
+                    value={customerSearch}
+                    onChange={(e) => setCustomerSearch(e.target.value)}
+                    className="w-full pl-9 pr-4 py-2 rounded-full bg-white border border-[#522C28]/20 text-xs font-bold"
+                  />
+                </div>
+                {(["ALL", "WITH_CART", "WITH_ORDERS"] as const).map((filterId) => (
+                  <button
+                    key={filterId}
+                    onClick={() => setCustomerFilter(filterId)}
+                    className={`px-3 py-1.5 rounded-full text-[11px] font-black uppercase cursor-pointer ${
+                      customerFilter === filterId
+                        ? "bg-[#25100E] text-[#FAC537]"
+                        : "bg-white border border-[#522C28]/15 text-[#522C28]"
+                    }`}
+                  >
+                    {filterId === "ALL"
+                      ? `All (${(data.users || []).length})`
+                      : filterId === "WITH_CART"
+                      ? `Active Carts (${
+                          (data.users || []).filter((u) => (u.cartItems || []).length > 0).length
+                        })`
+                      : `With Orders (${
+                          (data.users || []).filter((u) => getCustomerOrders(u).length > 0).length
+                        })`}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-3xl bg-white border-2 border-[#522C28]/15 shadow-sm overflow-x-auto">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="bg-[#FFF8EE] border-b border-[#522C28]/15 text-[11px] font-black uppercase text-[#25100E]">
+                    <th className="py-3.5 px-4">Customer</th>
+                    <th className="py-3.5 px-4">Mobile / Shiprocket</th>
+                    <th className="py-3.5 px-4">Live Cart</th>
+                    <th className="py-3.5 px-4">Favorite / Top Flavour</th>
+                    <th className="py-3.5 px-4">Orders & Spend</th>
+                    <th className="py-3.5 px-4">Game Best</th>
+                    <th className="py-3.5 px-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#522C28]/10">
+                  {filteredCustomers.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="py-10 text-center text-[#522C28]/60 font-semibold">
+                        No matching customers found.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredCustomers.map((u) => {
+                      const userOrders = getCustomerOrders(u);
+                      const userSpend = getCustomerSpend(u);
+                      const cartCount = (u.cartItems || []).reduce(
+                        (sum, item) => sum + (Number(item.quantity) || 1),
+                        0
+                      );
+                      const cartValue = (u.cartItems || []).reduce(
+                        (sum, item) =>
+                          sum + (Number(item.price) || 0) * (Number(item.quantity) || 1),
+                        0
+                      );
+
+                      return (
+                        <tr key={u.id} className="hover:bg-[#FFF8EE]/60 transition-colors">
+                          <td className="py-3 px-4">
+                            <div className="flex items-center gap-2.5">
+                              <div className="w-8 h-8 rounded-full bg-[#D73B3A]/10 text-[#D73B3A] font-black flex items-center justify-center shrink-0 uppercase text-xs">
+                                {(u.fullName || u.email || "C").slice(0, 2)}
+                              </div>
+                              <div>
+                                <p className="font-black text-[#25100E]">
+                                  {u.fullName || "Member"}
+                                </p>
+                                <p className="text-[11px] text-[#522C28]/70">{u.email}</p>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td className="py-3 px-4">
+                            {u.phone ? (
+                              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-bold">
+                                <Smartphone className="w-3 h-3 text-emerald-600" />
+                                <span>+91 {u.phone}</span>
+                              </div>
+                            ) : (
+                              <span className="text-[11px] text-[#522C28]/50 italic">
+                                Captured at checkout
+                              </span>
+                            )}
+                          </td>
+
+                          <td className="py-3 px-4">
+                            {cartCount > 0 ? (
+                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FAC537]/30 text-[#25100E] border border-[#FAC537] text-[11px] font-black">
+                                <ShoppingCart className="w-3 h-3 text-[#D73B3A]" />
+                                <span>
+                                  {cartCount} items (₹{cartValue})
+                                </span>
+                              </span>
+                            ) : (
+                              <span className="text-[11px] text-[#522C28]/50">Empty</span>
+                            )}
+                          </td>
+
+                          <td className="py-3 px-4">
+                            {u.mostClickedFlavour ? (
+                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-[#522C28]/15 text-[11px] font-black uppercase text-[#25100E]">
+                                <span>🔥</span>
+                                <span>{u.mostClickedFlavour}</span>
+                              </span>
+                            ) : u.favorites && u.favorites.length > 0 ? (
+                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-[#522C28]/15 text-[11px] font-black uppercase text-[#D73B3A]">
+                                <Heart className="w-3 h-3 fill-[#D73B3A]" />
+                                <span>{u.favorites[0]}</span>
+                              </span>
+                            ) : (
+                              <span className="text-[11px] text-[#522C28]/50">Exploring</span>
+                            )}
+                          </td>
+
+                          <td className="py-3 px-4">
+                            <p className="font-black text-[#25100E]">₹{userSpend}</p>
+                            <p className="text-[10px] text-[#522C28]/70">
+                              {userOrders.length}{" "}
+                              {userOrders.length === 1 ? "order" : "orders"}
+                            </p>
+                          </td>
+
+                          <td className="py-3 px-4">
+                            <p className="font-mono font-black text-[#25100E]">
+                              {u.gameHighScore || 0}m
+                            </p>
+                            <p className="text-[10px] text-[#3CA837] font-bold">
+                              {u.loyaltyPoints || 0} pts
+                            </p>
+                          </td>
+
+                          <td className="py-3 px-4 text-right">
+                            <button
+                              type="button"
+                              onClick={() => setSelectedCustomer(u)}
+                              className="px-3 py-1.5 rounded-full bg-[#25100E] text-[#FAC537] text-[11px] font-black uppercase hover:bg-black transition-colors cursor-pointer"
+                            >
+                              Inspect
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         )}
@@ -1747,6 +2133,233 @@ export default function AdminPage() {
                   Sandbox orders are local test records (live refunds activate once Shiprocket credentials are saved).
                 </p>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =================================================================
+          MODAL: CUSTOMER PROFILE & LIVE CART INSPECTOR
+          ================================================================= */}
+      {selectedCustomer && (
+        <div className="fixed inset-0 bg-[#25100E]/60 z-50 flex items-center justify-center p-4">
+          <div className="bg-[#FFF8EE] rounded-3xl border-2 border-[#522C28]/20 shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#522C28]/15">
+              <div>
+                <span className="text-[10px] font-black uppercase text-[#D73B3A]">
+                  Customer & Cart Intelligence
+                </span>
+                <h3 className="font-display text-2xl uppercase text-[#25100E]">
+                  {selectedCustomer.fullName || "Customer Profile"}
+                </h3>
+                <p className="text-xs text-[#522C28]/70 font-semibold">
+                  Member ID: #{selectedCustomer.id.slice(0, 8)} • Role: {selectedCustomer.role}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedCustomer(null)}
+                className="w-8 h-8 rounded-full bg-white flex items-center justify-center cursor-pointer shadow-xs hover:bg-[#F2E5D5]"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Contact & Shiprocket Sync Card */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div className="p-3.5 rounded-2xl bg-white border border-[#522C28]/10 space-y-1">
+                <p className="text-[10px] font-black uppercase text-[#D73B3A] flex items-center gap-1">
+                  <Smartphone className="w-3 h-3 text-[#D73B3A]" />
+                  <span>Contact & Mobile Sync</span>
+                </p>
+                <p className="font-bold text-[#25100E]">
+                  {selectedCustomer.phone ? (
+                    <span className="text-[#3CA837] font-black">+91 {selectedCustomer.phone}</span>
+                  ) : (
+                    <span className="text-[#522C28]/50 italic">Captured upon Shiprocket checkout</span>
+                  )}
+                </p>
+                <p className="font-semibold text-[#522C28]/80">{selectedCustomer.email}</p>
+                {selectedCustomer.phone && (
+                  <p className="text-[10px] text-[#3CA837] font-bold">
+                    ✓ Synced with Shiprocket & WhatsApp tracking
+                  </p>
+                )}
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-white border border-[#522C28]/10 space-y-1">
+                <p className="text-[10px] font-black uppercase text-[#D73B3A]">
+                  Delivery Address & Loyalty
+                </p>
+                {selectedCustomer.savedAddress ? (
+                  <p className="font-semibold text-[#522C28]">
+                    {selectedCustomer.savedAddress.line1}
+                    <br />
+                    {[
+                      selectedCustomer.savedAddress.city,
+                      selectedCustomer.savedAddress.state,
+                      selectedCustomer.savedAddress.pincode,
+                    ]
+                      .filter(Boolean)
+                      .join(", ")}
+                  </p>
+                ) : (
+                  <p className="text-[#522C28]/50 italic">No saved address yet</p>
+                )}
+                <p className="text-[11px] font-black text-[#D73B3A] pt-1">
+                  Wallet: {selectedCustomer.loyaltyPoints || 0} Crunch Points
+                </p>
+              </div>
+            </div>
+
+            {/* Live Cart Inspector */}
+            <div className="p-4 rounded-2xl bg-white border-2 border-[#FAC537] space-y-3">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-black uppercase text-[#25100E] flex items-center gap-1.5">
+                  <ShoppingCart className="w-4 h-4 text-[#D73B3A]" />
+                  <span>Live Customer Cart (Real-Time Pre-Checkout)</span>
+                </p>
+                {selectedCustomer.cartUpdatedAt && (
+                  <span className="text-[10px] text-[#522C28]/60 font-semibold">
+                    Synced: {new Date(selectedCustomer.cartUpdatedAt).toLocaleTimeString()}
+                  </span>
+                )}
+              </div>
+
+              {!selectedCustomer.cartItems || selectedCustomer.cartItems.length === 0 ? (
+                <p className="text-xs text-[#522C28]/60 italic py-2">
+                  Customer cart is currently empty.
+                </p>
+              ) : (
+                <div className="space-y-2">
+                  {selectedCustomer.cartItems.map((ci, idx) => (
+                    <div
+                      key={idx}
+                      className="p-2.5 rounded-xl bg-[#FFF8EE] border border-[#522C28]/10 flex items-center justify-between text-xs"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <img
+                          src={ci.image || "/packets/peri peri.svg"}
+                          alt={ci.name}
+                          className="w-9 h-9 object-contain"
+                        />
+                        <div>
+                          <p className="font-black text-[#25100E]">{ci.name}</p>
+                          <p className="text-[10px] text-[#522C28]/70">
+                            {ci.variantLabel} • Qty: {ci.quantity} × ₹{ci.price}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="font-black text-[#25100E]">
+                        ₹{(Number(ci.price) || 0) * (Number(ci.quantity) || 1)}
+                      </span>
+                    </div>
+                  ))}
+
+                  <div className="pt-2 border-t border-[#522C28]/15 flex justify-between font-black text-sm text-[#25100E]">
+                    <span>Cart Subtotal</span>
+                    <span>
+                      ₹
+                      {selectedCustomer.cartItems.reduce(
+                        (sum, item) =>
+                          sum + (Number(item.price) || 0) * (Number(item.quantity) || 1),
+                        0
+                      )}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Flavour Preferences & Favorites */}
+            <div className="p-4 rounded-2xl bg-white border border-[#522C28]/10 space-y-2.5 text-xs">
+              <p className="text-[10px] font-black uppercase text-[#D73B3A]">
+                Flavour Engagement & Saved Favorites
+              </p>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[11px] font-bold text-[#522C28]">Most Clicked:</span>
+                {selectedCustomer.mostClickedFlavour ? (
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 font-black uppercase text-[10px]">
+                    🔥 {selectedCustomer.mostClickedFlavour}
+                  </span>
+                ) : (
+                  <span className="text-[#522C28]/50 italic">None recorded</span>
+                )}
+              </div>
+
+              {selectedCustomer.favorites && selectedCustomer.favorites.length > 0 && (
+                <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                  <span className="text-[11px] font-bold text-[#522C28]">Favorites:</span>
+                  {selectedCustomer.favorites.map((fav) => (
+                    <span
+                      key={fav}
+                      className="px-2.5 py-0.5 rounded-full bg-red-50 text-[#D73B3A] border border-red-200 text-[10px] font-black uppercase flex items-center gap-1"
+                    >
+                      <Heart className="w-3 h-3 fill-[#D73B3A]" />
+                      <span>{fav}</span>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Customer Order History */}
+            <div className="p-4 rounded-2xl bg-white border border-[#522C28]/10 space-y-2 text-xs">
+              <p className="text-[10px] font-black uppercase text-[#D73B3A]">
+                Order History ({getCustomerOrders(selectedCustomer).length})
+              </p>
+              {getCustomerOrders(selectedCustomer).length === 0 ? (
+                <p className="text-[#522C28]/60 italic py-1">
+                  No orders placed by this customer yet.
+                </p>
+              ) : (
+                <div className="space-y-1.5 max-h-40 overflow-y-auto">
+                  {getCustomerOrders(selectedCustomer).map((o) => (
+                    <div
+                      key={o.order_id}
+                      className="p-2.5 rounded-xl bg-[#FFF8EE] border border-[#522C28]/10 flex items-center justify-between text-xs"
+                    >
+                      <div>
+                        <span className="font-black text-[#25100E]">#{o.order_id}</span>
+                        <p className="text-[10px] text-[#522C28]/60 font-semibold">
+                          {new Date(o.created_at).toLocaleDateString()} •{" "}
+                          {o.payment_type || "Standard"}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-black text-[#25100E]">
+                          ₹{o.total_amount_payable ?? o.subtotal_price ?? 0}
+                        </p>
+                        <span
+                          className={`text-[9px] font-black px-1.5 py-0.5 rounded-full uppercase ${
+                            o.status === "SUCCESS"
+                              ? "bg-emerald-100 text-emerald-800"
+                              : "bg-amber-100 text-amber-800"
+                          }`}
+                        >
+                          {o.status}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Game Stats */}
+            <div className="p-3.5 rounded-2xl bg-[#FFF8EE] border border-[#522C28]/15 flex items-center justify-between text-xs">
+              <div>
+                <p className="text-[10px] font-black uppercase text-[#522C28]/70">
+                  Fox Runner Contest Record
+                </p>
+                <p className="font-black text-sm text-[#25100E]">
+                  Best Run: {selectedCustomer.gameHighScore || 0}m • Total:{" "}
+                  {selectedCustomer.totalDistance || 0}m
+                </p>
+              </div>
+              <span className="px-2.5 py-1 rounded-full bg-[#FAC537] text-[#25100E] text-[10px] font-black uppercase">
+                {selectedCustomer.totalRuns || 0} Runs
+              </span>
             </div>
           </div>
         </div>

@@ -93,9 +93,20 @@ export default function ContactPage() {
             <div className="bg-white rounded-3xl border border-[#522C28]/15 p-5 shadow-xs flex items-start gap-3 transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-md hover:border-[#D73B3A]/35">
               <MapPin className="w-5 h-5 text-[#D73B3A] shrink-0 mt-0.5" />
               <div>
-                <h3 className="font-black text-sm text-[#25100E]">Roastery Studio & HQ</h3>
+                <h3 className="font-black text-sm text-[#25100E]">Registered &amp; Operating HQ</h3>
                 <p className="text-xs font-semibold text-[#522C28]/75 mt-0.5">
-                  Siliguri, West Bengal, India
+                  Pop Culture Snacks (Dayal Constructions &amp; Co. / Pop Culture LLP)<br />
+                  Siliguri, West Bengal - 734001, India
+                </p>
+              </div>
+            </div>
+            <div className="bg-[#FFF8EE] rounded-3xl border border-[#522C28]/15 p-5 shadow-xs flex items-start gap-3">
+              <CheckCircle2 className="w-5 h-5 text-[#2E7D32] shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-black text-sm text-[#25100E]">FSSAI &amp; Food Quality</h3>
+                <p className="text-xs font-semibold text-[#522C28]/75 mt-0.5">
+                  100% Vegetarian • Clean Roasted Makhana<br />
+                  FSSAI Food Safety Certified Facility
                 </p>
               </div>
             </div>

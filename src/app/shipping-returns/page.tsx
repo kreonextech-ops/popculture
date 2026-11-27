@@ -53,10 +53,9 @@ export default function ShippingReturnsPage() {
               </p>
             </div>
             <div className="p-4 rounded-2xl bg-[#FFF8EE]">
-              <p className="font-black text-[#25100E]">How do Fox Runner Crunch Points work?</p>
+              <p className="font-black text-[#25100E]">How does the Fox Runner Hamper Contest work?</p>
               <p className="mt-1 text-[#522C28]/80">
-                Sign in to your account and play Fox Runner on the homepage — every 25m you run
-                earns 1 Crunch Point (₹1 value), redeemable right in your Munch Box cart drawer.
+                Sign in to your account and play Fox Runner on our homepage or play page. Every run is recorded on the monthly leaderboard — the highest scorer at the end of each month wins an exclusive curated Pop Culture Snack Hamper delivered to their doorstep!
               </p>
             </div>
           </div>

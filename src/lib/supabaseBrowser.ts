@@ -105,6 +105,182 @@ export async function syncSupabaseAccessToken<T = unknown>(
 }
 
 /**
+ * Helper to generate random raw nonce string.
+ */
+function generateRawNonce(): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID().replace(/-/g, "");
+  }
+  return (
+    Math.random().toString(36).substring(2, 15) +
+    Math.random().toString(36).substring(2, 15)
+  );
+}
+
+/**
+ * Computes SHA-256 hex hash of the raw nonce using browser Web Crypto API.
+ */
+async function hashNonce(nonce: string): Promise<string> {
+  if (
+    typeof crypto !== "undefined" &&
+    crypto.subtle &&
+    typeof crypto.subtle.digest === "function"
+  ) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(nonce);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+  }
+  return nonce;
+}
+
+/**
+ * Signs in with a Google ID Token directly (Google Identity Services / One Tap).
+ * This completely bypasses redirecting through the Supabase domain, keeping the user
+ * on the branded Pop Culture domain and showing "Sign in to Pop Culture with Google".
+ */
+export async function signInWithGoogleIdToken<T = unknown>(
+  idToken: string,
+  rawNonce?: string
+): Promise<{
+  ok: boolean;
+  user?: T | null;
+  error?: string;
+}> {
+  const supabase = await getSupabaseBrowserAsync();
+  if (!supabase) {
+    return { ok: false, error: "Supabase client not initialized." };
+  }
+
+  let res = await supabase.auth.signInWithIdToken({
+    provider: "google",
+    token: idToken,
+    ...(rawNonce ? { nonce: rawNonce } : {}),
+  });
+
+  // If Supabase rejected because of nonce mismatch (e.g. Skip nonce checks toggled on or off)
+  if (res.error && res.error.message.toLowerCase().includes("nonce")) {
+    if (rawNonce) {
+      // Try once without nonce parameter
+      const retryWithoutNonce = await supabase.auth.signInWithIdToken({
+        provider: "google",
+        token: idToken,
+      });
+      if (!retryWithoutNonce.error) {
+        res = retryWithoutNonce;
+      }
+    }
+  }
+
+  if (res.error) {
+    return { ok: false, error: res.error.message };
+  }
+
+  if (res.data?.session?.access_token) {
+    const user = await syncSupabaseAccessToken<T>(res.data.session.access_token);
+    return { ok: true, user };
+  }
+
+  return { ok: true, user: null };
+}
+
+/**
+ * Triggers Google Sign-In: uses Google Identity Services (One Tap / popup)
+ * when available so users see "Sign in to Pop Culture" on the local domain,
+ * completely bypassing the raw "hoxdfbawldqiyxuaoawj.supabase.co" domain.
+ * Seamlessly falls back to standard startGoogleOAuth if GIS is not loaded.
+ */
+export async function launchGoogleSignIn(nextUrl = "/account"): Promise<{
+  ok: boolean;
+  navigated?: boolean;
+  user?: unknown;
+  url?: string;
+  error?: string;
+}> {
+  if (
+    typeof window !== "undefined" &&
+    (window as unknown as { google?: { accounts?: { id?: unknown } } }).google?.accounts?.id
+  ) {
+    const googleId = (
+      window as unknown as {
+        google: {
+          accounts: {
+            id: {
+              initialize: (opts: unknown) => void;
+              prompt: (cb?: (notification: { isNotDisplayed: () => boolean; isSkippedMoment: () => boolean }) => void) => void;
+            };
+          };
+        };
+      }
+    ).google.accounts.id;
+
+    const clientId =
+      process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
+      "126179482540-kv1d3ncegeggr2bkicmvo7763074g41d.apps.googleusercontent.com";
+
+    const rawNonce = generateRawNonce();
+    let hashedNonce = "";
+    try {
+      hashedNonce = await hashNonce(rawNonce);
+    } catch {
+      hashedNonce = "";
+    }
+
+    return new Promise((resolve) => {
+      let resolved = false;
+
+      try {
+        googleId.initialize({
+          client_id: clientId,
+          ...(hashedNonce ? { nonce: hashedNonce } : {}),
+          callback: async (response: { credential?: string }) => {
+            if (resolved) return;
+            resolved = true;
+            if (!response.credential) {
+              resolve({ ok: false, error: "Google did not return an ID token." });
+              return;
+            }
+            const res = await signInWithGoogleIdToken(
+              response.credential,
+              hashedNonce ? rawNonce : undefined
+            );
+            if (res.ok) {
+              if (nextUrl && typeof window !== "undefined") {
+                window.location.assign(nextUrl);
+                resolve({ ok: true, navigated: true, user: res.user });
+              } else {
+                resolve({ ok: true, navigated: false, user: res.user });
+              }
+            } else {
+              resolve({ ok: false, error: res.error });
+            }
+          },
+          auto_select: false,
+          cancel_on_tap_outside: true,
+        });
+
+        googleId.prompt((notification) => {
+          if (notification?.isNotDisplayed?.() || notification?.isSkippedMoment?.()) {
+            if (!resolved) {
+              resolved = true;
+              void startGoogleOAuth(nextUrl).then(resolve);
+            }
+          }
+        });
+      } catch {
+        if (!resolved) {
+          resolved = true;
+          void startGoogleOAuth(nextUrl).then(resolve);
+        }
+      }
+    });
+  }
+
+  return startGoogleOAuth(nextUrl);
+}
+
+/**
  * Initiates Google OAuth via Supabase and breaks out of preview iframes safely.
  */
 export async function startGoogleOAuth(nextUrl = "/account"): Promise<{

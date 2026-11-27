@@ -56,8 +56,39 @@ export async function POST(req: Request) {
   const existing =
     existingIdx >= 0 ? store.orders[existingIdx] : await getOrderFromSupabase(orderId);
 
-  const incomingCartData = (payload.cart_data as StoreOrder["cart_data"]) ||
-    existing?.cart_data || { items: [] };
+  // Robustly extract items from any format Shiprocket might send (cart_data, line_items, items, products)
+  let resolvedItems: StoreOrder["cart_data"]["items"] = [];
+  const rawCartItems = (payload.cart_data as { items?: unknown[] })?.items;
+  const rawLineItems =
+    (payload.line_items as unknown[]) ||
+    (payload.items as unknown[]) ||
+    (payload.products as unknown[]);
+
+  if (Array.isArray(rawCartItems) && rawCartItems.length > 0) {
+    resolvedItems = rawCartItems.map((it: any) => ({
+      variant_id: it.variant_id ?? it.id,
+      quantity: Math.max(1, Number(it.quantity) || 1),
+      name: it.name ?? it.title ?? "Pop Culture Makhana",
+      price: Number(it.price) || 0,
+    }));
+  } else if (Array.isArray(rawLineItems) && rawLineItems.length > 0) {
+    resolvedItems = rawLineItems.map((it: any) => ({
+      variant_id: it.variant_id ?? it.id,
+      quantity: Math.max(1, Number(it.quantity) || 1),
+      name: it.name ?? it.title ?? "Pop Culture Makhana",
+      price: Number(it.price) || 0,
+    }));
+  } else if (existing?.cart_data?.items && existing.cart_data.items.length > 0) {
+    resolvedItems = existing.cart_data.items;
+  }
+
+  const incomingCartData: StoreOrder["cart_data"] = {
+    items: resolvedItems,
+    custom_attributes: {
+      ...(existing?.cart_data?.custom_attributes || {}),
+      ...((payload.cart_data as any)?.custom_attributes || {}),
+    },
+  };
 
   const nextStatus = String(payload.status || existing?.status || "INITIATED").toUpperCase();
 
@@ -151,6 +182,34 @@ export async function POST(req: Request) {
     ok: true,
     summary: `Order ${orderId} updated -> status: ${nextStatus}, payment: ${merged.payment_type || "N/A"}, total: ₹${merged.total_amount_payable ?? 0}`,
   });
+
+  // Auto-sync customer phone number from Shiprocket checkout to user profile & admin panel
+  if (merged.phone) {
+    const targetUid = merged.user_id;
+    const uIdx = store.users.findIndex(
+      (u) =>
+        (targetUid && u.id === targetUid) ||
+        (merged.email && u.email.toLowerCase() === merged.email.toLowerCase())
+    );
+    if (uIdx !== -1) {
+      if (!store.users[uIdx].phone || store.users[uIdx].phone !== merged.phone) {
+        store.users[uIdx].phone = merged.phone;
+        store.users[uIdx].updatedAt = now;
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+          store.users[uIdx].id
+        );
+        if (isSupabaseConfigured() && isUuid) {
+          const sbAdmin = getSupabaseAdmin();
+          if (sbAdmin) {
+            void sbAdmin
+              .from("profiles")
+              .update({ phone: merged.phone })
+              .eq("id", store.users[uIdx].id);
+          }
+        }
+      }
+    }
+  }
 
   writeStore(store);
   await syncOrderToSupabase(merged);

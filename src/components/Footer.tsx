@@ -88,25 +88,30 @@ export default function Footer() {
             <div className="w-[1px] h-24 bg-[#522C28]/15 self-center" />
 
             {/* Help Column */}
-            <div className="space-y-2.5 min-w-[105px]">
+            <div className="space-y-2.5 min-w-[130px]">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAECE7] text-[#A5151C] text-xs font-black tracking-wide">
                 <HelpCircle className="w-3.5 h-3.5 stroke-[2.5]" />
                 <span>HELP</span>
               </div>
               <ul className="space-y-1.5 text-xs font-semibold text-[#522C28]">
                 <li>
-                  <Link href="/shipping-returns#faqs" className="hover:text-[#A5151C] transition-colors">
-                    FAQs
+                  <Link href="/shipping-policy" className="hover:text-[#A5151C] transition-colors">
+                    Shipping Policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="/shipping-returns" className="hover:text-[#A5151C] transition-colors">
-                    Shipping & Returns
+                  <Link href="/refund-policy" className="hover:text-[#A5151C] transition-colors">
+                    Refund &amp; Return Policy
                   </Link>
                 </li>
                 <li>
                   <Link href="/contact" className="hover:text-[#A5151C] transition-colors">
                     Contact Us
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/shipping-returns#faqs" className="hover:text-[#A5151C] transition-colors">
+                    FAQs
                   </Link>
                 </li>
               </ul>
@@ -158,9 +163,9 @@ export default function Footer() {
           />
 
           <div className="absolute bottom-3 md:bottom-4 left-0 w-full px-8 lg:px-12 flex items-center justify-between text-xs text-white font-medium z-20">
-            {/* Copyright */}
-            <p className="text-white/95">
-              © 2026 Pop Culture Inc. All rights reserved.
+            {/* Copyright & FSSAI */}
+            <p className="text-white/95 text-[11px] lg:text-xs">
+              © 2026 Pop Culture Snacks. All rights reserved. • FSSAI Food Safety Registered
             </p>
 
             {/* Social Icons & Dividers */}
@@ -208,13 +213,21 @@ export default function Footer() {
             </div>
 
             {/* Legal Links */}
-            <div className="flex items-center space-x-3 text-white/95">
+            <div className="flex items-center space-x-2.5 text-xs text-white/95">
               <Link href="/privacy-policy" className="hover:underline">
                 Privacy Policy
               </Link>
               <span>|</span>
               <Link href="/terms" className="hover:underline">
-                Terms of Service
+                Terms &amp; Conditions
+              </Link>
+              <span>|</span>
+              <Link href="/refund-policy" className="hover:underline">
+                Refund Policy
+              </Link>
+              <span>|</span>
+              <Link href="/shipping-policy" className="hover:underline">
+                Shipping Policy
               </Link>
             </div>
           </div>
@@ -340,18 +353,23 @@ export default function Footer() {
               </div>
               <ul className="space-y-1 text-xs font-semibold text-[#522C28]">
                 <li>
-                  <Link href="/shipping-returns#faqs" className="hover:text-[#A5151C] transition-colors">
-                    FAQs
+                  <Link href="/shipping-policy" className="hover:text-[#A5151C] transition-colors">
+                    Shipping Policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="/shipping-returns" className="hover:text-[#A5151C] transition-colors">
-                    Shipping & Returns
+                  <Link href="/refund-policy" className="hover:text-[#A5151C] transition-colors">
+                    Refund Policy
                   </Link>
                 </li>
                 <li>
                   <Link href="/contact" className="hover:text-[#A5151C] transition-colors">
                     Contact Us
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/shipping-returns#faqs" className="hover:text-[#A5151C] transition-colors">
+                    FAQs
                   </Link>
                 </li>
               </ul>
@@ -401,15 +419,23 @@ export default function Footer() {
 
           <div className="absolute bottom-2 sm:bottom-3 left-0 w-full px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-1 text-[10px] sm:text-xs text-white font-medium z-20">
             <p className="order-2 sm:order-1 text-white/95 text-center sm:text-left">
-              © 2026 Pop Culture Inc. All rights reserved.
+              © 2026 Pop Culture Snacks. All rights reserved.
             </p>
-            <div className="order-1 sm:order-2 flex items-center space-x-2.5 text-white/95">
+            <div className="order-1 sm:order-2 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-white/95">
               <Link href="/privacy-policy" className="hover:underline">
                 Privacy Policy
               </Link>
               <span>|</span>
               <Link href="/terms" className="hover:underline">
-                Terms of Service
+                Terms
+              </Link>
+              <span>|</span>
+              <Link href="/refund-policy" className="hover:underline">
+                Refund Policy
+              </Link>
+              <span>|</span>
+              <Link href="/shipping-policy" className="hover:underline">
+                Shipping Policy
               </Link>
             </div>
           </div>

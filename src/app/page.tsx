@@ -16,10 +16,12 @@ import {
   ShoppingBag,
   ChevronLeft,
   ChevronRight,
+  Sparkles,
 } from "lucide-react";
 import HeroMakhanaPhysics from "@/components/HeroMakhanaPhysics";
 import InteractiveScatterLayer, { ScatterPieceData } from "@/components/InteractiveScatterLayer";
 import Navbar from "@/components/Navbar";
+import InfiniteAssetMarquee from "@/components/InfiniteAssetMarquee";
 import { smoothScrollTo, instantJumpTo } from "@/components/LenisProvider";
 import { useCart } from "@/components/CartContext";
 import { PRODUCTS, COMBOS } from "@/data/products";
@@ -285,6 +287,69 @@ const pinkSaltScatterPieces: ScatterPieceData[] = [
   },
 ];
 
+const creamOnionScatterPieces: ScatterPieceData[] = [
+  {
+    id: 501,
+    src: "/scatter/plain/05_makhana_with_leaves.png",
+    alt: "Makhana with Leaves Top-Left",
+    desktop: { x: -335, y: -140, rotate: -20, scale: 1.08 },
+    mobile: { x: -185, y: -100, rotate: -20, scale: 0.78 },
+    size: "w-16 h-16 sm:w-22 sm:h-22 md:w-26 md:h-26",
+    floatClass: "animate-scatter-wander-1",
+    delay: "0.01s",
+  },
+  {
+    id: 502,
+    src: "/scatter/plain/08_makhana_leaf_cluster.png",
+    alt: "Leaf Cluster Top-Right",
+    desktop: { x: 335, y: -140, rotate: 20, scale: 1.08 },
+    mobile: { x: 185, y: -100, rotate: 20, scale: 0.78 },
+    size: "w-16 h-16 sm:w-22 sm:h-22 md:w-26 md:h-26",
+    floatClass: "animate-scatter-wander-2",
+    delay: "0.02s",
+  },
+  {
+    id: 503,
+    src: "/scatter/plain/03_cracked_makhana.png",
+    alt: "Cracked Crunchy Makhana Mid-Left",
+    desktop: { x: -355, y: 12, rotate: 12, scale: 1.05 },
+    mobile: { x: -198, y: 10, rotate: 12, scale: 0.76 },
+    size: "w-16 h-16 sm:w-22 sm:h-22 md:w-26 md:h-26",
+    floatClass: "animate-scatter-wander-3",
+    delay: "0.03s",
+  },
+  {
+    id: 504,
+    src: "/scatter/plain/06_large_makhana_with_crumbs.png",
+    alt: "Popped Makhana Mid-Right",
+    desktop: { x: 355, y: 12, rotate: -12, scale: 1.05 },
+    mobile: { x: 198, y: 10, rotate: -12, scale: 0.76 },
+    size: "w-16 h-16 sm:w-22 sm:h-22 md:w-26 md:h-26",
+    floatClass: "animate-scatter-wander-4",
+    delay: "0.04s",
+  },
+  {
+    id: 505,
+    src: "/scatter/plain/01_single_makhana.png",
+    alt: "Single Makhana Lower-Left",
+    desktop: { x: -325, y: 165, rotate: -16, scale: 1.02 },
+    mobile: { x: -182, y: 125, rotate: -16, scale: 0.74 },
+    size: "w-16 h-16 sm:w-22 sm:h-22 md:w-26 md:h-26",
+    floatClass: "animate-scatter-wander-5",
+    delay: "0.05s",
+  },
+  {
+    id: 506,
+    src: "/scatter/plain/02_three_makhana_cluster.png",
+    alt: "Three Makhana Cluster Lower-Right",
+    desktop: { x: 325, y: 165, rotate: 22, scale: 1.02 },
+    mobile: { x: 182, y: 125, rotate: 22, scale: 0.74 },
+    size: "w-16 h-16 sm:w-22 sm:h-22 md:w-26 md:h-26",
+    floatClass: "animate-scatter-wander-6",
+    delay: "0.06s",
+  },
+];
+
 export default function BiteJoyPage() {
   const heroStageRef = useRef<HTMLDivElement | null>(null);
   const [favorites, setFavorites] = useState<number[]>([]);
@@ -380,11 +445,11 @@ export default function BiteJoyPage() {
   );
 
   const nextPlanet = useCallback(() => {
-    changeFlavour((activePlanetIndex + 1) % 4);
+    changeFlavour((activePlanetIndex + 1) % 5);
   }, [changeFlavour, activePlanetIndex]);
 
   const prevPlanet = useCallback(() => {
-    changeFlavour((activePlanetIndex - 1 + 4) % 4);
+    changeFlavour((activePlanetIndex - 1 + 5) % 5);
   }, [changeFlavour, activePlanetIndex]);
 
   // Keyboard navigation for slider (Left / Right arrow keys)
@@ -549,6 +614,7 @@ export default function BiteJoyPage() {
     periPeriScatterPieces,
     cheeseScatterPieces,
     pinkSaltScatterPieces,
+    creamOnionScatterPieces,
     plainScatterPieces,
   ];
   const currentScatterPieces = scatterByFlavour[activePlanetIndex] || periPeriScatterPieces;
@@ -557,11 +623,11 @@ export default function BiteJoyPage() {
     {
       id: "periperi",
       slug: "peri-peri",
-      code: "01 / 04",
+      code: "01 / 05",
       name: "PERI PERI",
       tagline: "",
       description: "",
-      packImage: "/packets/peri peri.svg",
+      packImage: "/packets/peri-peri.png",
       bgSvg: "/product-bg/peri-peri.webp",
       bgMobileSvg: "/product-bg/mobile-peri-peri.webp",
       themeBg: "#E53925",
@@ -574,11 +640,11 @@ export default function BiteJoyPage() {
     {
       id: "cheddar",
       slug: "cheddar-cheese",
-      code: "02 / 04",
+      code: "02 / 05",
       name: "CHEDDAR CHEESE",
       tagline: "",
       description: "",
-      packImage: "/packets/cheese.svg",
+      packImage: "/packets/cheddar-cheese.png",
       bgSvg: "/product-bg/cheese.webp",
       bgMobileSvg: "/product-bg/mobile-cheese.webp",
       themeBg: "#F79E1B",
@@ -591,11 +657,11 @@ export default function BiteJoyPage() {
     {
       id: "pinksalt",
       slug: "pink-salt",
-      code: "03 / 04",
+      code: "03 / 05",
       name: "HIMALAYAN PINK SALT",
       tagline: "",
       description: "",
-      packImage: "/packets/pink-salt-pouch.png",
+      packImage: "/packets/himalayan-salt.png",
       bgSvg: "/product-bg/pink-salt.webp",
       bgMobileSvg: "/product-bg/mobile-pink-salt.webp",
       themeBg: "#FFF3F5",
@@ -606,9 +672,26 @@ export default function BiteJoyPage() {
       accentBg: "#E1366C",
     },
     {
+      id: "cream-onion",
+      slug: "cream-and-onion",
+      code: "04 / 05",
+      name: "CREAM & ONION",
+      tagline: "",
+      description: "",
+      packImage: "/packets/cream-n-onion.png",
+      bgSvg: "/product-bg/cream-and-onion.png",
+      bgMobileSvg: "/product-bg/mobile-cream-and-onion.png",
+      themeBg: "#FFF0F4",
+      themeColor: "#8B1E3F",
+      planetGradient: "radial-gradient(circle at 35% 30%, #D45B7E 0%, #8B1E3F 55%, #4A081D 100%)",
+      glowColor: "rgba(139, 30, 63, 0.45)",
+      badge: "🧅 CREAM & ONION",
+      accentBg: "#8B1E3F",
+    },
+    {
       id: "plain",
       slug: "raw-makhana",
-      code: "04 / 04",
+      code: "05 / 05",
       name: "RAW MAKHANA",
       tagline: "",
       description: "",
@@ -649,7 +732,7 @@ export default function BiteJoyPage() {
         {/* Interactive Stage above the Red Marquee (Floor sits directly on top of the marquee) */}
         <div
           ref={heroStageRef}
-          className="relative flex-1 w-full flex flex-col justify-between sm:justify-center overflow-hidden"
+          className="relative flex-1 w-full flex flex-col justify-between overflow-hidden"
         >
           {/* Full-bleed Hero Background Artwork */}
           <picture className="pointer-events-none select-none absolute inset-0 z-0 w-full h-full">
@@ -665,41 +748,48 @@ export default function BiteJoyPage() {
             />
           </picture>
 
-          {/* Main Hero Grid: Minimal Brand-Deck Copy/CTAs (Left) + Canva-Style Stack + Front-Left Fox (Right) */}
-          <div className="relative z-20 w-full max-w-[1440px] mx-auto px-3 sm:px-8 lg:px-14 flex-1 flex flex-col lg:flex-row items-center justify-between sm:justify-evenly lg:justify-between gap-3 sm:gap-8 lg:gap-6 pt-8 min-[440px]:pt-6 sm:pt-6 pointer-events-none">
-            {/* Left Column: Minimal Brand Copy & Dual CTAs (Ultra-concise on mobile, rich on desktop) */}
-            <div className="w-full lg:w-[42%] flex flex-col items-center lg:items-start text-center lg:text-left lg:py-8 pointer-events-none">
-              <h1 className="mt-2 sm:mt-0 font-display text-[34px] min-[400px]:text-[38px] min-[480px]:text-[44px] sm:text-5xl lg:text-[54px] xl:text-[64px] leading-[0.94] sm:leading-[0.96] tracking-tight uppercase text-[#522C28]">
-                SNACK BETTER.{" "}
-                <span className="block font-display text-[#D73B3A]">POP LOUDER.</span>
+          {/* Main Hero Grid: Brand Copy/CTAs (Top) + Stacked Pouches & Fox (Bottom) */}
+          <div className="relative z-20 w-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-14 flex-1 flex flex-col lg:flex-row items-center justify-between gap-1 sm:gap-8 lg:gap-6 pt-2 sm:pt-6 pointer-events-none">
+            {/* Left/Top Column: Brand Copy & Dual CTAs (Lowered into the middle on mobile) */}
+            <div className="w-full lg:w-[46%] flex flex-col items-center lg:items-start text-center lg:text-left pt-14 min-[380px]:pt-18 min-[440px]:pt-24 sm:pt-6 lg:py-8 pointer-events-none shrink-0">
+              
+              {/* Eyebrow Badge */}
+              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#D73B3A]/10 border border-[#D73B3A]/20 text-[#D73B3A] text-[10px] min-[400px]:text-[11px] sm:text-xs font-black uppercase tracking-wider mb-2 sm:mb-3 shadow-xs">
+                <Sparkles className="w-3 h-3 text-[#FAC537] fill-[#FAC537]" />
+                <span>POP CULTURE · 100% ROASTED</span>
+              </div>
+
+              {/* Main Headline: Snack Smart. Snack Cool. */}
+              <h1 className="font-display text-[38px] min-[380px]:text-[44px] min-[440px]:text-[50px] sm:text-6xl lg:text-[66px] xl:text-[76px] leading-[0.93] tracking-tight uppercase text-[#522C28]">
+                SNACK SMART.{" "}
+                <span className="block font-display text-[#D73B3A]">SNACK COOL.</span>
               </h1>
 
-              <p className="hidden sm:block mt-3 text-base text-[#522C28]/85 font-semibold max-w-md">
-                Carefully sourced, hand-sorted roasted makhana in 4 bold flavours — quality that’s real, not just promised.
+              {/* Subtitle */}
+              <p className="mt-2 sm:mt-3 text-xs min-[400px]:text-[13px] sm:text-base text-[#522C28]/85 font-semibold max-w-xs sm:max-w-md leading-snug sm:leading-relaxed text-balance">
+                Carefully sourced, slow-roasted lotus seeds in 4 signature flavours. Pure clean crunch that hits different.
               </p>
 
-              {/* Hero CTAs (z-40 keeps buttons always clickable above falling makhana) */}
+              {/* Hero CTAs */}
               <div
                 style={{ zIndex: 40 }}
-                className="relative mt-3 sm:mt-5 flex flex-nowrap sm:flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-3 pointer-events-auto"
+                className="relative mt-3.5 sm:mt-6 flex flex-nowrap sm:flex-wrap items-center justify-center lg:justify-start gap-2.5 sm:gap-3.5 pointer-events-auto"
               >
                 <Link
                   href="/shop"
-                  className="px-4 min-[440px]:px-5 sm:px-7 py-2 min-[440px]:py-2.5 sm:py-3 rounded-full bg-[#D73B3A] hover:bg-[#B82928] text-[#FFF8EE] font-black text-[11px] min-[440px]:text-xs sm:text-sm uppercase tracking-wider shadow-[0_8px_22px_rgba(215,59,58,0.32)] hover:scale-105 active:scale-95 transition-[transform,background-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] flex items-center gap-1.5 sm:gap-2 cursor-pointer whitespace-nowrap"
+                  className="px-5 sm:px-8 py-2.5 sm:py-3.5 rounded-full bg-[#D73B3A] hover:bg-[#B82928] text-[#FFF8EE] font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_6px_20px_rgba(215,59,58,0.32)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer whitespace-nowrap"
                 >
                   <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  <span className="sm:hidden">Shop Now</span>
-                  <span className="hidden sm:inline">Shop All Snacks</span>
+                  <span>Shop Now</span>
                 </Link>
 
                 <button
                   type="button"
                   onClick={() => instantJumpTo("#flavours")}
-                  className="px-3.5 min-[440px]:px-4.5 sm:px-6 py-2 min-[440px]:py-2.5 sm:py-3 rounded-full bg-[#FFF8EE] hover:bg-white text-[#522C28] border-2 border-[#522C28]/15 hover:border-[#522C28]/40 font-black text-[11px] min-[440px]:text-xs sm:text-sm uppercase tracking-wider shadow-sm hover:scale-105 active:scale-95 transition-[transform,background-color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] flex items-center gap-1 sm:gap-1.5 cursor-pointer whitespace-nowrap"
+                  className="group px-5 sm:px-8 py-2.5 sm:py-3.5 rounded-full bg-white hover:bg-[#FFF5E6] text-[#25100E] hover:text-[#D73B3A] border-2 border-[#25100E]/20 hover:border-[#D73B3A] font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_6px_20px_rgba(37,16,14,0.12)] hover:shadow-[0_8px_24px_rgba(215,59,58,0.2)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 cursor-pointer whitespace-nowrap"
                 >
-                  <span className="sm:hidden">Flavours</span>
-                  <span className="hidden sm:inline">Explore Flavours</span>
-                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5]" />
+                  <span>Explore Flavours</span>
+                  <ArrowRight className="w-4 h-4 stroke-[2.5] text-[#D73B3A] transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
               </div>
 
@@ -708,12 +798,12 @@ export default function BiteJoyPage() {
               </p>
             </div>
 
-            {/* Right Column: Tight Canva Stack Completely Inside Bounds + Compact Fox at Bottom-Left */}
-            <div className="relative w-full lg:w-[58%] flex items-end justify-center lg:justify-end self-end mt-auto pt-1 sm:pt-4 lg:pt-8 pb-6 min-[460px]:pb-7 sm:pb-9 lg:pb-8">
+            {/* Right/Bottom Column: Pouches resting on marquee floor */}
+            <div className="relative w-full lg:w-[54%] flex items-end justify-center lg:justify-end self-end mt-auto pt-1 sm:pt-4 lg:pt-8 pb-5 min-[400px]:pb-6 sm:pb-14 lg:pb-14">
               <div className="relative flex items-end justify-center max-w-full pr-1 sm:pr-3 lg:pr-4">
-                {/* Base Flow Container: All 4 Pouches stay 100% inside right viewport edge with even visual heights */}
-                <div className="relative z-10 flex items-end justify-center pointer-events-none">
-                  {/* 1. Front-Left: Cheddar Cheese */}
+                {/* Base Flow Container (4 Signature Flavours in Symmetrical Balanced Arc) */}
+                <div className="relative z-10 flex items-end justify-center pointer-events-none scale-[0.92] min-[380px]:scale-[0.96] min-[440px]:scale-100 origin-bottom -translate-y-3 sm:-translate-y-6 lg:-translate-y-8">
+                  {/* 1. Left Wing: Cheddar Cheese */}
                   <button
                     type="button"
                     aria-label="Preview Cheddar Cheese"
@@ -721,19 +811,19 @@ export default function BiteJoyPage() {
                       changeFlavour(1);
                       instantJumpTo("#flavours");
                     }}
-                    className="relative z-40 pointer-events-auto cursor-pointer translate-y-[4px] -rotate-[7deg] hover:-translate-y-2 transition-transform duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] origin-bottom shrink-0 will-change-transform"
+                    className="relative z-20 pointer-events-auto cursor-pointer translate-y-[2px] -rotate-[6.5deg] hover:-translate-y-3 transition-transform duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] origin-bottom shrink-0 will-change-transform"
                   >
                     <img
-                      src="/packets/cheese.svg"
+                      src="/packets/cheddar-cheese.png"
                       alt="Cheddar Cheese Makhana Pouch"
                       loading="eager"
                       fetchPriority="high"
                       decoding="async"
-                      className="h-[132px] min-[400px]:h-[150px] min-[460px]:h-[172px] min-[540px]:h-[192px] sm:h-[205px] md:h-[235px] lg:h-[268px] xl:h-[306px] w-auto object-contain select-none"
+                      className="h-[135px] min-[380px]:h-[150px] min-[440px]:h-[168px] sm:h-[212px] md:h-[240px] lg:h-[262px] xl:h-[302px] w-auto object-contain select-none drop-shadow-xl"
                     />
                   </button>
 
-                  {/* 2. Tucked Behind Cheese & Pink Salt: Peri Peri Punch (wider spacing keeps "PERI PERI" readable) */}
+                  {/* 2. Center-Left Hero: Peri Peri Punch */}
                   <button
                     type="button"
                     aria-label="Preview Peri Peri Punch"
@@ -741,19 +831,39 @@ export default function BiteJoyPage() {
                       changeFlavour(0);
                       instantJumpTo("#flavours");
                     }}
-                    className="relative z-20 pointer-events-auto cursor-pointer -ml-[22px] min-[460px]:-ml-[28px] sm:-ml-[34px] md:-ml-[42px] lg:-ml-[48px] xl:-ml-[54px] translate-y-[2px] -rotate-[1deg] hover:-translate-y-3 transition-transform duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] origin-bottom shrink-0 will-change-transform"
+                    className="relative z-30 pointer-events-auto cursor-pointer -ml-[24px] min-[380px]:-ml-[28px] min-[440px]:-ml-[34px] sm:-ml-[42px] md:-ml-[48px] lg:-ml-[54px] xl:-ml-[62px] -translate-y-[4px] sm:-translate-y-[6px] -rotate-[2deg] hover:-translate-y-4 transition-transform duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] origin-bottom shrink-0 will-change-transform"
                   >
                     <img
-                      src="/packets/peri peri.svg"
+                      src="/packets/peri-peri.png"
                       alt="Peri Peri Makhana Pouch"
                       loading="eager"
                       fetchPriority="high"
                       decoding="async"
-                      className="h-[130px] min-[400px]:h-[148px] min-[460px]:h-[169px] min-[540px]:h-[189px] sm:h-[202px] md:h-[232px] lg:h-[264px] xl:h-[302px] w-auto object-contain select-none"
+                      className="h-[138px] min-[380px]:h-[154px] min-[440px]:h-[174px] sm:h-[220px] md:h-[250px] lg:h-[272px] xl:h-[314px] w-auto object-contain select-none drop-shadow-xl"
                     />
                   </button>
 
-                  {/* 3. Front Center-Right: Himalayan Pink Salt (visually height-matched to Cheese & Peri Peri) */}
+                  {/* 3. Center-Right Hero: Cream & Onion */}
+                  <button
+                    type="button"
+                    aria-label="Preview Cream & Onion"
+                    onClick={() => {
+                      changeFlavour(3);
+                      instantJumpTo("#flavours");
+                    }}
+                    className="relative z-30 pointer-events-auto cursor-pointer -ml-[24px] min-[380px]:-ml-[28px] min-[440px]:-ml-[34px] sm:-ml-[42px] md:-ml-[48px] lg:-ml-[54px] xl:-ml-[62px] -translate-y-[4px] sm:-translate-y-[6px] rotate-[2deg] hover:-translate-y-4 transition-transform duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] origin-bottom shrink-0 will-change-transform"
+                  >
+                    <img
+                      src="/packets/cream-n-onion.png"
+                      alt="Cream & Onion Makhana Pouch"
+                      loading="eager"
+                      fetchPriority="high"
+                      decoding="async"
+                      className="h-[138px] min-[380px]:h-[154px] min-[440px]:h-[174px] sm:h-[220px] md:h-[250px] lg:h-[272px] xl:h-[314px] w-auto object-contain select-none drop-shadow-xl"
+                    />
+                  </button>
+
+                  {/* 4. Right Wing: Himalayan Pink Salt */}
                   <button
                     type="button"
                     aria-label="Preview Himalayan Pink Salt"
@@ -761,47 +871,27 @@ export default function BiteJoyPage() {
                       changeFlavour(2);
                       instantJumpTo("#flavours");
                     }}
-                    className="relative z-30 pointer-events-auto cursor-pointer -ml-[24px] min-[460px]:-ml-[30px] sm:-ml-[36px] md:-ml-[44px] lg:-ml-[50px] xl:-ml-[56px] -translate-y-[3px] sm:-translate-y-[5px] rotate-[4deg] hover:-translate-y-4 transition-transform duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] origin-bottom shrink-0 will-change-transform"
+                    className="relative z-20 pointer-events-auto cursor-pointer -ml-[24px] min-[380px]:-ml-[28px] min-[440px]:-ml-[34px] sm:-ml-[42px] md:-ml-[48px] lg:-ml-[54px] xl:-ml-[62px] translate-y-[2px] rotate-[6.5deg] hover:-translate-y-3 transition-transform duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] origin-bottom shrink-0 will-change-transform"
                   >
                     <img
-                      src="/packets/pink-salt-pouch.png"
+                      src="/packets/himalayan-salt.png"
                       alt="Himalayan Pink Salt Makhana Pouch"
                       loading="eager"
                       fetchPriority="high"
                       decoding="async"
-                      className="h-[128px] min-[400px]:h-[146px] min-[460px]:h-[166px] min-[540px]:h-[186px] sm:h-[198px] md:h-[226px] lg:h-[258px] xl:h-[296px] w-auto object-contain select-none"
-                    />
-                  </button>
-
-                  {/* 4. Back-Right: Raw Makhana (100% visible inside viewport) */}
-                  <button
-                    type="button"
-                    aria-label="Preview Raw Makhana"
-                    onClick={() => {
-                      changeFlavour(3);
-                      instantJumpTo("#flavours");
-                    }}
-                    className="relative z-10 pointer-events-auto cursor-pointer -ml-[26px] min-[460px]:-ml-[32px] sm:-ml-[38px] md:-ml-[46px] lg:-ml-[52px] xl:-ml-[58px] translate-y-[3px] rotate-[9deg] hover:-translate-y-2 transition-transform duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] origin-bottom shrink-0 will-change-transform"
-                  >
-                    <img
-                      src="/packets/raw-makhana-pouch.png"
-                      alt="Raw Makhana Pouch"
-                      loading="eager"
-                      fetchPriority="high"
-                      decoding="async"
-                      className="h-[128px] min-[400px]:h-[146px] min-[460px]:h-[166px] min-[540px]:h-[186px] sm:h-[198px] md:h-[226px] lg:h-[258px] xl:h-[296px] w-auto object-contain select-none"
+                      className="h-[135px] min-[380px]:h-[150px] min-[440px]:h-[168px] sm:h-[212px] md:h-[240px] lg:h-[262px] xl:h-[302px] w-auto object-contain select-none drop-shadow-xl"
                     />
                   </button>
                 </div>
 
-                {/* Compact Sunglasses Fox perched at bottom-front-left (leaves Pink Salt fox & Raw Makhana completely clear!) */}
+                {/* Compact Sunglasses Fox in front */}
                 <img
                   src="/Sunglasses Fox With Sweeping Tail.png"
                   alt="Sunglasses Fox With Sweeping Tail"
                   loading="eager"
                   fetchPriority="high"
                   decoding="async"
-                  className="pointer-events-none select-none absolute -bottom-6 min-[460px]:-bottom-7 sm:-bottom-9 md:-bottom-10 -left-2 min-[460px]:-left-4 sm:-left-7 md:-left-9 lg:-left-12 z-20 w-[124px] min-[400px]:w-[142px] min-[460px]:w-[162px] min-[540px]:w-[180px] sm:w-[195px] md:w-[220px] lg:w-[235px] xl:w-[265px] h-auto object-contain"
+                  className="pointer-events-none select-none absolute -bottom-1 sm:-bottom-4 md:-bottom-5 -left-4 sm:-left-10 md:-left-12 lg:-left-14 z-40 w-[110px] min-[380px]:w-[125px] min-[440px]:w-[140px] sm:w-[185px] md:w-[205px] lg:w-[225px] xl:w-[250px] h-auto object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.35)]"
                 />
               </div>
             </div>
@@ -835,6 +925,9 @@ export default function BiteJoyPage() {
           SECTION 4: KEY HEALTH BENEFITS SCROLL ANIMATION (Makhana vs The Fryer)
           ========================================================================= */}
       <MakhanaBenefitsScroll />
+
+      {/* Infinite Brand Marquee Strip */}
+      <InfiniteAssetMarquee />
 
       {/* =========================================================================
           SECTION 3: FIND YOUR FLAVOUR / 3D PLANET CAROUSEL
@@ -933,13 +1026,15 @@ export default function BiteJoyPage() {
               {flavourPlanets.map((flavour, idx) => {
                 const isActive = activePlanetIndex === idx;
                 return (
-                  <div
+                  <Link
                     key={flavour.id}
+                    href={`/product/${flavour.slug || "peri-peri"}`}
                     className={`absolute inset-0 flex items-center justify-center transition-[transform,opacity] duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[transform,opacity] ${
                       isActive
                         ? "opacity-100 scale-100 z-10 pointer-events-auto"
                         : "opacity-0 scale-90 z-0 pointer-events-none"
                     }`}
+                    title={`View ${flavour.name} Details & Nutritional Facts`}
                   >
                     <img
                       src={flavour.packImage}
@@ -949,7 +1044,7 @@ export default function BiteJoyPage() {
                       draggable={false}
                       className="h-full w-auto max-w-full object-contain drop-shadow-xl transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 group-active:scale-95 pointer-events-auto"
                     />
-                  </div>
+                  </Link>
                 );
               })}
             </div>
@@ -983,12 +1078,14 @@ export default function BiteJoyPage() {
                     ? "bg-[#F79E1B] text-[#25100E] shadow-md scale-102 ring-2 ring-[#25100E]/30"
                     : flavour.id === "pinksalt"
                     ? "bg-[#E1366C] text-white shadow-md scale-102 ring-2 ring-[#FFCD3C]/70"
+                    : flavour.id === "cream-onion"
+                    ? "bg-[#8B1E3F] text-white shadow-md scale-102 ring-2 ring-[#84CC16]"
                     : "bg-[#2D6A4F] text-white shadow-md scale-102 ring-2 ring-[#52B788]/60";
                 return (
                   <button
                     key={flavour.id}
                     onClick={() => changeFlavour(idx)}
-                    className={`px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs md:text-[13px] font-black uppercase tracking-wider transition-[transform,background-color,color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] cursor-pointer flex items-center gap-1 sm:gap-1.5 select-none shrink-0 whitespace-nowrap ${
+                    className={`px-2 min-[380px]:px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-[9px] min-[380px]:text-[10px] sm:text-xs md:text-[13px] font-black uppercase tracking-wider transition-[transform,background-color,color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] cursor-pointer flex items-center gap-1 sm:gap-1.5 select-none shrink-0 whitespace-nowrap ${
                       isActive
                         ? activeClasses
                         : "text-[#522C28] hover:bg-[#FFF3E3] hover:text-[#25100E]"
@@ -1010,6 +1107,8 @@ export default function BiteJoyPage() {
                   ? "bg-[#D73B3A] text-white hover:bg-[#B71C1C] shadow-[0_6px_20px_rgba(215,59,58,0.35)]"
                   : currentFlavour.id === "pinksalt"
                   ? "bg-[#E1366C] text-white hover:bg-[#C22255] shadow-[0_6px_20px_rgba(225,54,108,0.35)] ring-2 ring-white/70"
+                  : currentFlavour.id === "cream-onion"
+                  ? "bg-[#8B1E3F] text-white hover:bg-[#701531] shadow-[0_6px_20px_rgba(139,30,63,0.35)] ring-2 ring-[#84CC16]"
                   : "bg-[#25100E] text-[#FFCD3C] hover:bg-[#1A0A09] shadow-[0_6px_20px_rgba(37,16,14,0.35)] ring-2 ring-[#FFCD3C]/60"
               }`}
             >
@@ -1064,6 +1163,9 @@ export default function BiteJoyPage() {
           </svg>
         </div>
       </section>
+
+      {/* Infinite Brand Marquee Strip */}
+      <InfiniteAssetMarquee reverse={true} />
       {/* =========================================================================
           SECTION: HOT COMBOS & CURATED BUNDLES (Light Brand-Coloured Compact Showcase)
           ========================================================================= */}
@@ -1109,19 +1211,19 @@ export default function BiteJoyPage() {
                   <div className="relative flex items-end justify-center h-full w-full pb-1">
                     {/* Left: Cheddar Cheese */}
                     <img
-                      src="/packets/cheese.svg"
+                      src="/packets/cheddar-cheese.png"
                       alt="Cheddar Cheese"
                       className="h-[95px] sm:h-[105px] w-auto max-h-full object-contain drop-shadow-md -rotate-[10deg] -mr-4 translate-y-1 z-10 transition-transform duration-300 group-hover:-translate-x-1"
                     />
                     {/* Center: Peri Peri (Hero, 100% visible top to bottom) */}
                     <img
-                      src="/packets/peri peri.svg"
+                      src="/packets/peri-peri.png"
                       alt="Ultimate Trio Variety Pack"
                       className="h-[120px] sm:h-[132px] w-auto max-h-full object-contain drop-shadow-xl z-20 transition-transform duration-300 group-hover:scale-105"
                     />
                     {/* Right: Himalayan Pink Salt */}
                     <img
-                      src="/packets/pink-salt-pouch.png"
+                      src="/packets/himalayan-salt.png"
                       alt="Himalayan Pink Salt"
                       className="h-[95px] sm:h-[105px] w-auto max-h-full object-contain drop-shadow-md rotate-[10deg] -ml-4 translate-y-1 z-10 transition-transform duration-300 group-hover:translate-x-1"
                     />
@@ -1162,7 +1264,7 @@ export default function BiteJoyPage() {
                         variantLabel: "3 × 55g Pouches (165g)",
                         price: 447,
                         originalPrice: 447,
-                        image: "/packets/peri peri.svg",
+                        image: "/packets/peri-peri.png",
                       },
                       1,
                       true
@@ -1188,19 +1290,19 @@ export default function BiteJoyPage() {
                   <div className="relative flex items-end justify-center h-full w-full pb-1">
                     {/* Left: Peri Peri */}
                     <img
-                      src="/packets/peri peri.svg"
+                      src="/packets/peri-peri.png"
                       alt="Peri Peri"
                       className="h-[95px] sm:h-[105px] w-auto max-h-full object-contain drop-shadow-md -rotate-[10deg] -mr-4 translate-y-1 z-10 transition-transform duration-300 group-hover:-translate-x-1"
                     />
                     {/* Center: Cheddar Cheese (Hero, 100% visible top to bottom) */}
                     <img
-                      src="/packets/cheese.svg"
+                      src="/packets/cheddar-cheese.png"
                       alt="Party Crunch Bundle"
                       className="h-[120px] sm:h-[132px] w-auto max-h-full object-contain drop-shadow-xl z-20 transition-transform duration-300 group-hover:scale-105"
                     />
                     {/* Right: Himalayan Pink Salt */}
                     <img
-                      src="/packets/pink-salt-pouch.png"
+                      src="/packets/himalayan-salt.png"
                       alt="Himalayan Pink Salt"
                       className="h-[95px] sm:h-[105px] w-auto max-h-full object-contain drop-shadow-md rotate-[10deg] -ml-4 translate-y-1 z-10 transition-transform duration-300 group-hover:translate-x-1"
                     />
@@ -1241,7 +1343,7 @@ export default function BiteJoyPage() {
                         variantLabel: "6 × 55g Pouches (330g)",
                         price: 894,
                         originalPrice: 894,
-                        image: "/packets/cheese.svg",
+                        image: "/packets/cheddar-cheese.png",
                       },
                       1,
                       true
@@ -1267,19 +1369,19 @@ export default function BiteJoyPage() {
                   <div className="relative flex items-end justify-center h-full w-full pb-1">
                     {/* Left: Cheddar Cheese */}
                     <img
-                      src="/packets/cheese.svg"
+                      src="/packets/cheddar-cheese.png"
                       alt="Cheddar Cheese"
                       className="h-[95px] sm:h-[105px] w-auto max-h-full object-contain drop-shadow-md -rotate-[10deg] -mr-4 translate-y-1 z-10 transition-transform duration-300 group-hover:-translate-x-1"
                     />
                     {/* Center: Himalayan Pink Salt (Hero, 100% visible top to bottom) */}
                     <img
-                      src="/packets/pink-salt-pouch.png"
+                      src="/packets/himalayan-salt.png"
                       alt="Mega Muncher 12-Pack Stash"
                       className="h-[120px] sm:h-[132px] w-auto max-h-full object-contain drop-shadow-xl z-20 transition-transform duration-300 group-hover:scale-105"
                     />
                     {/* Right: Peri Peri */}
                     <img
-                      src="/packets/peri peri.svg"
+                      src="/packets/peri-peri.png"
                       alt="Peri Peri"
                       className="h-[95px] sm:h-[105px] w-auto max-h-full object-contain drop-shadow-md rotate-[10deg] -ml-4 translate-y-1 z-10 transition-transform duration-300 group-hover:translate-x-1"
                     />
@@ -1320,7 +1422,7 @@ export default function BiteJoyPage() {
                         variantLabel: "12 × 55g Pouches (660g)",
                         price: 1788,
                         originalPrice: 1788,
-                        image: "/packets/pink-salt-pouch.png",
+                        image: "/packets/himalayan-salt.png",
                       },
                       1,
                       true
@@ -1401,6 +1503,9 @@ export default function BiteJoyPage() {
           </div>
         </div>
       </section>
+
+      {/* Infinite Brand Marquee Strip */}
+      <InfiniteAssetMarquee />
 
 
     </div>
