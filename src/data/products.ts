@@ -38,6 +38,9 @@ export interface ProductDetails {
   bgMobileSvg?: string;
   accentColor: string;
   servingSize: string;
+  nutritionTitle?: string;
+  nutritionColumn1?: string;
+  nutritionColumn2?: string;
   ingredients: string;
   allergen: string;
   disclaimer: string;
@@ -353,24 +356,27 @@ export const PRODUCTS: Record<string, ProductDetails> = {
     bgMobileSvg: "/product-bg/mobile-peri-peri.webp",
     accentColor: "#FAC537", // Accent Warm Yellow
     servingSize: "20g",
-    borderAccentColor: "#F97316", // Vibrant Orange as seen in packaging
+    borderAccentColor: "#FF5B00", // Vibrant Orange as seen in packaging
+    nutritionTitle: "NUTRITIONAL FACTS",
+    nutritionColumn1: "Amount per 100g*",
+    nutritionColumn2: "%Daily Value**",
     ingredients:
-      "Foxnut (Makhana) , Edible Vegetable Oil (Rice Bran Oil, Olive Oil), Peri Peri Seasoning [Iodized Salt, Sugar, Black Salt, Acidity Regulators (INS 330, INS 262), Spices & Condiments (Red Chilli, Turmeric, Black Pepper, Cumin, Dried Garlic Powder, Dried Onion Powder), Maltodextrin, Flavour Enhancer (INS 621), Natural Colour (INS160c), Anticaking Agent (INS 551)].\nCONTAINS ADDED FLAVOURS (NATURAL & NATURE IDENTICAL).",
-    allergen: "MAY CONTAIN NUTS.",
+      "Foxnut (Makhana) , Edible Vegetable Oil (Rice Bran Oil, Olive Oil), Peri Peri Seasoning [Iodized Salt, Sugar, Black Salt, Acidity Regulators (INS 330, INS 262),Spices & Condiments (Red Chilli, Turmeric, Black Pepper, Cumin, Dried Garlic Powder,Dried Onion Powder), Maltodextrin, Flavour Enhancer (INS 621), Natural Colour (INS160c), Anticaking Agent (INS 551)]. CONTAINS ADDED FLAVOURS (NATURAL & NATURE IDENTICAL).",
+    allergen: "ALLERGEN: MAY CONTAIN NUTS.",
     disclaimer:
       "*%RDA Values Are Based On A 2000 Kcal Diet As Per Fssai Guidelines. Actual Needs May Vary Based On Individual Dietary Requirements.",
     nutrition: [
       { label: "Energy", amount: "512 kcal", dailyValue: "4.80%", isBold: true },
-      { label: "Protein", amount: "10g", isBold: true },
-      { label: "Carbohydrates", amount: "70g", isBold: true },
-      { label: "Total Sugar", amount: "5g", isIndent: true },
-      { label: "Dietary Fibre", amount: "3g", isIndent: true },
+      { label: "Protein", amount: "10g", dailyValue: "-", isBold: true },
+      { label: "Carbohydrates", amount: "70g", dailyValue: "-", isBold: true },
+      { label: "Total Sugar", amount: "5g", dailyValue: "-", isIndent: true },
+      { label: "Dietary Fibre", amount: "3g", dailyValue: "-", isIndent: true },
       { label: "Total Fat", amount: "20g", dailyValue: "6.60%", isBold: true },
       { label: "Saturated Fat", amount: "4g", dailyValue: "4.0%", isIndent: true },
-      { label: "M.U.F.A", amount: "10g", isIndent: true },
-      { label: "P.U.F.A", amount: "7g", isIndent: true },
-      { label: "Trans Fat", amount: "0g", isBold: true },
-      { label: "Cholesterol", amount: "1mg", isBold: true },
+      { label: "M.U.F.A", amount: "10g", dailyValue: "-", isIndent: true },
+      { label: "P.U.F.A", amount: "7g", dailyValue: "-", isIndent: true },
+      { label: "Trans Fat", amount: "0g", dailyValue: "-", isBold: true },
+      { label: "Cholesterol", amount: "1mg", dailyValue: "-", isBold: true },
       { label: "Sodium", amount: "600mg", dailyValue: "6.0%", isBold: true },
     ],
     pricing: {
@@ -449,23 +455,26 @@ export const PRODUCTS: Record<string, ProductDetails> = {
     accentColor: "#522C28", // Espresso
     servingSize: "20g",
     borderAccentColor: "#A855F7", // Purple Accent as seen in packaging image
+    nutritionTitle: "NUTRITIONAL FACTS",
+    nutritionColumn1: "Amount per 100g*",
+    nutritionColumn2: "%Daily Value**",
     ingredients:
-      "Foxnut (Makhana) , Edible Vegetable Oil (Rice Bran Oil, Olive Oil), Cheddar Cheese Seasoning [Sugar, Iodized Salt, Black Salt, Acidity Regulators (INS 330, INS 262), Cheese Powder, Milk Solids, Maltodextrin, Flavour Enhancers (INS621), Anticaking Agent (INS 551)].\nCONTAINS ADDED FLAVOURS (NATURAL & NATURE IDENTICAL).",
-    allergen: "CONTAINS MILK. MAY CONTAIN NUTS.",
+      "Foxnut (Makhana) , Edible Vegetable Oil (Rice Bran Oil, Olive Oil), Cheddar Cheese Seasoning [Sugar, Iodized Salt, Black Salt, Acidity Regulators (INS 330, INS 262), Cheese Powder, Milk Solids, Maltodextrin, Flavour Enhancers (INS621),Anticaking Agent (INS 551)]. CONTAINS ADDED FLAVOURS (NATURAL & NATURE IDENTICAL).",
+    allergen: "ALLERGEN: CONTAINS MILK. MAY CONTAIN NUTS.",
     disclaimer:
       "*%RDA Values Are Based On A 2000 Kcal Diet As Per Fssai Guidelines. Actual Needs May Vary Based On Individual Dietary Requirements.",
     nutrition: [
       { label: "Energy", amount: "505 kcal", dailyValue: "4.80%", isBold: true },
-      { label: "Protein", amount: "7.8g", isBold: true },
-      { label: "Carbohydrates", amount: "63g", isBold: true },
-      { label: "Total Sugar", amount: "3.2g", isIndent: true },
-      { label: "Dietary Fibre", amount: "11.8g", isIndent: true },
+      { label: "Protein", amount: "7.8g", dailyValue: "-", isBold: true },
+      { label: "Carbohydrates", amount: "63g", dailyValue: "-", isBold: true },
+      { label: "Total Sugar", amount: "3.2g", dailyValue: "-", isIndent: true },
+      { label: "Dietary Fibre", amount: "11.8g", dailyValue: "-", isIndent: true },
       { label: "Total Fat", amount: "18.5g", dailyValue: "5.50%", isBold: true },
       { label: "Saturated Fat", amount: "10.2g", dailyValue: "9.3%", isIndent: true },
-      { label: "M.U.F.A", amount: "8g", isIndent: true },
-      { label: "P.U.F.A", amount: "2g", isIndent: true },
-      { label: "Trans Fat", amount: "0g", isBold: true },
-      { label: "Cholesterol", amount: "0mg", isBold: true },
+      { label: "M.U.F.A", amount: "8g", dailyValue: "-", isIndent: true },
+      { label: "P.U.F.A", amount: "2g", dailyValue: "-", isIndent: true },
+      { label: "Trans Fat", amount: "0g", dailyValue: "-", isBold: true },
+      { label: "Cholesterol", amount: "0mg", dailyValue: "-", isBold: true },
       { label: "Sodium", amount: "290mg", dailyValue: "2.90%", isBold: true },
     ],
     pricing: {
@@ -542,26 +551,29 @@ export const PRODUCTS: Record<string, ProductDetails> = {
     bgSvg: "/product-bg/pink-salt.webp",
     bgMobileSvg: "/product-bg/mobile-pink-salt.webp",
     accentColor: "#FAC537",
-    servingSize: "25g",
-    borderAccentColor: "#F97316",
+    servingSize: "Per serve size: 25g",
+    borderAccentColor: "#EA580C",
+    nutritionTitle: "Nutritional Information*",
+    nutritionColumn1: "Per 100g",
+    nutritionColumn2: "%RDA^ per Serve",
     ingredients:
-      "Foxnut (Makhana) , Edible Vegetable Oil (Rice Bran Oil, Olive Oil), Rock Salt",
-    allergen: "MAY CONTAIN NUTS.",
+      "Foxnut (Makhana) , Edible Vegetable Oil (Rice Bran Oil, Olive Oil),Rock Salt",
+    allergen: "ALLERGEN: MAY CONTAIN NUTS.",
     disclaimer:
       "*Approximate Values. Guideline Daily Amount according to \"Recommended Dietary Allowance\" for average adult per day (2000 kcal Diet) as per FSSR (Labelling & Display) 2020. ^% Daily Values are based on a 2000 kcal diet.",
     nutrition: [
       { label: "Energy", amount: "510 kcal", dailyValue: "6.4%", isBold: true },
-      { label: "Protein", amount: "7.8g", isBold: true },
-      { label: "Carbohydrates", amount: "68.0g", isBold: true },
-      { label: "Total Sugar", amount: "0.5g", isIndent: true },
+      { label: "Protein", amount: "7.8g", dailyValue: "-", isBold: true },
+      { label: "Carbohydrates", amount: "68.0g", dailyValue: "-", isBold: true },
+      { label: "Total Sugar", amount: "0.5g", dailyValue: "-", isIndent: true },
       { label: "Added Sugar", amount: "0.0g", dailyValue: "0.0%", isIndent: true },
-      { label: "Dietary Fibre", amount: "11.2g", isIndent: true },
+      { label: "Dietary Fibre", amount: "11.2g", dailyValue: "-", isIndent: true },
       { label: "Total Fat", amount: "22.5g", dailyValue: "8.4%", isBold: true },
       { label: "Saturated Fat", amount: "9.2g", dailyValue: "10.3%", isIndent: true },
-      { label: "M.U.F.A.", amount: "10.0g", isIndent: true },
-      { label: "P.U.F.A.", amount: "7.0g", isIndent: true },
-      { label: "Trans Fat", amount: "0.0g", isBold: true },
-      { label: "Cholesterol", amount: "0.0mg", isBold: true },
+      { label: "M.U.F.A.", amount: "10.0g", dailyValue: "-", isIndent: true },
+      { label: "P.U.F.A.", amount: "7.0g", dailyValue: "-", isIndent: true },
+      { label: "Trans Fat", amount: "0.0g", dailyValue: "-", isBold: true },
+      { label: "Cholesterol", amount: "0.0mg", dailyValue: "-", isBold: true },
       { label: "Sodium", amount: "315.0mg", dailyValue: "3.9%", isBold: true },
     ],
     pricing: {
@@ -634,25 +646,28 @@ export const PRODUCTS: Record<string, ProductDetails> = {
     bgSvg: "/product-bg/plain.webp",
     bgMobileSvg: "/product-bg/mobile-plain.webp",
     accentColor: "#93BF56", // Accent Lime Green
-    servingSize: "20g",
+    servingSize: "25g",
     borderAccentColor: "#10B981", // Fresh Green Accent
+    nutritionTitle: "NUTRITIONAL FACTS",
+    nutritionColumn1: "Amount per 100g*",
+    nutritionColumn2: "%Daily Value**",
     ingredients:
-      "Foxnut (Makhana) [100% Handpicked Jumbo Lotus Seeds], Edible Vegetable Oil (Rice Bran Oil, Olive Oil), Himalayan Rock Salt.\nCONTAINS NO ARTIFICIAL COLOURS, PRESERVATIVES OR ARTIFICIAL FLAVOURS.",
-    allergen: "MAY CONTAIN NUTS. GLUTEN FREE.",
+      "Foxnut (Makhana) [100% Handpicked Jumbo Lotus Seeds (5-Suta Grade)].\nCONTAINS NO OIL, ZERO ADDED SALT, ZERO ADDITIVES, ZERO PRESERVATIVES.",
+    allergen: "ALLERGEN: MAY CONTAIN NUTS. GLUTEN FREE.",
     disclaimer:
       "*%RDA Values Are Based On A 2000 Kcal Diet As Per Fssai Guidelines. Actual Needs May Vary Based On Individual Dietary Requirements.",
     nutrition: [
       { label: "Energy", amount: "350 kcal", dailyValue: "3.50%", isBold: true },
-      { label: "Protein", amount: "9.7g", isBold: true },
-      { label: "Carbohydrates", amount: "77g", isBold: true },
-      { label: "Total Sugar", amount: "0.5g", isIndent: true },
-      { label: "Dietary Fibre", amount: "14.5g", isIndent: true },
+      { label: "Protein", amount: "9.7g", dailyValue: "-", isBold: true },
+      { label: "Carbohydrates", amount: "77g", dailyValue: "-", isBold: true },
+      { label: "Total Sugar", amount: "0.5g", dailyValue: "-", isIndent: true },
+      { label: "Dietary Fibre", amount: "14.5g", dailyValue: "-", isIndent: true },
       { label: "Total Fat", amount: "0.8g", dailyValue: "0.30%", isBold: true },
       { label: "Saturated Fat", amount: "0.2g", dailyValue: "0.2%", isIndent: true },
-      { label: "M.U.F.A", amount: "0.3g", isIndent: true },
-      { label: "P.U.F.A", amount: "0.3g", isIndent: true },
-      { label: "Trans Fat", amount: "0g", isBold: true },
-      { label: "Cholesterol", amount: "0mg", isBold: true },
+      { label: "M.U.F.A", amount: "0.3g", dailyValue: "-", isIndent: true },
+      { label: "P.U.F.A", amount: "0.3g", dailyValue: "-", isIndent: true },
+      { label: "Trans Fat", amount: "0g", dailyValue: "-", isBold: true },
+      { label: "Cholesterol", amount: "0mg", dailyValue: "-", isBold: true },
       { label: "Sodium", amount: "120mg", dailyValue: "1.20%", isBold: true },
     ],
     pricing: {
@@ -731,21 +746,24 @@ export const PRODUCTS: Record<string, ProductDetails> = {
     accentColor: "#84CC16", // Bright Lime Green from packaging nutrition border
     servingSize: "20g",
     borderAccentColor: "#84CC16", // Lime Green
+    nutritionTitle: "NUTRITIONAL FACTS",
+    nutritionColumn1: "Amount per 100g*",
+    nutritionColumn2: "%Daily Value**",
     ingredients:
-      "Foxnut (Makhana) , Edible Vegetable Oil (Rice Bran Oil, Olive Oil), Sour Cream & Onion Seasoning [Sugar, Iodized Salt, White Onion Powder, Modified Starch (INS 1400), Cheese Powder, Milk Powder, Cream Powder, Parsley Leaves, Flavour Enhancer (INS 635), Anticaking Agent (INS 551)].\nCONTAINS ADDED FLAVOURS (NATURAL & NATURE IDENTICAL).",
-    allergen: "CONTAINS MILK. MAY CONTAIN NUTS.",
+      "Foxnut (Makhana) , Edible Vegetable Oil (Rice Bran Oil, Olive Oil), Sour Cream & Onion Seasoning [Sugar, Iodized Salt, White Onion Powder, Modified Starch (INS 1400), Cheese Powder, Milk Powder, Cream Powder, Parsley Leaves, Flavour Enhancer (INS 635), Anticaking Agent (INS 551)]. CONTAINS ADDED FLAVOURS (NATURAL & NATURE IDENTICAL).",
+    allergen: "ALLERGEN: CONTAINS MILK. MAY CONTAIN NUTS.",
     disclaimer:
       "*%RDA Values Are Based On A 2000 Kcal Diet As Per Fssai Guidelines. Actual Needs May Vary Based On Individual Dietary Requirements.",
     nutrition: [
       { label: "Energy", amount: "440.31 kcal", dailyValue: "4.80%", isBold: true },
-      { label: "Protein", amount: "8.62g", isBold: true },
-      { label: "Dietary Fibre", amount: "14.21g", isIndent: true },
-      { label: "Carbohydrates", amount: "59.4g", isBold: true },
-      { label: "Total Sugar", amount: "-", isIndent: true },
+      { label: "Protein", amount: "8.62g", dailyValue: "-", isBold: true },
+      { label: "Dietary Fibre", amount: "14.21g", dailyValue: "-", isIndent: false, isBold: false },
+      { label: "Carbohydrates", amount: "59.4g", dailyValue: "-", isBold: true },
+      { label: "Total Sugar", amount: "-", dailyValue: "-", isIndent: true },
       { label: "Total Fat", amount: "15.09g", dailyValue: "5.50%", isBold: true },
       { label: "Unsaturated Fat", amount: "10.61g", dailyValue: "-", isIndent: true },
-      { label: "Trans Fat", amount: "0.0g", isBold: true },
-      { label: "Cholesterol", amount: "0.0g", isBold: true },
+      { label: "Trans Fat", amount: "0.0g", dailyValue: "-", isBold: true },
+      { label: "Cholesterol", amount: "0.0g", dailyValue: "-", isBold: true },
       { label: "Sodium", amount: "567.29mg", dailyValue: "2.90%", isBold: true },
     ],
     pricing: {

@@ -752,17 +752,17 @@ export default function ProductDetailPage() {
                 {/* Header */}
                 <div className="border-b-[5px] border-black pb-1 mb-1">
                   <h3 className="font-black text-2xl sm:text-3xl tracking-tight uppercase leading-none font-sans">
-                    NUTRITIONAL FACTS
+                    {product.nutritionTitle || "NUTRITIONAL FACTS"}
                   </h3>
                   <p className="text-right text-xs sm:text-sm font-bold mt-1">
-                    Serving Size: {product.servingSize}
+                    {product.servingSize.toLowerCase().includes("serve") ? product.servingSize : `Serving Size: ${product.servingSize}`}
                   </p>
                 </div>
 
                 {/* Table Column Titles */}
                 <div className="flex justify-between items-baseline py-1 border-b-[3px] border-black text-xs font-black">
-                  <span>Amount per 100g*</span>
-                  <span>%Daily Value**</span>
+                  <span>{product.nutritionColumn1 || "Amount per 100g*"}</span>
+                  <span>{product.nutritionColumn2 || "%Daily Value**"}</span>
                 </div>
 
                 {/* Nutrition Rows */}
@@ -777,9 +777,7 @@ export default function ProductDetailPage() {
                       <span className={item.isIndent ? "pl-4 text-gray-700" : ""}>
                         {item.label} {item.amount}
                       </span>
-                      {item.dailyValue && (
-                        <span className="font-bold text-black">{item.dailyValue}</span>
-                      )}
+                      <span className="font-bold text-black text-right min-w-[50px]">{item.dailyValue || "-"}</span>
                     </div>
                   ))}
                 </div>
@@ -925,11 +923,12 @@ export default function ProductDetailPage() {
             </h3>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6 max-w-6xl mx-auto">
+          {/* Strictly Single Row: Desktop 4 columns, Mobile/Tablet horizontal snap swipe (Never wraps to 2 rows) */}
+          <div className="flex overflow-x-auto lg:grid lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6 max-w-6xl mx-auto pb-4 snap-x snap-mandatory scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
             {otherProducts.map((other) => (
               <div
                 key={other.slug}
-                className="p-5 sm:p-6 rounded-3xl bg-white border border-[#25100E]/15 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-[transform,box-shadow] duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] flex flex-col justify-between group"
+                className="w-[78vw] max-w-[270px] shrink-0 snap-center lg:w-auto lg:max-w-none p-5 sm:p-6 rounded-3xl bg-white border border-[#25100E]/15 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-[transform,box-shadow] duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] flex flex-col justify-between group"
               >
                 <div className="flex items-center justify-between mb-3">
                   <span className="px-2.5 py-0.5 rounded-full bg-[#FFF8EE] text-[#25100E] text-[10px] min-[400px]:text-xs font-black uppercase tracking-wider border border-[#25100E]/15 truncate max-w-[65%]">
