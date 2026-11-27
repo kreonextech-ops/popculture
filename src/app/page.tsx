@@ -1195,10 +1195,10 @@ export default function BiteJoyPage() {
             </Link>
           </div>
 
-          {/* Cards Grid / Mobile Horizontal Snap Carousel */}
-          <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4.5 overflow-x-auto sm:overflow-visible snap-x snap-mandatory scrollbar-none pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+          {/* Cards Grid / Mobile Horizontal Snap Carousel - STRICT SINGLE ROW */}
+          <div className="flex overflow-x-auto lg:grid lg:grid-cols-5 gap-3 sm:gap-3.5 snap-x snap-mandatory scrollbar-none pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
             {/* Card 1: All 4 Flavours Discovery Box (4 Packs) */}
-            <div className="w-[82vw] max-w-[290px] shrink-0 snap-center sm:w-auto sm:max-w-none bg-white border border-[#25100E]/12 hover:border-[#E53925]/50 rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_16px_rgba(37,16,14,0.06)] hover:shadow-[0_12px_28px_rgba(229,57,37,0.12)] group relative">
+            <div className="w-[78vw] max-w-[260px] shrink-0 snap-center lg:w-auto lg:max-w-none bg-white border border-[#25100E]/12 hover:border-[#E53925]/50 rounded-2xl p-3 sm:p-3 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_16px_rgba(37,16,14,0.06)] hover:shadow-[0_12px_28px_rgba(229,57,37,0.12)] group relative">
               <Link href="/product/all-4-flavours-box" className="block cursor-pointer">
                 {/* Image Frame */}
                 <div className="bg-[#FFF5E5] rounded-xl overflow-hidden h-40 sm:h-44 flex items-center justify-center p-3 relative border border-[#25100E]/08 group-hover:bg-[#FFF0D9] transition-colors">
@@ -1220,7 +1220,7 @@ export default function BiteJoyPage() {
                       className="h-[120px] sm:h-[132px] w-auto max-h-full object-contain drop-shadow-xl z-20 transition-transform duration-300 group-hover:scale-105"
                     />
                     <img
-                      src="/packets/sour-cream.png"
+                      src="/packets/cream-n-onion.png"
                       alt="Cream & Onion"
                       className="h-[95px] sm:h-[105px] w-auto max-h-full object-contain drop-shadow-md rotate-[10deg] -ml-4 translate-y-1 z-10 transition-transform duration-300 group-hover:translate-x-1"
                     />
@@ -1276,7 +1276,7 @@ export default function BiteJoyPage() {
             </div>
 
             {/* Card 2: Bestseller Crunch Bundle (6 Packs) */}
-            <div className="w-[82vw] max-w-[290px] shrink-0 snap-center sm:w-auto sm:max-w-none bg-white border border-[#25100E]/12 hover:border-[#E53925]/50 rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_16px_rgba(37,16,14,0.06)] hover:shadow-[0_12px_28px_rgba(229,57,37,0.12)] group relative">
+            <div className="w-[78vw] max-w-[260px] shrink-0 snap-center lg:w-auto lg:max-w-none bg-white border border-[#25100E]/12 hover:border-[#E53925]/50 rounded-2xl p-3 sm:p-3 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_16px_rgba(37,16,14,0.06)] hover:shadow-[0_12px_28px_rgba(229,57,37,0.12)] group relative">
               <Link href="/product/bestseller-crunch-bundle" className="block cursor-pointer">
                 {/* Image Frame */}
                 <div className="bg-[#FFF5E5] rounded-xl overflow-hidden h-40 sm:h-44 flex items-center justify-center p-3 relative border border-[#25100E]/08 group-hover:bg-[#FFF0D9] transition-colors">
@@ -1296,7 +1296,7 @@ export default function BiteJoyPage() {
                       className="h-[120px] sm:h-[132px] w-auto max-h-full object-contain drop-shadow-xl z-20 transition-transform duration-300 group-hover:scale-105"
                     />
                     <img
-                      src="/packets/sour-cream.png"
+                      src="/packets/cream-n-onion.png"
                       alt="Cream & Onion"
                       className="h-[95px] sm:h-[105px] w-auto max-h-full object-contain drop-shadow-md rotate-[10deg] -ml-4 translate-y-1 z-10 transition-transform duration-300 group-hover:translate-x-1"
                     />
@@ -1352,7 +1352,7 @@ export default function BiteJoyPage() {
             </div>
 
             {/* Card 3: Cheese & Spice Fiesta (8 Packs) */}
-            <div className="w-[82vw] max-w-[290px] shrink-0 snap-center sm:w-auto sm:max-w-none bg-white border border-[#25100E]/12 hover:border-[#E53925]/50 rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_16px_rgba(37,16,14,0.06)] hover:shadow-[0_12px_28px_rgba(229,57,37,0.12)] group relative">
+            <div className="w-[78vw] max-w-[260px] shrink-0 snap-center lg:w-auto lg:max-w-none bg-white border border-[#25100E]/12 hover:border-[#E53925]/50 rounded-2xl p-3 sm:p-3 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_16px_rgba(37,16,14,0.06)] hover:shadow-[0_12px_28px_rgba(229,57,37,0.12)] group relative">
               <Link href="/product/cheese-and-spice-fiesta" className="block cursor-pointer">
                 {/* Image Frame */}
                 <div className="bg-[#FFF5E5] rounded-xl overflow-hidden h-40 sm:h-44 flex items-center justify-center p-3 relative border border-[#25100E]/08 group-hover:bg-[#FFF0D9] transition-colors">
@@ -1423,7 +1423,7 @@ export default function BiteJoyPage() {
             </div>
 
             {/* Card 4: Mega Crunch Party Stash (12 Packs) */}
-            <div className="w-[82vw] max-w-[290px] shrink-0 snap-center sm:w-auto sm:max-w-none bg-white border border-[#25100E]/12 hover:border-[#E53925]/50 rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_16px_rgba(37,16,14,0.06)] hover:shadow-[0_12px_28px_rgba(229,57,37,0.12)] group relative">
+            <div className="w-[78vw] max-w-[260px] shrink-0 snap-center lg:w-auto lg:max-w-none bg-white border border-[#25100E]/12 hover:border-[#E53925]/50 rounded-2xl p-3 sm:p-3 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_16px_rgba(37,16,14,0.06)] hover:shadow-[0_12px_28px_rgba(229,57,37,0.12)] group relative">
               <Link href="/product/mega-crunch-party-stash" className="block cursor-pointer">
                 {/* Image Frame */}
                 <div className="bg-[#FFF5E5] rounded-xl overflow-hidden h-40 sm:h-44 flex items-center justify-center p-3 relative border border-[#25100E]/08 group-hover:bg-[#FFF0D9] transition-colors">
@@ -1498,70 +1498,69 @@ export default function BiteJoyPage() {
               </div>
             </div>
 
-            {/* Card 4: Build Your Own Bag (Interactive Custom Bag CTA) */}
+            {/* Card 5: Build Your Own Bag (Interactive Custom Bag CTA) */}
             <Link
-              href="/build-a-box"
-              className="w-[82vw] max-w-[290px] shrink-0 snap-center sm:w-auto sm:max-w-none bg-gradient-to-b from-[#FFFDF9] to-[#FFF3DC] border-2 border-dashed border-[#F79E1B]/70 hover:border-[#E53925] rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_16px_rgba(247,158,27,0.12)] hover:shadow-[0_12px_28px_rgba(247,158,27,0.22)] group cursor-pointer relative"
+              href="/build-a-bag"
+              className="w-[78vw] max-w-[260px] shrink-0 snap-center lg:w-auto lg:max-w-none bg-gradient-to-b from-[#FFFDF9] to-[#FFF3DC] border-2 border-dashed border-[#F79E1B]/70 hover:border-[#E53925] rounded-2xl p-3 sm:p-3 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_16px_rgba(247,158,27,0.12)] hover:shadow-[0_12px_28px_rgba(247,158,27,0.22)] group cursor-pointer relative"
             >
               {/* Teaser Frame */}
-              <div className="bg-white/80 rounded-xl overflow-hidden h-40 sm:h-44 flex flex-col items-center justify-center p-3 relative border border-[#F79E1B]/30 group-hover:bg-white transition-colors">
-                <span className="absolute top-2 left-2 z-10 px-2 py-0.5 rounded-md bg-[#FFCD3C] text-[#25100E] text-[9px] font-black uppercase tracking-wider shadow-sm">
-                  CUSTOMIZE
+              <div className="bg-[#FFF5E5] rounded-xl overflow-hidden h-40 sm:h-44 flex items-center justify-center p-3 relative border border-[#F79E1B]/30 group-hover:bg-[#FFF0D9] transition-colors">
+                <span className="absolute top-2 left-2 z-30 px-2 py-0.5 rounded-md bg-[#FFCD3C] text-[#25100E] text-[9px] font-black uppercase tracking-wider shadow-sm">
+                  CUSTOM BAG
                 </span>
 
-                <img
-                  src="/assets/goodness-box.png"
-                  alt="Custom Snack Bag"
-                  className="h-[75px] sm:h-[85px] w-auto max-h-full object-contain drop-shadow-md transition-transform duration-300 group-hover:scale-105"
-                />
-                <span className="font-display text-sm font-black uppercase text-[#25100E] tracking-wide text-center mt-1">
-                  BUILD YOUR OWN BAG
-                </span>
-                <p className="text-[10px] text-[#522C28]/70 text-center mt-0.5 max-w-[170px] leading-tight">
-                  Mix 4, 6, or 12 packs of your favourite flavours!
-                </p>
-
-                {/* Animated Mini Pouches Pill */}
-                <div className="flex items-center gap-1.5 mt-1 bg-[#FFF8EE] px-2.5 py-0.5 rounded-full border border-[#25100E]/10">
-                  <span className="text-xs">🌶️</span>
-                  <span className="text-xs">🧀</span>
-                  <span className="text-xs">🌸</span>
-                  <span className="text-xs">🍃</span>
+                {/* Dynamic 3-Pouch Fan Showcase */}
+                <div className="relative flex items-end justify-center h-full w-full pb-1">
+                  <img
+                    src="/packets/cream-n-onion.png"
+                    alt="Cream & Onion"
+                    className="h-[95px] sm:h-[105px] w-auto max-h-full object-contain drop-shadow-md -rotate-[14deg] -mr-4 translate-y-1 z-10 transition-transform duration-300 group-hover:-translate-x-1.5"
+                  />
+                  <img
+                    src="/packets/peri-peri.png"
+                    alt="Build Your Own Bag"
+                    className="h-[120px] sm:h-[132px] w-auto max-h-full object-contain drop-shadow-xl z-20 transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <img
+                    src="/packets/cheddar-cheese.png"
+                    alt="Cheddar Cheese"
+                    className="h-[95px] sm:h-[105px] w-auto max-h-full object-contain drop-shadow-md rotate-[14deg] -ml-4 translate-y-1 z-10 transition-transform duration-300 group-hover:translate-x-1.5"
+                  />
                 </div>
               </div>
 
               {/* Info */}
               <div className="mt-3">
                 <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-[#522C28]/60">
-                  <span>CUSTOM BUNDLE • YOU DECIDE</span>
+                  <span>CUSTOM • 4, 6 OR 12</span>
                   <span className="text-[#F79E1B] font-bold flex items-center gap-1">
                     <Star className="w-3 h-3 fill-[#F79E1B]" /> 5.0
                   </span>
                 </div>
                 <h3 className="font-display text-sm sm:text-base font-black uppercase text-[#25100E] leading-snug mt-1 group-hover:text-[#E53925] transition-colors">
-                  CUSTOM SNACK BAG
+                  BUILD YOUR OWN BAG
                 </h3>
                 <p className="text-[11px] text-[#522C28]/70 mt-0.5 line-clamp-1">
-                  Choose your own flavours &amp; pack sizes
+                  Mix &amp; match your favourite flavours!
                 </p>
               </div>
 
               {/* Price & CTA */}
               <div className="mt-3 pt-2.5 border-t border-[#25100E]/10 flex items-center justify-between">
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-base sm:text-lg font-black text-[#E53925]">From ₹596</span>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-base sm:text-lg font-black text-[#25100E]">From ₹596</span>
                 </div>
-                <div className="px-3 py-1.5 rounded-lg bg-[#FFCD3C] group-hover:bg-[#F79E1B] text-[#25100E] text-[11px] font-black uppercase tracking-wider transition-all duration-200 flex items-center gap-1.5 shadow-sm active:scale-95">
-                  <span>Build Box</span>
-                  <ArrowRight className="w-3.5 h-3.5 stroke-[3]" />
+                <div className="px-3 py-1.5 rounded-lg bg-[#25100E] group-hover:bg-[#E53925] text-white text-[11px] font-black uppercase tracking-wider transition-all duration-200 flex items-center gap-1.5 shadow-sm active:scale-95">
+                  <span>Build Bag</span>
+                  <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
                 </div>
               </div>
             </Link>
           </div>
 
           {/* Mobile Swipe Cue */}
-          <div className="flex sm:hidden items-center justify-center gap-1.5 mt-3 text-[#522C28]/60 text-[11px] font-mono uppercase tracking-wider">
-            <span>← Swipe to explore combos (4) →</span>
+          <div className="flex lg:hidden items-center justify-center gap-1.5 mt-3 text-[#522C28]/60 text-[11px] font-mono uppercase tracking-wider">
+            <span>← Swipe to explore all combos (5) →</span>
           </div>
         </div>
       </section>
