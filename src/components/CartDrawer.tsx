@@ -15,7 +15,7 @@ import {
   Truck,
 } from "lucide-react";
 import { useCart } from "./CartContext";
-import { useAuth } from "./AuthContext";
+import { useAuth, type AuthUser } from "./AuthContext";
 import AuthModal from "./AuthModal";
 
 declare global {
@@ -130,11 +130,18 @@ export default function CartDrawer() {
 
   const finalTotal = subtotal;
 
-  const handleShiprocketCheckout = async (e: React.MouseEvent) => {
+  const handleShiprocketCheckout = async (e?: React.MouseEvent, authenticatedUser?: AuthUser | null) => {
     if (items.length === 0) return;
 
-    // Direct 1-Click Checkout: No forced login gate.
-    // Shiprocket Headless Checkout handles guest OTP, address, and payments directly.
+    // CUSTOMER AUTH GATE: Require customer login via Google or Email before checkout
+    // so they can see live order tracking, WhatsApp delivery updates, and order history
+    const activeUser = authenticatedUser !== undefined ? authenticatedUser : user;
+    if (!activeUser) {
+      if (e) setPendingCheckoutEvent(e);
+      setShowAuthModal(true);
+      return;
+    }
+
     setLoadingCheckout(true);
     setCheckoutError(null);
 
@@ -165,7 +172,8 @@ export default function CartDrawer() {
         const triggerCheckout = (attemptsLeft = 15) => {
           if (window.HeadlessCheckout?.addToCart) {
             closeCart();
-            window.HeadlessCheckout.addToCart(e.nativeEvent, data.token, {
+            const clickEvent = e?.nativeEvent || new MouseEvent("click");
+            window.HeadlessCheckout.addToCart(clickEvent, data.token, {
               fallbackUrl: data.fallbackUrl,
               isInitiatedFromApp: true,
             });
@@ -573,12 +581,10 @@ export default function CartDrawer() {
         intent="checkout"
         title="Sign In To Checkout"
         subtitle="Sign in with Google or Email so you can view live order status, WhatsApp delivery updates, and save your favorites."
-        onSuccess={() => {
+        onSuccess={(freshUser) => {
           setShowAuthModal(false);
-          if (pendingCheckoutEvent) {
-            void handleShiprocketCheckout(pendingCheckoutEvent);
-            setPendingCheckoutEvent(null);
-          }
+          void handleShiprocketCheckout(pendingCheckoutEvent || undefined, freshUser);
+          setPendingCheckoutEvent(null);
         }}
       />
     </>
