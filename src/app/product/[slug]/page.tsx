@@ -18,6 +18,10 @@ import {
   Leaf,
   Plus,
   Minus,
+  ChevronLeft,
+  ChevronRight,
+  ZoomIn,
+  X,
 } from "lucide-react";
 import { PRODUCTS, COMBOS, ProductDetails } from "@/data/products";
 import { useCart } from "@/components/CartContext";
@@ -225,6 +229,12 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [addedToast, setAddedToast] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [zoomModalOpen, setZoomModalOpen] = useState(false);
+
+  useEffect(() => {
+    setSelectedImageIndex(0);
+  }, [slug]);
   const { addItem } = useCart();
 
   if (loadingDynamic) {
@@ -349,53 +359,157 @@ export default function ProductDetailPage() {
             <div className="lg:col-span-6 flex flex-col items-center">
               
               {/* Product Packet Presentation Stage */}
-              <div className="relative w-full max-w-[460px] aspect-square rounded-3xl bg-gradient-to-b from-white to-[#FDF2E8] p-8 flex items-center justify-center border border-[#522C28]/15 shadow-[0_12px_36px_rgba(37,16,14,0.08)] overflow-hidden group">
-                
-                {/* Flavour Background Artwork Layer (Desktop + Mobile) */}
-                {product.bgSvg && (
-                  <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
-                    <picture>
-                      {product.bgMobileSvg && (
-                        <source media="(max-width: 640px)" srcSet={product.bgMobileSvg} />
+              {(() => {
+                const galleryList = (product.galleryImages && product.galleryImages.length > 0)
+                  ? product.galleryImages
+                  : [product.packImage];
+                const currentImg = galleryList[selectedImageIndex] || product.packImage;
+                const isRenderPouch = selectedImageIndex === 0;
+
+                return (
+                  <>
+                    <div className="relative w-full max-w-[460px] aspect-square rounded-3xl bg-gradient-to-b from-white to-[#FDF2E8] p-6 sm:p-8 flex items-center justify-center border border-[#522C28]/15 shadow-[0_12px_36px_rgba(37,16,14,0.08)] overflow-hidden group">
+                      
+                      {/* Flavour Background Artwork Layer (Only for 3D Render Pouch) */}
+                      {isRenderPouch && product.bgSvg && (
+                        <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
+                          <picture>
+                            {product.bgMobileSvg && (
+                              <source media="(max-width: 640px)" srcSet={product.bgMobileSvg} />
+                            )}
+                            <img
+                              src={product.bgSvg}
+                              alt={`${product.name} backdrop`}
+                              className="w-full h-full object-cover opacity-90 transition-transform duration-700 ease-out group-hover:scale-105"
+                            />
+                          </picture>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-black/10 pointer-events-none" />
+                        </div>
                       )}
-                      <img
-                        src={product.bgSvg}
-                        alt={`${product.name} backdrop`}
-                        className="w-full h-full object-cover opacity-90 transition-transform duration-700 ease-out group-hover:scale-105"
+
+                      {/* Flavour color glow behind pouch */}
+                      <div
+                        style={{ backgroundColor: product.themeColor }}
+                        className="absolute inset-16 rounded-full opacity-35 blur-2xl group-hover:opacity-50 transition-opacity"
                       />
-                    </picture>
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-black/10 pointer-events-none" />
-                  </div>
-                )}
 
-                {/* Flavour color glow behind pouch */}
-                <div
-                  style={{ backgroundColor: product.themeColor }}
-                  className="absolute inset-16 rounded-full opacity-35 blur-2xl group-hover:opacity-50 transition-opacity"
-                />
+                      {/* Main Product Image (Pouch or Flat Packaging Design) */}
+                      {isRenderPouch ? (
+                        <img
+                          src={product.packImage}
+                          alt={product.name}
+                          className="relative z-10 w-auto h-full max-h-[360px] object-contain drop-shadow-[0_20px_35px_rgba(120,40,0,0.3)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 will-change-transform"
+                        />
+                      ) : (
+                        <div
+                          onClick={() => setZoomModalOpen(true)}
+                          className="relative z-10 w-auto h-full max-h-[370px] flex items-center justify-center cursor-zoom-in transition-transform duration-300 group-hover:scale-[1.02]"
+                        >
+                          <img
+                            src={currentImg}
+                            alt={`${product.name} packaging`}
+                            className="w-auto h-full max-h-[370px] object-contain rounded-2xl shadow-xl border border-[#522C28]/15 bg-white"
+                          />
+                        </div>
+                      )}
 
-                {/* Main Product Pouch Image */}
-                <img
-                  src={product.packImage}
-                  alt={product.name}
-                  className="relative z-10 w-auto h-full max-h-[360px] object-contain drop-shadow-[0_20px_35px_rgba(120,40,0,0.3)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 will-change-transform"
-                />
+                      {/* Floating Micro-badge: View Label */}
+                      <div className="absolute top-4 left-4 z-20">
+                        <span className="px-3 py-1 rounded-full bg-[#25100E] text-white text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-sm">
+                          <span>{isRenderPouch ? "✨" : selectedImageIndex === 1 ? "🎨" : "📋"}</span>
+                          <span>
+                            {isRenderPouch
+                              ? "3D Pack Pouch"
+                              : selectedImageIndex === 1
+                              ? "Packet Front"
+                              : "Packet Back (Nutrition)"}
+                          </span>
+                        </span>
+                      </div>
 
-                {/* Floating Micro-badge */}
-                <div className="absolute top-4 left-4 z-20">
-                  <span className="px-3 py-1 rounded-full bg-[#25100E] text-white text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-sm">
-                    <span>✨</span>
-                    <span>SLOW ROASTED</span>
-                  </span>
-                </div>
+                      {/* Floating Top Right: Zoom Button */}
+                      <div className="absolute top-4 right-4 z-20 flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => setZoomModalOpen(true)}
+                          className="px-2.5 py-1 rounded-full bg-white/90 hover:bg-white text-[#25100E] border border-[#25100E]/20 text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-sm cursor-pointer transition-all hover:scale-105"
+                          title="Zoom packaging image"
+                        >
+                          <ZoomIn className="w-3 h-3 text-[#D73B3A]" />
+                          <span>Zoom</span>
+                        </button>
+                      </div>
 
-                <div className="absolute top-4 right-4 z-20">
-                  <span className="px-2.5 py-1 rounded-full bg-emerald-600 text-white text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-sm">
-                    <Check className="w-3 h-3 stroke-[3]" />
-                    <span>VEG</span>
-                  </span>
-                </div>
-              </div>
+                      {/* Previous / Next Arrow Controls */}
+                      {galleryList.length > 1 && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedImageIndex(
+                                (selectedImageIndex - 1 + galleryList.length) % galleryList.length
+                              );
+                            }}
+                            className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-[#25100E] shadow-md border border-[#522C28]/15 flex items-center justify-center transition-transform hover:scale-110 active:scale-95 cursor-pointer"
+                            aria-label="Previous image"
+                          >
+                            <ChevronLeft className="w-4 h-4 stroke-[2.5]" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedImageIndex((selectedImageIndex + 1) % galleryList.length);
+                            }}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-[#25100E] shadow-md border border-[#522C28]/15 flex items-center justify-center transition-transform hover:scale-110 active:scale-95 cursor-pointer"
+                            aria-label="Next image"
+                          >
+                            <ChevronRight className="w-4 h-4 stroke-[2.5]" />
+                          </button>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Interactive Thumbnail Gallery Strip */}
+                    {galleryList.length > 1 && (
+                      <div className="grid grid-cols-3 gap-2 sm:gap-3 w-full max-w-[460px] mt-3">
+                        {galleryList.map((img, idx) => {
+                          const isSelected = selectedImageIndex === idx;
+                          const label =
+                            idx === 0 ? "3D Pouch" : idx === 1 ? "Packet Front" : "Packet Back";
+                          const subLabel =
+                            idx === 0 ? "Pouch View" : idx === 1 ? "Front Design" : "Nutrition & FSSAI";
+                          return (
+                            <button
+                              key={idx}
+                              type="button"
+                              onClick={() => setSelectedImageIndex(idx)}
+                              className={`flex items-center gap-2 p-1.5 sm:p-2 rounded-2xl border-2 transition-all cursor-pointer ${
+                                isSelected
+                                  ? "border-[#D73B3A] bg-white shadow-md ring-2 ring-[#D73B3A]/25 scale-[1.02]"
+                                  : "border-[#522C28]/15 bg-white/70 hover:bg-white hover:border-[#522C28]/35"
+                              }`}
+                            >
+                              <div className="w-9 h-11 sm:w-11 sm:h-14 rounded-lg bg-[#FFF8EE] flex items-center justify-center overflow-hidden shrink-0 border border-[#522C28]/10 p-0.5">
+                                <img src={img} alt={label} className="w-full h-full object-contain" />
+                              </div>
+                              <div className="text-left overflow-hidden min-w-0">
+                                <span className="block text-[11px] font-black uppercase text-[#25100E] leading-tight truncate">
+                                  {label}
+                                </span>
+                                <span className="block text-[9px] text-[#522C28]/60 font-bold uppercase truncate">
+                                  {subLabel}
+                                </span>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
 
               {/* 4 Health Pillars Grid under Pouch */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 w-full max-w-[460px] mt-4">
@@ -873,6 +987,63 @@ export default function ProductDetailPage() {
           ))}
         </div>
       </div>
+
+      {/* Lightbox / Fullscreen Packaging Zoom Modal */}
+      {zoomModalOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200"
+          onClick={() => setZoomModalOpen(false)}
+        >
+          <div
+            className="relative max-w-4xl max-h-[92vh] w-full flex flex-col items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={() => setZoomModalOpen(false)}
+              className="absolute -top-12 right-0 sm:right-2 text-white hover:text-[#FFCD3C] p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all cursor-pointer flex items-center gap-1.5 text-xs font-bold"
+            >
+              <X className="w-5 h-5 stroke-[2.5]" />
+              <span className="hidden sm:inline">Close</span>
+            </button>
+
+            {/* Active Modal Image */}
+            <div className="relative rounded-3xl overflow-hidden bg-white/95 p-3 sm:p-4 shadow-2xl max-h-[80vh] flex items-center justify-center border-2 border-white/20">
+              <img
+                src={
+                  (product.galleryImages && product.galleryImages[selectedImageIndex]) ||
+                  product.packImage
+                }
+                alt={`${product.name} packaging full view`}
+                className="max-h-[74vh] w-auto object-contain rounded-2xl"
+              />
+            </div>
+
+            {/* Modal Bottom Switcher */}
+            {product.galleryImages && product.galleryImages.length > 1 && (
+              <div className="flex items-center gap-2 mt-4 bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20">
+                {product.galleryImages.map((_, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setSelectedImageIndex(idx)}
+                    className={`px-3 py-1 rounded-full text-xs font-black uppercase transition-all cursor-pointer ${
+                      selectedImageIndex === idx
+                        ? "bg-[#D73B3A] text-white shadow-sm scale-105"
+                        : "bg-white/20 text-white/80 hover:bg-white/30"
+                    }`}
+                  >
+                    {idx === 0 ? "3D Pouch" : idx === 1 ? "Packet Front" : "Packet Back (Nutrition)"}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

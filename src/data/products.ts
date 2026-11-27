@@ -31,6 +31,9 @@ export interface ProductDetails {
   accentBg: string;
   gradient: string;
   packImage: string;
+  frontImage?: string;
+  backImage?: string;
+  galleryImages: string[];
   bgSvg: string;
   bgMobileSvg?: string;
   accentColor: string;
@@ -60,6 +63,9 @@ export interface ComboItem {
   tagline: string;
   shortDesc: string;
   packImage: string;
+  frontImage?: string;
+  backImage?: string;
+  galleryImages?: string[];
   secondaryImage?: string;
   bgSvg?: string;
   bgMobileSvg?: string;
@@ -88,6 +94,13 @@ export const COMBOS: Record<string, ComboItem> = {
     shortDesc:
       "Can’t pick just one? Taste all three signature Pop Culture flavours in one exciting box. The perfect crunch discovery kit!",
     packImage: "/packets/peri-peri.png",
+    frontImage: "/packaging/peri-peri-front.jpg",
+    backImage: "/packaging/peri-peri-back.jpg",
+    galleryImages: [
+      "/packets/peri-peri.png",
+      "/packaging/peri-peri-front.jpg",
+      "/packaging/peri-peri-back.jpg",
+    ],
     secondaryImage: "/packets/cheddar-cheese.png",
     bgSvg: "/product-bg/peri-peri.webp",
     bgMobileSvg: "/product-bg/mobile-peri-peri.webp",
@@ -118,6 +131,13 @@ export const COMBOS: Record<string, ComboItem> = {
     shortDesc:
       "Stock up for movie nights, late-night gaming, and guilt-free couch munching. Double the crunch for the whole crew.",
     packImage: "/packets/cheddar-cheese.png",
+    frontImage: "/packaging/cheddar-cheese-front.jpg",
+    backImage: "/packaging/cheddar-cheese-back.jpg",
+    galleryImages: [
+      "/packets/cheddar-cheese.png",
+      "/packaging/cheddar-cheese-front.jpg",
+      "/packaging/cheddar-cheese-back.jpg",
+    ],
     secondaryImage: "/packets/peri-peri.png",
     bgSvg: "/product-bg/cheese.webp",
     bgMobileSvg: "/product-bg/mobile-cheese.webp",
@@ -148,6 +168,13 @@ export const COMBOS: Record<string, ComboItem> = {
     shortDesc:
       "The ultimate pantry supply for healthy homes and offices. Maximum flavour variety and free express delivery.",
     packImage: "/packets/himalayan-salt.png",
+    frontImage: "/packaging/pink-salt-front.jpg",
+    backImage: "/packaging/pink-salt-back.jpg",
+    galleryImages: [
+      "/packets/himalayan-salt.png",
+      "/packaging/pink-salt-front.jpg",
+      "/packaging/pink-salt-back.jpg",
+    ],
     secondaryImage: "/packets/peri-peri.png",
     bgSvg: "/product-bg/pink-salt.webp",
     bgMobileSvg: "/product-bg/mobile-pink-salt.webp",
@@ -196,6 +223,13 @@ export const PRODUCTS: Record<string, ProductDetails> = {
     accentBg: "#ED0006", // Accent Vibrant Red
     gradient: "from-[#D73B3A] via-[#ED0006] to-[#522C28]",
     packImage: "/packets/peri-peri.png",
+    frontImage: "/packaging/peri-peri-front.jpg",
+    backImage: "/packaging/peri-peri-back.jpg",
+    galleryImages: [
+      "/packets/peri-peri.png",
+      "/packaging/peri-peri-front.jpg",
+      "/packaging/peri-peri-back.jpg",
+    ],
     bgSvg: "/product-bg/peri-peri.webp",
     bgMobileSvg: "/product-bg/mobile-peri-peri.webp",
     accentColor: "#FAC537", // Accent Warm Yellow
@@ -284,6 +318,13 @@ export const PRODUCTS: Record<string, ProductDetails> = {
     accentBg: "#F79E1B",
     gradient: "from-[#FAC537] via-[#F79E1B] to-[#522C28]",
     packImage: "/packets/cheddar-cheese.png",
+    frontImage: "/packaging/cheddar-cheese-front.jpg",
+    backImage: "/packaging/cheddar-cheese-back.jpg",
+    galleryImages: [
+      "/packets/cheddar-cheese.png",
+      "/packaging/cheddar-cheese-front.jpg",
+      "/packaging/cheddar-cheese-back.jpg",
+    ],
     bgSvg: "/product-bg/cheese.webp",
     bgMobileSvg: "/product-bg/mobile-cheese.webp",
     accentColor: "#522C28", // Espresso
@@ -372,6 +413,13 @@ export const PRODUCTS: Record<string, ProductDetails> = {
     accentBg: "#E1366C",
     gradient: "from-[#F05A89] via-[#E1366C] to-[#522C28]",
     packImage: "/packets/himalayan-salt.png",
+    frontImage: "/packaging/pink-salt-front.jpg",
+    backImage: "/packaging/pink-salt-back.jpg",
+    galleryImages: [
+      "/packets/himalayan-salt.png",
+      "/packaging/pink-salt-front.jpg",
+      "/packaging/pink-salt-back.jpg",
+    ],
     bgSvg: "/product-bg/pink-salt.webp",
     bgMobileSvg: "/product-bg/mobile-pink-salt.webp",
     accentColor: "#FAC537",
@@ -461,6 +509,9 @@ export const PRODUCTS: Record<string, ProductDetails> = {
     accentBg: "#3CA837",
     gradient: "from-[#93BF56] via-[#3CA837] to-[#522C28]",
     packImage: "/packets/raw-makhana-pouch.png",
+    galleryImages: [
+      "/packets/raw-makhana-pouch.png",
+    ],
     bgSvg: "/product-bg/plain.webp",
     bgMobileSvg: "/product-bg/mobile-plain.webp",
     accentColor: "#93BF56", // Accent Lime Green
@@ -549,6 +600,13 @@ export const PRODUCTS: Record<string, ProductDetails> = {
     accentBg: "#9E1B42",
     gradient: "from-[#8B1E3F] via-[#B31B4B] to-[#522C28]",
     packImage: "/packets/cream-n-onion.png",
+    frontImage: "/packaging/cream-and-onion-front.jpg",
+    backImage: "/packaging/cream-and-onion-back.jpg",
+    galleryImages: [
+      "/packets/cream-n-onion.png",
+      "/packaging/cream-and-onion-front.jpg",
+      "/packaging/cream-and-onion-back.jpg",
+    ],
     bgSvg: "/product-bg/cream-and-onion.png",
     bgMobileSvg: "/product-bg/mobile-cream-and-onion.png",
     accentColor: "#84CC16", // Bright Lime Green from packaging nutrition border
