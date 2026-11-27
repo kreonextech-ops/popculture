@@ -117,7 +117,7 @@ interface BoxTierConfig {
 const BOX_TIERS: Record<BoxSize, BoxTierConfig> = {
   4: {
     size: 4,
-    title: "4-Pack Box",
+    title: "4-Pack Bag",
     price: 596,
     originalPrice: 596,
     savings: "",
@@ -125,7 +125,7 @@ const BOX_TIERS: Record<BoxSize, BoxTierConfig> = {
   },
   6: {
     size: 6,
-    title: "6-Pack Box",
+    title: "6-Pack Bag",
     price: 894,
     originalPrice: 894,
     savings: "",
@@ -134,7 +134,7 @@ const BOX_TIERS: Record<BoxSize, BoxTierConfig> = {
   },
   12: {
     size: 12,
-    title: "12-Pack Box",
+    title: "12-Pack Bag",
     price: 1788,
     originalPrice: 1788,
     savings: "",
@@ -179,7 +179,7 @@ export default function BuildABoxPage() {
   // Add flavour to next free slot
   const handleAddFlavour = (flavourId: string) => {
     if (slots.length >= selectedSize) {
-      setToastMsg(`Box is full! Remove a pack to add ${flavourId.replace("-", " ")}.`);
+      setToastMsg(`Bag is full! Remove a pack to add ${flavourId.replace("-", " ")}.`);
       setTimeout(() => setToastMsg(null), 2500);
       return;
     }
@@ -207,7 +207,7 @@ export default function BuildABoxPage() {
   };
 
   // Clear all
-  const handleResetBox = () => {
+  const handleResetBag = () => {
     setSlots([]);
   };
 
@@ -225,12 +225,12 @@ export default function BuildABoxPage() {
     return c;
   }, [slots]);
 
-  // Dynamic "Box Persona"
-  const boxPersona = useMemo(() => {
+  // Dynamic "Bag Persona"
+  const bagPersona = useMemo(() => {
     if (slots.length === 0) {
       return {
         title: "✨ Clean Slate",
-        desc: "Tap your favourite snacks below to fill your custom crate!",
+        desc: "Tap your favourite snacks below to fill your custom snack bag!",
         accent: "#522C28",
       };
     }
@@ -241,24 +241,24 @@ export default function BuildABoxPage() {
     if (maxCount >= slots.length * 0.75) {
       if (topId === "peri-peri")
         return {
-          title: "🔥 The Firebreather Box",
+          title: "🔥 The Firebreather Bag",
           desc: "Full-throttle heat! Zero hesitation, pure spicy crunch.",
           accent: "#E53925",
         };
       if (topId === "cheddar-cheese")
         return {
-          title: "🧀 The Velvet Melter Box",
+          title: "🧀 The Velvet Melter Bag",
           desc: "Ultimate comfort snacking. Rich, golden, and deeply satisfying.",
           accent: "#F79E1B",
         };
       if (topId === "pink-salt")
         return {
-          title: "🌸 The Zen Purist Box",
+          title: "🌸 The Zen Purist Bag",
           desc: "Clean, mineral-rich, guilt-free crunch for mindful days.",
           accent: "#E1366C",
         };
       return {
-        title: "🍃 The Chef’s Harvest Box",
+        title: "🍃 The Chef’s Harvest Bag",
         desc: "100% pure raw lotus seeds ready for custom roasts & healthy cooking.",
         accent: "#2D6A4F",
       };
@@ -316,7 +316,7 @@ export default function BuildABoxPage() {
     return sum;
   }, [slots, selectedSize]);
 
-  // Add custom box to cart
+  // Add custom bag to cart
   const handleAddBoxToCart = () => {
     if (slots.length < selectedSize) {
       setToastMsg(`Please fill all ${selectedSize} slots before adding to cart! (${selectedSize - slots.length} left)`);
@@ -335,8 +335,8 @@ export default function BuildABoxPage() {
 
     const customItem = {
       variantId: 900000 + selectedSize * 100 + Math.floor(Math.random() * 90),
-      slug: `custom-box-${selectedSize}`,
-      name: `CUSTOM ${selectedSize}-PACK BOX`,
+      slug: `custom-bag-${selectedSize}`,
+      name: `CUSTOM ${selectedSize}-PACK BAG`,
       variantLabel: parts,
       price: totalBoxPrice,
       originalPrice: totalBoxPrice,
@@ -344,7 +344,7 @@ export default function BuildABoxPage() {
     };
 
     addItem(customItem, 1, true);
-    setToastMsg(`Custom ${selectedSize}-Pack Box (₹${totalBoxPrice}) added to your cart! 🎁`);
+    setToastMsg(`Custom ${selectedSize}-Pack Bag (₹${totalBoxPrice}) added to your cart! 🎁`);
     setTimeout(() => setToastMsg(null), 3000);
   };
 
@@ -363,7 +363,7 @@ export default function BuildABoxPage() {
       )}
 
       {/* =========================================================================
-          BUILD A BOX HERO SECTION (With Responsive Desktop & Mobile Artwork Stage)
+          BUILD A BAG HERO SECTION (With Responsive Desktop & Mobile Artwork Stage)
           ========================================================================= */}
       <section className="relative overflow-hidden pt-28 sm:pt-36 pb-12 sm:pb-16 border-b-2 border-[#25100E]">
         {/* Background Image Layer (Responsive Desktop & Mobile Dunes) */}
@@ -372,7 +372,7 @@ export default function BuildABoxPage() {
             <source media="(max-width: 768px)" srcSet="/box/box-hero-mobile-bg.png" />
             <img
               src="/box/box-hero-bg.png"
-              alt="Build Your Own Box Background"
+              alt="Build Your Own Bag Background"
               loading="eager"
               decoding="async"
               className="w-full h-full object-cover object-bottom"
@@ -390,7 +390,7 @@ export default function BuildABoxPage() {
             <div className="lg:col-span-7 text-center lg:text-left flex flex-col items-center lg:items-start">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E53925]/10 border border-[#E53925]/20 text-[#E53925] text-xs font-black uppercase tracking-widest mb-4 shadow-xs">
                 <Sparkles className="w-3.5 h-3.5 text-[#FFCD3C] fill-[#FFCD3C]" />
-                <span>POP CULTURE CUSTOM CRATE</span>
+                <span>POP CULTURE CUSTOM BAG</span>
               </div>
 
               <h1 className="flex flex-col text-balance">
@@ -398,12 +398,12 @@ export default function BuildABoxPage() {
                   SNACK SMART · SNACK COOL
                 </span>
                 <span className="font-display font-black text-4xl sm:text-6xl md:text-7xl uppercase tracking-tight text-[#25100E] leading-[1.03]">
-                  BUILD YOUR <span className="text-[#D73B3A]">OWN BOX</span>
+                  BUILD YOUR <span className="text-[#D73B3A]">OWN BAG</span>
                 </span>
               </h1>
 
               <p className="mt-4 sm:mt-5 text-sm sm:text-base md:text-lg text-[#522C28]/85 font-medium max-w-xl leading-relaxed text-balance">
-                Mix and match your favourite slow-roasted flavours. Pack 4, 6, or 12 pouches, unlock bulk savings, and get your custom crunch crate shipped free straight to your doorstep!
+                Mix and match your favourite slow-roasted flavours. Pack 4, 6, or 12 pouches, unlock bulk savings, and get your custom crunch bag shipped free straight to your doorstep!
               </p>
 
               {/* 3 Key Brand Pillars */}
@@ -425,10 +425,10 @@ export default function BuildABoxPage() {
               {/* Quick Jump CTA */}
               <div className="mt-7 flex items-center gap-3">
                 <a
-                  href="#box-builder-steps"
+                  href="#bag-builder-steps"
                   className="px-6 py-3 rounded-full bg-[#D73B3A] text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-md hover:bg-[#c9302f] hover:shadow-lg transition-all inline-flex items-center gap-2 group cursor-pointer"
                 >
-                  <span>Start Packing Your Crate</span>
+                  <span>Start Packing Your Bag</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                 </a>
                 <span className="text-xs font-mono font-bold text-[#522C28]/60 uppercase">
@@ -505,21 +505,21 @@ export default function BuildABoxPage() {
 
       {/* Edge-to-edge Marquee underneath Hero */}
       <div className="w-screen relative left-1/2 -translate-x-1/2 overflow-hidden border-b-2 border-[#25100E] shadow-sm select-none">
-        <InfiniteAssetMarquee text="BUILD YOUR OWN BOX" />
+        <InfiniteAssetMarquee text="BUILD YOUR OWN BAG" />
       </div>
 
       {/* Main Container */}
-      <main id="box-builder-steps" className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-32 sm:pb-40">
+      <main id="bag-builder-steps" className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-32 sm:pb-40">
 
-        {/* STEP 1: Select Box Size */}
+        {/* STEP 1: Select Bag Size */}
         <div className="mb-10">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xs sm:text-sm font-black uppercase tracking-wider text-[#522C28]/80 flex items-center gap-2">
               <span className="w-5 h-5 rounded-full bg-[#25100E] text-[#FFF8EE] inline-flex items-center justify-center text-[10px]">1</span>
-              <span>Select Box Size</span>
+              <span>Select Bag Size</span>
             </h2>
             <span className="text-[11px] font-bold text-[#E53925]">
-              Bigger Box = Bigger Savings
+              Bigger Bag = Bigger Savings
             </span>
           </div>
 
@@ -568,7 +568,7 @@ export default function BuildABoxPage() {
           </div>
         </div>
 
-        {/* STEP 2: Interactive Box Stage & Flavour Persona */}
+        {/* STEP 2: Interactive Bag Stage & Flavour Persona */}
         <div className="mb-12 bg-white rounded-3xl border-2 border-[#522C28]/15 p-5 sm:p-8 shadow-sm">
           
           {/* Header of Stage */}
@@ -576,7 +576,7 @@ export default function BuildABoxPage() {
             <div>
               <h2 className="text-xs sm:text-sm font-black uppercase tracking-wider text-[#522C28]/80 flex items-center gap-2">
                 <span className="w-5 h-5 rounded-full bg-[#25100E] text-[#FFF8EE] inline-flex items-center justify-center text-[10px]">2</span>
-                <span>Your Custom Snack Crate</span>
+                <span>Your Custom Snack Bag</span>
               </h2>
               <p className="text-xs font-bold text-[#522C28]/70 mt-0.5">
                 {slots.length} of {selectedSize} slots packed ({selectedSize - slots.length} remaining)
@@ -586,11 +586,11 @@ export default function BuildABoxPage() {
             <div className="flex items-center gap-2">
               {slots.length > 0 && (
                 <button
-                  onClick={handleResetBox}
+                  onClick={handleResetBag}
                   className="px-3 py-1.5 rounded-full border border-[#522C28]/20 text-[11px] font-black uppercase tracking-wider hover:bg-red-50 hover:text-red-600 transition-colors flex items-center gap-1 cursor-pointer"
                 >
                   <RotateCcw className="w-3 h-3" />
-                  <span>Empty Box</span>
+                  <span>Empty Bag</span>
                 </button>
               )}
             </div>
@@ -602,13 +602,13 @@ export default function BuildABoxPage() {
               <span className="text-2xl sm:text-3xl">🎭</span>
               <div>
                 <span className="text-[10px] font-black uppercase tracking-widest text-[#522C28]/60">
-                  BOX FLAVOUR PERSONA
+                  BAG FLAVOUR PERSONA
                 </span>
                 <h4 className="font-display text-base sm:text-lg font-black uppercase text-[#25100E]">
-                  {boxPersona.title}
+                  {bagPersona.title}
                 </h4>
                 <p className="text-xs text-[#522C28]/80 font-medium">
-                  {boxPersona.desc}
+                  {bagPersona.desc}
                 </p>
               </div>
             </div>
@@ -770,7 +770,7 @@ export default function BuildABoxPage() {
                     if (!isBoxFull) {
                       handleAddFlavour(f.id);
                     } else {
-                      setToastMsg(`Box is full! Remove a pack from above to add ${f.name}.`);
+                      setToastMsg(`Bag is full! Remove a pack from above to add ${f.name}.`);
                       setTimeout(() => setToastMsg(null), 2500);
                     }
                   }}
@@ -795,7 +795,7 @@ export default function BuildABoxPage() {
 
                       {currentCount > 0 && (
                         <span className="px-2 py-0.5 rounded-full bg-[#25100E] text-[#FFCD3C] text-[10px] font-black uppercase">
-                          {currentCount} in box
+                          {currentCount} in bag
                         </span>
                       )}
                     </div>
@@ -888,12 +888,12 @@ export default function BuildABoxPage() {
           </div>
         </div>
 
-        {/* STEP 4: Box Calculation Breakdown */}
+        {/* STEP 4: Bag Calculation Breakdown */}
         <div className="mb-14 rounded-3xl bg-white border-2 border-[#25100E]/15 p-5 sm:p-7 shadow-sm">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#25100E]/10 pb-4">
             <div>
               <span className="text-[10px] font-black uppercase tracking-widest text-[#E53925]">
-                ✦ BOX SUMMARY &amp; PRICING ✦
+                ✦ BAG SUMMARY &amp; PRICING ✦
               </span>
               <h3 className="font-display text-lg sm:text-2xl font-black uppercase text-[#25100E] mt-0.5">
                 {tier.title} Breakdown
@@ -914,7 +914,7 @@ export default function BuildABoxPage() {
                 {slots.length} / {selectedSize} Packs
               </span>
               <span className="text-[10px] text-[#522C28]/70">
-                {isBoxFull ? "✅ Box fully packed!" : `Remaining to pack: ${selectedSize - slots.length}`}
+                {isBoxFull ? "✅ Bag fully packed!" : `Remaining to pack: ${selectedSize - slots.length}`}
               </span>
             </div>
             <div className="bg-[#FFF8EE]/60 p-3.5 rounded-2xl border border-[#25100E]/08">
@@ -936,7 +936,7 @@ export default function BuildABoxPage() {
               </span>
             </div>
             <div className="bg-[#25100E] p-3.5 rounded-2xl text-white">
-              <span className="text-[10px] font-bold uppercase text-white/60 block">Total Box Price</span>
+              <span className="text-[10px] font-bold uppercase text-white/60 block">Total Bag Price</span>
               <span className="font-display text-xl sm:text-2xl font-black text-[#FFCD3C] mt-0.5 block">
                 ₹{totalBoxPrice}
               </span>
@@ -958,7 +958,7 @@ export default function BuildABoxPage() {
                 FRESHLY ROASTED TO ORDER
               </h3>
               <p className="text-xs sm:text-sm text-white/70 mt-0.5">
-                Every custom box is hand-packed with freshly roasted makhana pouches and sealed for maximum crunch.
+                Every custom bag is hand-packed with freshly roasted makhana pouches and sealed for maximum crunch.
               </p>
             </div>
           </div>
@@ -975,7 +975,7 @@ export default function BuildABoxPage() {
       </main>
 
       {/* Floating Bottom Bar (Clear, Interactive, Unblocked) */}
-      <aside aria-label="Build a box summary" className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t-2 border-[#522C28]/15 px-4 sm:px-8 py-3 sm:py-3.5 shadow-[0_-8px_30px_rgba(0,0,0,0.12)]">
+      <aside aria-label="Build a bag summary" className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t-2 border-[#522C28]/15 px-4 sm:px-8 py-3 sm:py-3.5 shadow-[0_-8px_30px_rgba(0,0,0,0.12)]">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           
           {/* Left summary & Price Calculation */}
@@ -1056,7 +1056,7 @@ export default function BuildABoxPage() {
               <ShoppingBag className="w-4 h-4" />
               <span>
                 {isBoxFull
-                  ? `Add Custom Box to Cart • ₹${totalBoxPrice}`
+                  ? `Add Custom Bag to Cart • ₹${totalBoxPrice}`
                   : `Pack ${selectedSize - slots.length} More Pack${selectedSize - slots.length > 1 ? "s" : ""} (₹${totalBoxPrice})`}
               </span>
             </button>

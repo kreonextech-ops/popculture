@@ -178,7 +178,7 @@ export default function Navbar() {
 
   const navLinks = [
     { href: "/shop", label: "Shop All" },
-    { href: "/build-a-box", label: "Build a Box" },
+    { href: "/build-a-box", label: "Build a Bag" },
     { href: "/about", label: "Our Story" },
     { href: "/play", label: "Play" },
   ];

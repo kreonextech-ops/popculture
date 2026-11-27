@@ -73,7 +73,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link href="/build-a-box" className="hover:text-[#A5151C] transition-colors">
-                    Build a Box
+                    Build a Bag
                   </Link>
                 </li>
                 <li>
@@ -334,7 +334,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link href="/build-a-box" className="hover:text-[#A5151C] transition-colors">
-                    Build a Box
+                    Build a Bag
                   </Link>
                 </li>
                 <li>

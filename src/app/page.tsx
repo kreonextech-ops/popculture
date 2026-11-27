@@ -1498,7 +1498,7 @@ export default function BiteJoyPage() {
               </div>
             </div>
 
-            {/* Card 4: Build Your Own Box (Interactive Custom Box CTA) */}
+            {/* Card 4: Build Your Own Bag (Interactive Custom Bag CTA) */}
             <Link
               href="/build-a-box"
               className="w-[82vw] max-w-[290px] shrink-0 snap-center sm:w-auto sm:max-w-none bg-gradient-to-b from-[#FFFDF9] to-[#FFF3DC] border-2 border-dashed border-[#F79E1B]/70 hover:border-[#E53925] rounded-2xl p-3 sm:p-3.5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_16px_rgba(247,158,27,0.12)] hover:shadow-[0_12px_28px_rgba(247,158,27,0.22)] group cursor-pointer relative"
@@ -1511,11 +1511,11 @@ export default function BiteJoyPage() {
 
                 <img
                   src="/assets/goodness-box.png"
-                  alt="Custom Snack Crate"
+                  alt="Custom Snack Bag"
                   className="h-[75px] sm:h-[85px] w-auto max-h-full object-contain drop-shadow-md transition-transform duration-300 group-hover:scale-105"
                 />
                 <span className="font-display text-sm font-black uppercase text-[#25100E] tracking-wide text-center mt-1">
-                  BUILD YOUR OWN BOX
+                  BUILD YOUR OWN BAG
                 </span>
                 <p className="text-[10px] text-[#522C28]/70 text-center mt-0.5 max-w-[170px] leading-tight">
                   Mix 4, 6, or 12 packs of your favourite flavours!
@@ -1539,7 +1539,7 @@ export default function BiteJoyPage() {
                   </span>
                 </div>
                 <h3 className="font-display text-sm sm:text-base font-black uppercase text-[#25100E] leading-snug mt-1 group-hover:text-[#E53925] transition-colors">
-                  CUSTOM SNACK CRATE
+                  CUSTOM SNACK BAG
                 </h3>
                 <p className="text-[11px] text-[#522C28]/70 mt-0.5 line-clamp-1">
                   Choose your own flavours &amp; pack sizes

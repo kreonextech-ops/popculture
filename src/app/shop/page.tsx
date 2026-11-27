@@ -862,7 +862,7 @@ export default function ShopPage() {
                   href="/build-a-box"
                   className="px-7 py-3.5 rounded-full bg-[#FAC537] hover:bg-[#FFE07D] text-[#25100E] font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg hover:shadow-xl hover:scale-102 active:scale-98 transition-all inline-flex items-center justify-center gap-2 group w-full sm:w-auto"
                 >
-                  <span>Build A Box & Save 20%</span>
+                  <span>Build A Bag & Save 20%</span>
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Link>
                 <button
