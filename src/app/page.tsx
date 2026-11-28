@@ -747,36 +747,36 @@ export default function BiteJoyPage() {
             />
           </picture>
 
-          {/* Main Hero Grid: Brand Copy/CTAs (Top) + Stacked Pouches & Fox (Bottom) */}
+          {/* Main Hero Grid: Brand Copy/CTAs (Top/Middle) + Stacked Pouches & Fox (Bottom) */}
           <div className="relative z-20 w-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-14 flex-1 flex flex-col lg:flex-row items-center justify-between gap-1 sm:gap-8 lg:gap-6 pt-2 sm:pt-6 pointer-events-none">
-            {/* Left/Top Column: Brand Copy & Dual CTAs (Lowered into the middle on mobile) */}
-            <div className="w-full lg:w-[46%] flex flex-col items-center lg:items-start text-center lg:text-left pt-18 min-[380px]:pt-22 min-[440px]:pt-28 sm:pt-6 lg:py-8 pointer-events-none shrink-0">
+            {/* Left/Top Column: Brand Copy & Dual CTAs (Lowered into the middle) */}
+            <div className="w-full lg:w-[46%] flex flex-col items-center lg:items-start text-center lg:text-left my-auto pt-24 min-[380px]:pt-28 min-[440px]:pt-32 sm:pt-10 lg:pt-0 lg:my-auto pointer-events-none shrink-0">
               
               {/* Eyebrow Badge */}
-              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#D73B3A]/10 border border-[#D73B3A]/20 text-[#D73B3A] text-[10px] min-[400px]:text-[11px] sm:text-xs font-black uppercase tracking-wider mb-2 sm:mb-3 shadow-xs">
-                <Sparkles className="w-3 h-3 text-[#FAC537] fill-[#FAC537]" />
+              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#D73B3A]/10 border border-[#D73B3A]/20 text-[#D73B3A] text-[10px] min-[400px]:text-[11px] sm:text-xs font-black uppercase tracking-wider mb-2.5 sm:mb-3.5 shadow-xs">
+                <Sparkles className="w-3.5 h-3.5 text-[#FAC537] fill-[#FAC537]" />
                 <span>POP CULTURE · 100% ROASTED</span>
               </div>
 
               {/* Main Headline: Snack Smart. Snack Cool. */}
-              <h1 className="font-display text-[44px] min-[380px]:text-[48px] min-[440px]:text-[54px] sm:text-6xl lg:text-[66px] xl:text-[76px] leading-[0.93] tracking-tight uppercase text-[#522C28]">
+              <h1 className="font-display text-[46px] min-[380px]:text-[52px] min-[440px]:text-[58px] sm:text-6xl lg:text-[68px] xl:text-[78px] leading-[0.93] tracking-tight uppercase text-[#522C28]">
                 SNACK SMART.{" "}
                 <span className="block font-display text-[#D73B3A]">SNACK COOL.</span>
               </h1>
 
               {/* Subtitle */}
-              <p className="mt-2.5 sm:mt-3 text-[13px] min-[400px]:text-[14px] sm:text-base text-[#522C28]/85 font-semibold max-w-xs sm:max-w-md leading-snug sm:leading-relaxed text-balance">
+              <p className="mt-3 sm:mt-3.5 text-[14px] min-[400px]:text-[15px] sm:text-base text-[#522C28]/85 font-semibold max-w-xs sm:max-w-md leading-snug sm:leading-relaxed text-balance">
                 Carefully sourced, slow-roasted Makhana in 4 signature flavours. Pure clean crunch that hits different.
               </p>
 
               {/* Hero CTAs */}
               <div
                 style={{ zIndex: 40 }}
-                className="relative mt-3.5 sm:mt-6 flex flex-nowrap sm:flex-wrap items-center justify-center lg:justify-start gap-2.5 sm:gap-3.5 pointer-events-auto"
+                className="relative mt-4 sm:mt-6 flex flex-nowrap sm:flex-wrap items-center justify-center lg:justify-start gap-2.5 sm:gap-3.5 pointer-events-auto"
               >
                 <Link
                   href="/shop"
-                  className="px-5 sm:px-8 py-2.5 sm:py-3.5 rounded-full bg-[#D73B3A] hover:bg-[#B82928] text-[#FFF8EE] font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_6px_20px_rgba(215,59,58,0.32)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer whitespace-nowrap"
+                  className="px-6 sm:px-8 py-3 sm:py-3.5 rounded-full bg-[#D73B3A] hover:bg-[#B82928] text-[#FFF8EE] font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_6px_20px_rgba(215,59,58,0.32)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-1.5 sm:gap-2 cursor-pointer whitespace-nowrap"
                 >
                   <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   <span>Shop Now</span>
@@ -785,7 +785,7 @@ export default function BiteJoyPage() {
                 <button
                   type="button"
                   onClick={() => instantJumpTo("#flavours")}
-                  className="group px-5 sm:px-8 py-2.5 sm:py-3.5 rounded-full bg-white hover:bg-[#FFF5E6] text-[#25100E] hover:text-[#D73B3A] border-2 border-[#25100E]/20 hover:border-[#D73B3A] font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_6px_20px_rgba(37,16,14,0.12)] hover:shadow-[0_8px_24px_rgba(215,59,58,0.2)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 cursor-pointer whitespace-nowrap"
+                  className="group px-6 sm:px-8 py-3 sm:py-3.5 rounded-full bg-white hover:bg-[#FFF5E6] text-[#25100E] hover:text-[#D73B3A] border-2 border-[#25100E]/20 hover:border-[#D73B3A] font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_6px_20px_rgba(37,16,14,0.12)] hover:shadow-[0_8px_24px_rgba(215,59,58,0.2)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 cursor-pointer whitespace-nowrap"
                 >
                   <span>Explore Flavours</span>
                   <ArrowRight className="w-4 h-4 stroke-[2.5] text-[#D73B3A] transition-transform duration-300 group-hover:translate-x-1" />
