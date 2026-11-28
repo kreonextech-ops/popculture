@@ -28,6 +28,16 @@ import { useCart } from "@/components/CartContext";
 import Navbar from "@/components/Navbar";
 import type { StoreProduct } from "@/lib/store";
 
+const COMBO_FLAVOUR_SLUGS: Record<string, string[]> = {
+  "all-4-flavours-box": ["cheddar-cheese", "peri-peri", "cream-and-onion", "pink-salt"],
+  "bestseller-crunch-bundle": ["cheddar-cheese", "peri-peri", "cream-and-onion", "pink-salt"],
+  "cheese-and-spice-fiesta": ["cheddar-cheese", "peri-peri"],
+  "mega-crunch-party-stash": ["cheddar-cheese", "peri-peri", "cream-and-onion", "pink-salt"],
+  "ultimate-trio-pack": ["cheddar-cheese", "peri-peri", "cream-and-onion"],
+  "party-crunch-box": ["cheddar-cheese", "peri-peri", "cream-and-onion", "pink-salt"],
+  "mega-muncher-stash": ["cheddar-cheese", "peri-peri", "cream-and-onion", "pink-salt"],
+};
+
 export default function ProductDetailPage() {
   const touchStartXRef = React.useRef<number | null>(null);
   const touchStartYRef = React.useRef<number | null>(null);
@@ -237,9 +247,12 @@ export default function ProductDetailPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [zoomModalOpen, setZoomModalOpen] = useState(false);
+  const [selectedNutritionFlavour, setSelectedNutritionFlavour] = useState<string>("");
 
   useEffect(() => {
     setSelectedImageIndex(0);
+    const initialFlavour = COMBO_FLAVOUR_SLUGS[slug]?.[0] || "";
+    setSelectedNutritionFlavour(initialFlavour);
   }, [slug]);
   const { addItem } = useCart();
 
@@ -742,111 +755,182 @@ export default function ProductDetailPage() {
       {/* =========================================================================
           AUTHENTIC NUTRITIONAL FACTS & INGREDIENTS SECTION (MATCHING PACKAGING)
           ========================================================================= */}
-      <section className="w-full py-12 sm:py-16 bg-[#FDF2E8] border-t border-b border-[#522C28]/10">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          <div className="text-center max-w-2xl mx-auto mb-10">
-            <span className="text-xs font-black uppercase tracking-widest text-[#E53925]">
-              ✦ TRANSPARENT NUTRITION ✦
-            </span>
-            <h2 className="font-display text-2xl sm:text-4xl font-black uppercase tracking-tight text-[#25100E] mt-1">
-              Ingredients & Nutritional Facts
-            </h2>
-            <p className="text-xs sm:text-sm text-[#522C28]/80 font-medium mt-1">
-              Clean, honest snacking. Exactly what goes into your body—no hidden fillers.
-            </p>
-          </div>
+      {(() => {
+        const isCombo = Boolean(staticCombo && COMBO_FLAVOUR_SLUGS[slug]);
+        const comboFlavours = isCombo ? COMBO_FLAVOUR_SLUGS[slug] : [];
+        const activeFlavourProduct = isCombo
+          ? PRODUCTS[selectedNutritionFlavour || comboFlavours[0]] || product
+          : product;
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
-            {/* LEFT: INGREDIENTS & ALLERGENS CARDS */}
-            <div className="lg:col-span-7 flex flex-col gap-5">
+        return (
+          <section className="w-full py-12 sm:py-16 bg-[#FDF2E8] border-t border-b border-[#522C28]/10">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
               
-              {/* Ingredients Card */}
-              <div className="p-6 sm:p-7 rounded-3xl bg-white border border-[#25100E]/15 shadow-sm">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xl">🥣</span>
-                  <h3 className="font-display text-lg sm:text-xl font-black uppercase text-[#25100E]">
-                    Ingredients List
-                  </h3>
-                </div>
-                <p className="text-xs sm:text-sm font-semibold leading-relaxed text-[#3D1A16] whitespace-pre-line bg-[#FFF8EE] p-4 rounded-2xl border border-[#25100E]/10">
-                  {product.ingredients}
+              <div className="text-center max-w-2xl mx-auto mb-8">
+                <span className="text-xs font-black uppercase tracking-widest text-[#E53925]">
+                  ✦ TRANSPARENT NUTRITION ✦
+                </span>
+                <h2 className="font-display text-2xl sm:text-4xl font-black uppercase tracking-tight text-[#25100E] mt-1">
+                  Ingredients &amp; Nutritional Facts
+                </h2>
+                <p className="text-xs sm:text-sm text-[#522C28]/80 font-medium mt-1">
+                  Clean, honest snacking. Exactly what goes into your body—no hidden fillers.
                 </p>
               </div>
 
-              {/* Allergen & Clean Promise Warning Card */}
-              <div className="p-5 sm:p-6 rounded-3xl bg-amber-50 border-2 border-amber-300 shadow-sm flex items-start gap-4">
-                <span className="text-2xl mt-0.5">⚠️</span>
-                <div>
-                  <h4 className="text-xs sm:text-sm font-black uppercase tracking-wider text-amber-900">
-                    Allergen Declaration
-                  </h4>
-                  <p className="text-xs font-bold text-amber-800 mt-1 uppercase tracking-wide">
-                    {product.allergen}
-                  </p>
-                  <p className="text-[11px] text-amber-700/90 mt-1 font-medium">
-                    Manufactured in a certified facility adhering to strict FSSAI quality protocols.
-                  </p>
+              {/* Combo Multi-Flavour Nutrition Switcher */}
+              {isCombo && comboFlavours.length > 0 && (
+                <div className="flex flex-col items-center justify-center mb-8">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-[#522C28]/70 mb-2.5">
+                    ✦ SELECT FLAVOUR NUTRITION &amp; INGREDIENTS ✦
+                  </span>
+                  <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
+                    {comboFlavours.map((fSlug) => {
+                      const fProduct = PRODUCTS[fSlug];
+                      if (!fProduct) return null;
+                      const isSelected = (selectedNutritionFlavour || comboFlavours[0]) === fSlug;
+                      return (
+                        <button
+                          key={fSlug}
+                          type="button"
+                          onClick={() => setSelectedNutritionFlavour(fSlug)}
+                          className={`px-4 sm:px-5 py-2 rounded-full text-xs font-black uppercase tracking-wider transition-all duration-200 cursor-pointer flex items-center gap-2 border-2 ${
+                            isSelected
+                              ? "border-[#25100E] bg-[#25100E] text-[#FFCD3C] shadow-md scale-105"
+                              : "border-[#522C28]/20 bg-white text-[#522C28] hover:border-[#D73B3A] hover:bg-[#FFF8EE]"
+                          }`}
+                        >
+                          <span className="text-sm">{fProduct.emoji}</span>
+                          <span>{fProduct.name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            </div>
+              )}
 
-            {/* RIGHT: EXACT PACKAGING NUTRITIONAL FACTS LABEL */}
-            <div className="lg:col-span-5 flex justify-center">
-              
-              {/* Outer border container matching packaging accent color */}
-              <div
-                style={{ borderColor: product.borderAccentColor }}
-                className="w-full max-w-[380px] bg-white p-4 sm:p-5 rounded-2xl border-[10px] shadow-xl text-black font-sans"
-              >
-                {/* Header */}
-                <div className="border-b-[5px] border-black pb-1 mb-1">
-                  <h3 className="font-black text-2xl sm:text-3xl tracking-tight uppercase leading-none font-sans">
-                    {product.nutritionTitle || "NUTRITIONAL FACTS"}
-                  </h3>
-                  <p className="text-right text-xs sm:text-sm font-bold mt-1">
-                    {product.servingSize.toLowerCase().includes("serve") ? product.servingSize : `Serving Size: ${product.servingSize}`}
-                  </p>
-                </div>
-
-                {/* Table Column Titles */}
-                <div className="flex justify-between items-baseline py-1 border-b-[3px] border-black text-xs font-black">
-                  <span>{product.nutritionColumn1 || "Amount per 100g*"}</span>
-                  <span>{product.nutritionColumn2 || "%Daily Value**"}</span>
-                </div>
-
-                {/* Nutrition Rows */}
-                <div className="divide-y divide-gray-300 text-xs">
-                  {product.nutrition.map((item, idx) => (
-                    <div
-                      key={idx}
-                      className={`flex justify-between items-center py-1 ${
-                        item.isBold ? "font-bold text-black" : "text-gray-800"
-                      }`}
-                    >
-                      <span className={item.isIndent ? "pl-4 text-gray-700" : ""}>
-                        {item.label} {item.amount}
-                      </span>
-                      <span className="font-bold text-black text-right min-w-[50px]">{item.dailyValue || "-"}</span>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                {/* LEFT: INGREDIENTS & ALLERGENS CARDS */}
+                <div className="lg:col-span-7 flex flex-col gap-5">
+                  
+                  {/* Ingredients Card */}
+                  <div className="p-6 sm:p-7 rounded-3xl bg-white border border-[#25100E]/15 shadow-sm">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xl">🥣</span>
+                        <h3 className="font-display text-lg sm:text-xl font-black uppercase text-[#25100E]">
+                          Ingredients List
+                        </h3>
+                      </div>
+                      {isCombo && (
+                        <span className="text-xs font-black uppercase text-[#D73B3A] px-2.5 py-1 rounded-full bg-[#D73B3A]/10 border border-[#D73B3A]/20">
+                          {activeFlavourProduct.name}
+                        </span>
+                      )}
                     </div>
-                  ))}
+                    <p className="text-xs sm:text-sm font-semibold leading-relaxed text-[#3D1A16] whitespace-pre-line bg-[#FFF8EE] p-4 rounded-2xl border border-[#25100E]/10">
+                      {activeFlavourProduct.ingredients}
+                    </p>
+                  </div>
+
+                  {/* Allergen & Clean Promise Warning Card */}
+                  <div className="p-5 sm:p-6 rounded-3xl bg-amber-50 border-2 border-amber-300 shadow-sm flex items-start gap-4">
+                    <span className="text-2xl mt-0.5">⚠️</span>
+                    <div>
+                      <h4 className="text-xs sm:text-sm font-black uppercase tracking-wider text-amber-900">
+                        Allergen Declaration
+                      </h4>
+                      <p className="text-xs font-bold text-amber-800 mt-1 uppercase tracking-wide">
+                        {activeFlavourProduct.allergen}
+                      </p>
+                      <p className="text-[11px] text-amber-700/90 mt-1 font-medium">
+                        Manufactured in a certified facility adhering to strict FSSAI quality protocols.
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
-                {/* FSSAI Disclaimer Footer */}
-                <div className="border-t-[4px] border-black pt-2 mt-2">
-                  <p className="text-[9px] sm:text-[10px] text-gray-600 font-medium leading-tight">
-                    {product.disclaimer}
-                  </p>
+                {/* RIGHT: EXACT PACKAGING NUTRITIONAL FACTS LABEL */}
+                <div className="lg:col-span-5 flex justify-center">
+                  
+                  {/* Outer border container matching packaging accent color */}
+                  <div
+                    style={{ borderColor: activeFlavourProduct.borderAccentColor }}
+                    className="w-full max-w-[390px] bg-white p-4 sm:p-5 rounded-2xl border-[10px] shadow-xl text-black font-sans transition-colors duration-300"
+                  >
+                    {/* Header */}
+                    <div className="border-b-[5px] border-black pb-1 mb-1">
+                      <div className="flex items-baseline justify-between">
+                        <h3 className="font-black text-2xl sm:text-3xl tracking-tight uppercase leading-none font-sans">
+                          {activeFlavourProduct.nutritionTitle || "NUTRITIONAL FACTS"}
+                        </h3>
+                        {isCombo && (
+                          <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-black text-[#FFCD3C]">
+                            {activeFlavourProduct.name}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-right text-xs sm:text-sm font-bold mt-1">
+                        {activeFlavourProduct.servingSize.toLowerCase().includes("serve")
+                          ? activeFlavourProduct.servingSize
+                          : `Serving Size: ${activeFlavourProduct.servingSize}`}
+                      </p>
+                    </div>
+
+                    {/* Table Column Titles */}
+                    <div className="flex justify-between items-baseline py-1.5 border-b-[3px] border-black text-xs font-black">
+                      <span>Nutrient</span>
+                      <div className="flex items-center gap-3 text-right">
+                        <span className="w-20 text-right">Per 100g*</span>
+                        <span className="w-14 text-right">%RDA**</span>
+                      </div>
+                    </div>
+
+                    {/* Nutrition Rows: Nutrient Name on Left, Exact Numbers Right-Aligned on Right */}
+                    <div className="divide-y divide-gray-300 text-xs">
+                      {activeFlavourProduct.nutrition.map((item, idx) => (
+                        <div
+                          key={idx}
+                          className={`flex justify-between items-center py-1.5 ${
+                            item.isBold ? "font-bold text-black" : "text-gray-800"
+                          }`}
+                        >
+                          <span className={item.isIndent ? "pl-4 text-gray-700" : ""}>
+                            {item.label}
+                          </span>
+                          <div className="flex items-center gap-3 text-right">
+                            <span
+                              className={`w-20 text-right ${
+                                item.isBold ? "font-black text-black" : "font-semibold text-gray-900"
+                              }`}
+                            >
+                              {item.amount}
+                            </span>
+                            <span className="w-14 font-medium text-gray-500 text-right">
+                              {item.dailyValue && item.dailyValue !== "-" ? item.dailyValue : "—"}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* FSSAI Disclaimer Footer */}
+                    <div className="border-t-[4px] border-black pt-2 mt-2">
+                      <p className="text-[9px] sm:text-[10px] text-gray-600 font-medium leading-tight">
+                        {activeFlavourProduct.disclaimer}
+                      </p>
+                    </div>
+                  </div>
+
                 </div>
+
               </div>
 
             </div>
-
-          </div>
-
-        </div>
-      </section>
+          </section>
+        );
+      })()}
 
       {/* =========================================================================
           HEALTH COMPARISON MATRIX: POP CULTURE VS TRADITIONAL SNACKS
