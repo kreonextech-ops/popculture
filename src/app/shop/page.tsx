@@ -415,9 +415,6 @@ export default function ShopPage() {
                   Combos & Variety Bundles
                 </h2>
               </div>
-              <span className="text-xs font-black text-[#25100E] bg-[#FAC537] px-4 py-1.5 rounded-full border border-[#25100E]/15 shadow-xs self-start sm:self-auto">
-                Save up to 22% on bundles
-              </span>
             </div>
 
             <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
@@ -493,25 +490,90 @@ export default function ShopPage() {
                       className="absolute inset-8 rounded-full opacity-35 blur-2xl group-hover:opacity-50 transition-opacity"
                     />
 
-                    {/* Balanced Variety Showcase */}
+                    {/* Accurate Multi-Flavour Showcase per Bundle */}
                     <div className="relative z-10 flex items-end justify-center h-48 sm:h-56 w-full pt-4">
-                      {combo.secondaryImage && (
-                        <img
-                          src={combo.secondaryImage}
-                          alt=""
-                          className="h-38 sm:h-44 w-auto object-contain drop-shadow-md -rotate-[10deg] -mr-6 sm:-mr-8 translate-y-2 z-10 transition-transform duration-300 group-hover:-translate-x-1"
-                        />
+                      {combo.slug === "cheese-and-spice-fiesta" ? (
+                        /* Exactly 2 flavours: Cheddar Cheese & Peri Peri */
+                        <>
+                          <img
+                            src="/packets/cheddar-cheese.png"
+                            alt="Cheddar Cheese"
+                            className="h-40 sm:h-48 w-auto object-contain drop-shadow-lg -rotate-[8deg] -mr-4 translate-y-1 z-10 transition-transform duration-300 group-hover:-translate-x-1"
+                          />
+                          <img
+                            src="/packets/peri-peri.png"
+                            alt="Peri Peri"
+                            className="h-44 sm:h-52 w-auto object-contain drop-shadow-xl rotate-[8deg] -ml-4 z-20 transition-transform duration-300 group-hover:scale-105"
+                          />
+                        </>
+                      ) : combo.slug === "bestseller-crunch-bundle" ? (
+                        /* Bestseller Trio: Peri Peri, Cheddar Cheese, Cream & Onion */
+                        <>
+                          <img
+                            src="/packets/peri-peri.png"
+                            alt="Peri Peri"
+                            className="h-36 sm:h-42 w-auto object-contain drop-shadow-md -rotate-[10deg] -mr-5 translate-y-2 z-10 transition-transform duration-300 group-hover:-translate-x-1"
+                          />
+                          <img
+                            src="/packets/cheddar-cheese.png"
+                            alt="Cheddar Cheese"
+                            className="h-44 sm:h-52 w-auto object-contain drop-shadow-xl z-20 transition-transform duration-300 group-hover:scale-105"
+                          />
+                          <img
+                            src="/packets/cream-n-onion.png"
+                            alt="Cream & Onion"
+                            className="h-36 sm:h-42 w-auto object-contain drop-shadow-md rotate-[10deg] -ml-5 translate-y-2 z-10 transition-transform duration-300 group-hover:translate-x-1"
+                          />
+                        </>
+                      ) : combo.slug === "mega-crunch-party-stash" ? (
+                        /* Mega Stash 12 Packs: All 4 Flavours */
+                        <>
+                          <img
+                            src="/packets/cheddar-cheese.png"
+                            alt="Cheddar Cheese"
+                            className="h-32 sm:h-38 w-auto object-contain drop-shadow-md -rotate-[14deg] -mr-4 translate-y-2 z-10 transition-transform duration-300 group-hover:-translate-x-1"
+                          />
+                          <img
+                            src="/packets/himalayan-salt.png"
+                            alt="Himalayan Salt"
+                            className="h-42 sm:h-50 w-auto object-contain drop-shadow-xl z-30 transition-transform duration-300 group-hover:scale-105"
+                          />
+                          <img
+                            src="/packets/peri-peri.png"
+                            alt="Peri Peri"
+                            className="h-38 sm:h-44 w-auto object-contain drop-shadow-lg -ml-4 z-20"
+                          />
+                          <img
+                            src="/packets/cream-n-onion.png"
+                            alt="Cream & Onion"
+                            className="h-32 sm:h-38 w-auto object-contain drop-shadow-md rotate-[14deg] -ml-4 translate-y-2 z-10 transition-transform duration-300 group-hover:translate-x-1"
+                          />
+                        </>
+                      ) : (
+                        /* All 4 Flavours Discovery Box */
+                        <>
+                          <img
+                            src="/packets/cheddar-cheese.png"
+                            alt="Cheddar Cheese"
+                            className="h-34 sm:h-40 w-auto object-contain drop-shadow-md -rotate-[12deg] -mr-4 translate-y-2 z-10 transition-transform duration-300 group-hover:-translate-x-1"
+                          />
+                          <img
+                            src="/packets/peri-peri.png"
+                            alt="Peri Peri"
+                            className="h-42 sm:h-50 w-auto object-contain drop-shadow-xl z-30 transition-transform duration-300 group-hover:scale-105"
+                          />
+                          <img
+                            src="/packets/cream-n-onion.png"
+                            alt="Cream & Onion"
+                            className="h-36 sm:h-42 w-auto object-contain drop-shadow-lg -ml-3 z-20"
+                          />
+                          <img
+                            src="/packets/himalayan-salt.png"
+                            alt="Himalayan Salt"
+                            className="h-32 sm:h-38 w-auto object-contain drop-shadow-md rotate-[12deg] -ml-4 translate-y-2 z-10 transition-transform duration-300 group-hover:translate-x-1"
+                          />
+                        </>
                       )}
-                      <img
-                        src={combo.packImage}
-                        alt={combo.name}
-                        className="h-44 sm:h-52 w-auto object-contain drop-shadow-xl z-20 transition-transform duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
-                      />
-                      <img
-                        src="/packets/himalayan-salt.png"
-                        alt=""
-                        className="h-38 sm:h-44 w-auto object-contain drop-shadow-md rotate-[10deg] -ml-6 sm:-ml-8 translate-y-2 z-10 transition-transform duration-300 group-hover:translate-x-1"
-                      />
                     </div>
                   </Link>
 

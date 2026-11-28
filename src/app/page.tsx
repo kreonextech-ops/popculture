@@ -479,11 +479,10 @@ export default function BiteJoyPage() {
     const el = target as HTMLElement | null;
     if (!el) return false;
     return Boolean(
-      el.closest("[data-scatter-piece]") ||
-        el.closest("button") ||
-        el.closest("a") ||
+      el.closest("a") ||
         el.closest("input") ||
-        el.closest("select")
+        el.closest("select") ||
+        el.closest("[data-prevent-swipe]")
     );
   };
 
@@ -751,7 +750,7 @@ export default function BiteJoyPage() {
           {/* Main Hero Grid: Brand Copy/CTAs (Top) + Stacked Pouches & Fox (Bottom) */}
           <div className="relative z-20 w-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-14 flex-1 flex flex-col lg:flex-row items-center justify-between gap-1 sm:gap-8 lg:gap-6 pt-2 sm:pt-6 pointer-events-none">
             {/* Left/Top Column: Brand Copy & Dual CTAs (Lowered into the middle on mobile) */}
-            <div className="w-full lg:w-[46%] flex flex-col items-center lg:items-start text-center lg:text-left pt-14 min-[380px]:pt-18 min-[440px]:pt-24 sm:pt-6 lg:py-8 pointer-events-none shrink-0">
+            <div className="w-full lg:w-[46%] flex flex-col items-center lg:items-start text-center lg:text-left pt-18 min-[380px]:pt-22 min-[440px]:pt-28 sm:pt-6 lg:py-8 pointer-events-none shrink-0">
               
               {/* Eyebrow Badge */}
               <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#D73B3A]/10 border border-[#D73B3A]/20 text-[#D73B3A] text-[10px] min-[400px]:text-[11px] sm:text-xs font-black uppercase tracking-wider mb-2 sm:mb-3 shadow-xs">
@@ -760,14 +759,14 @@ export default function BiteJoyPage() {
               </div>
 
               {/* Main Headline: Snack Smart. Snack Cool. */}
-              <h1 className="font-display text-[38px] min-[380px]:text-[44px] min-[440px]:text-[50px] sm:text-6xl lg:text-[66px] xl:text-[76px] leading-[0.93] tracking-tight uppercase text-[#522C28]">
+              <h1 className="font-display text-[44px] min-[380px]:text-[48px] min-[440px]:text-[54px] sm:text-6xl lg:text-[66px] xl:text-[76px] leading-[0.93] tracking-tight uppercase text-[#522C28]">
                 SNACK SMART.{" "}
                 <span className="block font-display text-[#D73B3A]">SNACK COOL.</span>
               </h1>
 
               {/* Subtitle */}
-              <p className="mt-2 sm:mt-3 text-xs min-[400px]:text-[13px] sm:text-base text-[#522C28]/85 font-semibold max-w-xs sm:max-w-md leading-snug sm:leading-relaxed text-balance">
-                Carefully sourced, slow-roasted lotus seeds in 4 signature flavours. Pure clean crunch that hits different.
+              <p className="mt-2.5 sm:mt-3 text-[13px] min-[400px]:text-[14px] sm:text-base text-[#522C28]/85 font-semibold max-w-xs sm:max-w-md leading-snug sm:leading-relaxed text-balance">
+                Carefully sourced, slow-roasted Makhana in 4 signature flavours. Pure clean crunch that hits different.
               </p>
 
               {/* Hero CTAs */}

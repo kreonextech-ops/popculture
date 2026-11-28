@@ -29,6 +29,8 @@ import Navbar from "@/components/Navbar";
 import type { StoreProduct } from "@/lib/store";
 
 export default function ProductDetailPage() {
+  const touchStartXRef = React.useRef<number | null>(null);
+  const touchStartYRef = React.useRef<number | null>(null);
   const params = useParams();
   const slug = (params?.slug as string) || "peri-peri";
   const staticCombo =
@@ -70,6 +72,10 @@ export default function ProductDetailPage() {
           gradient: "from-[#F79E1B] to-[#ED0006]",
           bgSvg: staticCombo.bgSvg || "/product-bg/peri-peri.webp",
           bgMobileSvg: staticCombo.bgMobileSvg || "/product-bg/mobile-peri-peri.webp",
+          galleryImages: staticCombo.galleryImages || [
+            staticCombo.packImage,
+            staticCombo.secondaryImage,
+          ].filter(Boolean) as string[],
           accentColor: staticCombo.themeColor,
           servingSize: "20g per pouch",
           ingredients:
@@ -368,7 +374,31 @@ export default function ProductDetailPage() {
 
                 return (
                   <>
-                    <div className="relative w-full max-w-[460px] aspect-square rounded-3xl bg-gradient-to-b from-white to-[#FDF2E8] p-6 sm:p-8 flex items-center justify-center border border-[#522C28]/15 shadow-[0_12px_36px_rgba(37,16,14,0.08)] overflow-hidden group">
+                    <div
+                      onTouchStart={(e) => {
+                        touchStartXRef.current = e.touches[0].clientX;
+                        touchStartYRef.current = e.touches[0].clientY;
+                      }}
+                      onTouchEnd={(e) => {
+                        if (touchStartXRef.current === null) return;
+                        const touch = e.changedTouches[0];
+                        if (!touch) return;
+                        const dx = touch.clientX - touchStartXRef.current;
+                        const dy = touch.clientY - (touchStartYRef.current || 0);
+                        touchStartXRef.current = null;
+                        touchStartYRef.current = null;
+                        if (Math.abs(dx) >= 35 && Math.abs(dx) > Math.abs(dy) * 0.8) {
+                          if (dx < 0) {
+                            setSelectedImageIndex((prev) => (prev + 1) % galleryList.length);
+                          } else {
+                            setSelectedImageIndex(
+                              (prev) => (prev - 1 + galleryList.length) % galleryList.length
+                            );
+                          }
+                        }
+                      }}
+                      className="relative w-full max-w-[460px] aspect-square rounded-3xl bg-gradient-to-b from-white to-[#FDF2E8] p-6 sm:p-8 flex items-center justify-center border border-[#522C28]/15 shadow-[0_12px_36px_rgba(37,16,14,0.08)] overflow-hidden group select-none touch-pan-y"
+                    >
                       
                       {/* Flavour Background Artwork Layer (Only for 3D Render Pouch) */}
                       {isRenderPouch && product.bgSvg && (
@@ -393,13 +423,98 @@ export default function ProductDetailPage() {
                         className="absolute inset-16 rounded-full opacity-35 blur-2xl group-hover:opacity-50 transition-opacity"
                       />
 
-                      {/* Main Product Image (Pouch or Flat Packaging Design) */}
+                      {/* Main Product Image (Pouch, Combo Variety Stage, or Flat Packaging Design) */}
                       {isRenderPouch ? (
-                        <img
-                          src={product.packImage}
-                          alt={product.name}
-                          className="relative z-10 w-auto h-full max-h-[360px] object-contain drop-shadow-[0_20px_35px_rgba(120,40,0,0.3)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 will-change-transform"
-                        />
+                        staticCombo ? (
+                          /* Variety Combo Multi-Pack Presentation */
+                          <div className="relative z-10 flex items-end justify-center h-full w-full max-h-[360px] pb-4">
+                            {slug === "cheese-and-spice-fiesta" ? (
+                              <div className="relative flex items-end justify-center h-full w-full pb-2">
+                                <img
+                                  src="/packets/cheddar-cheese.png"
+                                  alt="Cheddar Cheese"
+                                  className="h-[180px] sm:h-[220px] w-auto max-h-full object-contain drop-shadow-xl -rotate-[10deg] -mr-8 translate-y-3 z-10 transition-transform duration-300 group-hover:-translate-x-2"
+                                />
+                                <img
+                                  src="/packets/peri-peri.png"
+                                  alt="Peri Peri"
+                                  className="h-[210px] sm:h-[250px] w-auto max-h-full object-contain drop-shadow-2xl rotate-[10deg] -ml-8 z-20 transition-transform duration-300 group-hover:scale-105"
+                                />
+                              </div>
+                            ) : slug === "bestseller-crunch-bundle" ? (
+                              <div className="relative flex items-end justify-center h-full w-full pb-2">
+                                <img
+                                  src="/packets/peri-peri.png"
+                                  alt="Peri Peri"
+                                  className="h-[160px] sm:h-[195px] w-auto max-h-full object-contain drop-shadow-lg -rotate-[14deg] -mr-8 translate-y-3 z-10 transition-transform duration-300 group-hover:-translate-x-2"
+                                />
+                                <img
+                                  src="/packets/cheddar-cheese.png"
+                                  alt="Cheddar Cheese"
+                                  className="h-[210px] sm:h-[250px] w-auto max-h-full object-contain drop-shadow-2xl z-20 transition-transform duration-300 group-hover:scale-105"
+                                />
+                                <img
+                                  src="/packets/cream-n-onion.png"
+                                  alt="Cream & Onion"
+                                  className="h-[160px] sm:h-[195px] w-auto max-h-full object-contain drop-shadow-lg rotate-[14deg] -ml-8 translate-y-3 z-10 transition-transform duration-300 group-hover:translate-x-2"
+                                />
+                              </div>
+                            ) : slug === "mega-crunch-party-stash" ? (
+                              <div className="relative flex items-end justify-center h-full w-full pb-2">
+                                <img
+                                  src="/packets/cheddar-cheese.png"
+                                  alt="Cheddar Cheese"
+                                  className="h-[145px] sm:h-[175px] w-auto max-h-full object-contain drop-shadow-md -rotate-[16deg] -mr-7 translate-y-4 z-10 transition-transform duration-300 group-hover:-translate-x-2"
+                                />
+                                <img
+                                  src="/packets/himalayan-salt.png"
+                                  alt="Himalayan Salt"
+                                  className="h-[200px] sm:h-[240px] w-auto max-h-full object-contain drop-shadow-2xl z-30 transition-transform duration-300 group-hover:scale-105"
+                                />
+                                <img
+                                  src="/packets/peri-peri.png"
+                                  alt="Peri Peri"
+                                  className="h-[175px] sm:h-[210px] w-auto max-h-full object-contain drop-shadow-xl -ml-6 z-20"
+                                />
+                                <img
+                                  src="/packets/cream-n-onion.png"
+                                  alt="Cream & Onion"
+                                  className="h-[145px] sm:h-[175px] w-auto max-h-full object-contain drop-shadow-md rotate-[16deg] -ml-7 translate-y-4 z-10 transition-transform duration-300 group-hover:translate-x-2"
+                                />
+                              </div>
+                            ) : (
+                              /* All 4 Flavours Discovery Box */
+                              <div className="relative flex items-end justify-center h-full w-full pb-2">
+                                <img
+                                  src="/packets/cheddar-cheese.png"
+                                  alt="Cheddar Cheese"
+                                  className="h-[150px] sm:h-[185px] w-auto max-h-full object-contain drop-shadow-md -rotate-[14deg] -mr-7 translate-y-3 z-10 transition-transform duration-300 group-hover:-translate-x-2"
+                                />
+                                <img
+                                  src="/packets/peri-peri.png"
+                                  alt="Peri Peri"
+                                  className="h-[200px] sm:h-[240px] w-auto max-h-full object-contain drop-shadow-2xl z-30 transition-transform duration-300 group-hover:scale-105"
+                                />
+                                <img
+                                  src="/packets/cream-n-onion.png"
+                                  alt="Cream & Onion"
+                                  className="h-[175px] sm:h-[210px] w-auto max-h-full object-contain drop-shadow-xl -ml-6 z-20"
+                                />
+                                <img
+                                  src="/packets/himalayan-salt.png"
+                                  alt="Himalayan Salt"
+                                  className="h-[150px] sm:h-[185px] w-auto max-h-full object-contain drop-shadow-md rotate-[14deg] -ml-7 translate-y-3 z-10 transition-transform duration-300 group-hover:translate-x-2"
+                                />
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <img
+                            src={product.packImage}
+                            alt={product.name}
+                            className="relative z-10 w-auto h-full max-h-[360px] object-contain drop-shadow-[0_20px_35px_rgba(120,40,0,0.3)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 will-change-transform"
+                          />
+                        )
                       ) : (
                         <div
                           onClick={() => setZoomModalOpen(true)}
@@ -416,13 +531,39 @@ export default function ProductDetailPage() {
                       {/* Floating Micro-badge: View Label */}
                       <div className="absolute top-4 left-4 z-20">
                         <span className="px-3 py-1 rounded-full bg-[#25100E] text-white text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-sm">
-                          <span>{isRenderPouch ? "✨" : selectedImageIndex === 1 ? "🎨" : "📋"}</span>
                           <span>
-                            {isRenderPouch
+                            {isRenderPouch && staticCombo
+                              ? "✨"
+                              : isRenderPouch
+                              ? "✨"
+                              : currentImg.includes("peri-peri")
+                              ? "🌶️"
+                              : currentImg.includes("cheese")
+                              ? "🧀"
+                              : currentImg.includes("cream")
+                              ? "🍃"
+                              : currentImg.includes("salt")
+                              ? "🌸"
+                              : "🎨"}
+                          </span>
+                          <span>
+                            {isRenderPouch && staticCombo
+                              ? "Full Variety Bundle"
+                              : isRenderPouch
                               ? "3D Pack Pouch"
-                              : selectedImageIndex === 1
+                              : currentImg.includes("front")
                               ? "Packet Front"
-                              : "Packet Back (Nutrition)"}
+                              : currentImg.includes("back")
+                              ? "Packet Back (Nutrition)"
+                              : currentImg.includes("peri-peri")
+                              ? "Peri Peri Pouch"
+                              : currentImg.includes("cheese")
+                              ? "Cheddar Cheese Pouch"
+                              : currentImg.includes("cream")
+                              ? "Cream & Onion Pouch"
+                              : currentImg.includes("salt")
+                              ? "Pink Salt Pouch"
+                              : "Flavour Pouch"}
                           </span>
                         </span>
                       </div>
@@ -471,28 +612,77 @@ export default function ProductDetailPage() {
                       )}
                     </div>
 
-                    {/* Interactive Thumbnail Gallery Strip */}
+                    {/* Interactive Thumbnail Gallery Strip - Horizontal Scroll on Mobile */}
                     {galleryList.length > 1 && (
-                      <div className="grid grid-cols-3 gap-2 sm:gap-3 w-full max-w-[460px] mt-3">
+                      <div className="flex overflow-x-auto scrollbar-none gap-2 sm:gap-2.5 w-full max-w-[460px] mt-3 pb-1 snap-x">
                         {galleryList.map((img, idx) => {
                           const isSelected = selectedImageIndex === idx;
-                          const label =
-                            idx === 0 ? "3D Pouch" : idx === 1 ? "Packet Front" : "Packet Back";
-                          const subLabel =
-                            idx === 0 ? "Pouch View" : idx === 1 ? "Front Design" : "Nutrition & FSSAI";
+                          let label = "Pouch";
+                          let subLabel = "Flavour View";
+
+                          if (idx === 0 && staticCombo) {
+                            label = "Full Bundle";
+                            subLabel = "All Flavours";
+                          } else if (idx === 0) {
+                            label = "3D Pouch";
+                            subLabel = "Pouch View";
+                          } else if (img.includes("peri-peri")) {
+                            label = "Peri Peri";
+                            subLabel = img.includes("front")
+                              ? "Front Art"
+                              : img.includes("back")
+                              ? "Nutrition"
+                              : "55g Pouch";
+                          } else if (img.includes("cheese")) {
+                            label = "Cheese";
+                            subLabel = img.includes("front")
+                              ? "Front Art"
+                              : img.includes("back")
+                              ? "Nutrition"
+                              : "55g Pouch";
+                          } else if (img.includes("cream")) {
+                            label = "Cream & Onion";
+                            subLabel = img.includes("front")
+                              ? "Front Art"
+                              : img.includes("back")
+                              ? "Nutrition"
+                              : "55g Pouch";
+                          } else if (img.includes("salt")) {
+                            label = "Pink Salt";
+                            subLabel = img.includes("front")
+                              ? "Front Art"
+                              : img.includes("back")
+                              ? "Nutrition"
+                              : "55g Pouch";
+                          } else if (img.includes("front")) {
+                            label = "Front Art";
+                            subLabel = "Packaging";
+                          } else if (img.includes("back")) {
+                            label = "Nutrition";
+                            subLabel = "Back Panel";
+                          }
+
                           return (
                             <button
                               key={idx}
                               type="button"
                               onClick={() => setSelectedImageIndex(idx)}
-                              className={`flex items-center gap-2 p-1.5 sm:p-2 rounded-2xl border-2 transition-all cursor-pointer ${
+                              className={`flex items-center gap-2 p-1.5 sm:p-2 rounded-2xl border-2 transition-all cursor-pointer shrink-0 snap-start min-w-[105px] sm:min-w-[115px] ${
                                 isSelected
                                   ? "border-[#D73B3A] bg-white shadow-md ring-2 ring-[#D73B3A]/25 scale-[1.02]"
                                   : "border-[#522C28]/15 bg-white/70 hover:bg-white hover:border-[#522C28]/35"
                               }`}
                             >
                               <div className="w-9 h-11 sm:w-11 sm:h-14 rounded-lg bg-[#FFF8EE] flex items-center justify-center overflow-hidden shrink-0 border border-[#522C28]/10 p-0.5">
-                                <img src={img} alt={label} className="w-full h-full object-contain" />
+                                {idx === 0 && staticCombo ? (
+                                  <span className="text-base sm:text-lg">🎁</span>
+                                ) : (
+                                  <img
+                                    src={img}
+                                    alt={label}
+                                    className="w-full h-full object-contain"
+                                  />
+                                )}
                               </div>
                               <div className="text-left overflow-hidden min-w-0">
                                 <span className="block text-[11px] font-black uppercase text-[#25100E] leading-tight truncate">
@@ -996,8 +1186,29 @@ export default function ProductDetailPage() {
           onClick={() => setZoomModalOpen(false)}
         >
           <div
-            className="relative max-w-4xl max-h-[92vh] w-full flex flex-col items-center justify-center"
+            className="relative max-w-4xl max-h-[92vh] w-full flex flex-col items-center justify-center select-none touch-pan-y"
             onClick={(e) => e.stopPropagation()}
+            onTouchStart={(e) => {
+              touchStartXRef.current = e.touches[0].clientX;
+              touchStartYRef.current = e.touches[0].clientY;
+            }}
+            onTouchEnd={(e) => {
+              if (touchStartXRef.current === null) return;
+              const touch = e.changedTouches[0];
+              if (!touch) return;
+              const dx = touch.clientX - touchStartXRef.current;
+              const dy = touch.clientY - (touchStartYRef.current || 0);
+              touchStartXRef.current = null;
+              touchStartYRef.current = null;
+              const total = product.galleryImages?.length || 1;
+              if (Math.abs(dx) >= 35 && Math.abs(dx) > Math.abs(dy) * 0.8) {
+                if (dx < 0) {
+                  setSelectedImageIndex((prev) => (prev + 1) % total);
+                } else {
+                  setSelectedImageIndex((prev) => (prev - 1 + total) % total);
+                }
+              }
+            }}
           >
             {/* Close Button */}
             <button
