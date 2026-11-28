@@ -490,90 +490,13 @@ export default function ShopPage() {
                       className="absolute inset-8 rounded-full opacity-35 blur-2xl group-hover:opacity-50 transition-opacity"
                     />
 
-                    {/* Accurate Multi-Flavour Showcase per Bundle */}
-                    <div className="relative z-10 flex items-end justify-center h-48 sm:h-56 w-full pt-4">
-                      {combo.slug === "cheese-and-spice-fiesta" ? (
-                        /* Exactly 2 flavours: Cheddar Cheese & Peri Peri */
-                        <>
-                          <img
-                            src="/packets/cheddar-cheese.png"
-                            alt="Cheddar Cheese"
-                            className="h-40 sm:h-48 w-auto object-contain drop-shadow-lg -rotate-[8deg] -mr-4 translate-y-1 z-10 transition-transform duration-300 group-hover:-translate-x-1"
-                          />
-                          <img
-                            src="/packets/peri-peri.png"
-                            alt="Peri Peri"
-                            className="h-44 sm:h-52 w-auto object-contain drop-shadow-xl rotate-[8deg] -ml-4 z-20 transition-transform duration-300 group-hover:scale-105"
-                          />
-                        </>
-                      ) : combo.slug === "bestseller-crunch-bundle" ? (
-                        /* Bestseller Trio: Peri Peri, Cheddar Cheese, Cream & Onion */
-                        <>
-                          <img
-                            src="/packets/peri-peri.png"
-                            alt="Peri Peri"
-                            className="h-36 sm:h-42 w-auto object-contain drop-shadow-md -rotate-[10deg] -mr-5 translate-y-2 z-10 transition-transform duration-300 group-hover:-translate-x-1"
-                          />
-                          <img
-                            src="/packets/cheddar-cheese.png"
-                            alt="Cheddar Cheese"
-                            className="h-44 sm:h-52 w-auto object-contain drop-shadow-xl z-20 transition-transform duration-300 group-hover:scale-105"
-                          />
-                          <img
-                            src="/packets/cream-n-onion.png"
-                            alt="Cream & Onion"
-                            className="h-36 sm:h-42 w-auto object-contain drop-shadow-md rotate-[10deg] -ml-5 translate-y-2 z-10 transition-transform duration-300 group-hover:translate-x-1"
-                          />
-                        </>
-                      ) : combo.slug === "mega-crunch-party-stash" ? (
-                        /* Mega Stash 12 Packs: All 4 Flavours */
-                        <>
-                          <img
-                            src="/packets/cheddar-cheese.png"
-                            alt="Cheddar Cheese"
-                            className="h-32 sm:h-38 w-auto object-contain drop-shadow-md -rotate-[14deg] -mr-4 translate-y-2 z-10 transition-transform duration-300 group-hover:-translate-x-1"
-                          />
-                          <img
-                            src="/packets/himalayan-salt.png"
-                            alt="Himalayan Salt"
-                            className="h-42 sm:h-50 w-auto object-contain drop-shadow-xl z-30 transition-transform duration-300 group-hover:scale-105"
-                          />
-                          <img
-                            src="/packets/peri-peri.png"
-                            alt="Peri Peri"
-                            className="h-38 sm:h-44 w-auto object-contain drop-shadow-lg -ml-4 z-20"
-                          />
-                          <img
-                            src="/packets/cream-n-onion.png"
-                            alt="Cream & Onion"
-                            className="h-32 sm:h-38 w-auto object-contain drop-shadow-md rotate-[14deg] -ml-4 translate-y-2 z-10 transition-transform duration-300 group-hover:translate-x-1"
-                          />
-                        </>
-                      ) : (
-                        /* All 4 Flavours Discovery Box */
-                        <>
-                          <img
-                            src="/packets/cheddar-cheese.png"
-                            alt="Cheddar Cheese"
-                            className="h-34 sm:h-40 w-auto object-contain drop-shadow-md -rotate-[12deg] -mr-4 translate-y-2 z-10 transition-transform duration-300 group-hover:-translate-x-1"
-                          />
-                          <img
-                            src="/packets/peri-peri.png"
-                            alt="Peri Peri"
-                            className="h-42 sm:h-50 w-auto object-contain drop-shadow-xl z-30 transition-transform duration-300 group-hover:scale-105"
-                          />
-                          <img
-                            src="/packets/cream-n-onion.png"
-                            alt="Cream & Onion"
-                            className="h-36 sm:h-42 w-auto object-contain drop-shadow-lg -ml-3 z-20"
-                          />
-                          <img
-                            src="/packets/himalayan-salt.png"
-                            alt="Himalayan Salt"
-                            className="h-32 sm:h-38 w-auto object-contain drop-shadow-md rotate-[12deg] -ml-4 translate-y-2 z-10 transition-transform duration-300 group-hover:translate-x-1"
-                          />
-                        </>
-                      )}
+                    {/* Accurate Bundle Showcase */}
+                    <div className="relative z-10 flex items-center justify-center h-48 sm:h-56 w-full p-2">
+                      <img
+                        src={combo.packImage}
+                        alt={combo.name}
+                        className="h-full w-auto max-w-[90%] object-contain drop-shadow-[0_15px_30px_rgba(120,40,0,0.25)] group-hover/stage:scale-105 transition-transform duration-300"
+                      />
                     </div>
                   </Link>
 

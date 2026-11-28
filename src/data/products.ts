@@ -96,10 +96,11 @@ export const COMBOS: Record<string, ComboItem> = {
     tagline: "1 × Cheddar Cheese + 1 × Peri Peri + 1 × Cream & Onion + 1 × Pink Salt",
     shortDesc:
       "Taste the full Pop Culture universe! One pouch of every single signature roasted flavour in one discovery crate. The ultimate crunch tasting kit.",
-    packImage: "/packets/peri-peri.png",
+    packImage: "/combos/all-4-flavours-box.png",
     frontImage: "/packaging/peri-peri-front.jpg",
     backImage: "/packaging/peri-peri-back.jpg",
     galleryImages: [
+      "/combos/all-4-flavours-box.png",
       "/packets/peri-peri.png",
       "/packets/cheddar-cheese.png",
       "/packets/cream-n-onion.png",
@@ -139,10 +140,11 @@ export const COMBOS: Record<string, ComboItem> = {
     tagline: "2 × Cheddar Cheese + 2 × Peri Peri + 1 × Cream & Onion + 1 × Pink Salt",
     shortDesc:
       "Stock up on our most loved flavours! Double portions of velvety Cheddar Cheese and fiery Peri Peri, complemented with Cream & Onion and Pink Salt. FREE express shipping included.",
-    packImage: "/packets/cheddar-cheese.png",
+    packImage: "/combos/bestseller-crunch-bundle.png",
     frontImage: "/packaging/cheddar-cheese-front.jpg",
     backImage: "/packaging/cheddar-cheese-back.jpg",
     galleryImages: [
+      "/combos/bestseller-crunch-bundle.png",
       "/packets/cheddar-cheese.png",
       "/packets/peri-peri.png",
       "/packets/cream-n-onion.png",
@@ -182,10 +184,11 @@ export const COMBOS: Record<string, ComboItem> = {
     tagline: "4 × Cheddar Cheese Melt + 4 × Peri Peri Punch",
     shortDesc:
       "The ultimate snack duel: velvety, aged cheddar cheese meets sizzling African peri-peri. 8 party-ready pouches perfect for gaming nights, movie marathons, and binge-watching.",
-    packImage: "/packets/cheddar-cheese.png",
+    packImage: "/combos/cheese-and-spice-fiesta.png",
     frontImage: "/packaging/cheddar-cheese-front.jpg",
     backImage: "/packaging/cheddar-cheese-back.jpg",
     galleryImages: [
+      "/combos/cheese-and-spice-fiesta.png",
       "/packets/cheddar-cheese.png",
       "/packets/peri-peri.png",
       "/packaging/cheddar-cheese-front.jpg",
@@ -221,10 +224,11 @@ export const COMBOS: Record<string, ComboItem> = {
     tagline: "3 × Cheddar Cheese + 3 × Peri Peri + 3 × Cream & Onion + 3 × Pink Salt",
     shortDesc:
       "The heavyweight pantry stash for offices, families, and serious snackers. 3 jumbo pouches of every roasted flavour. Maximum variety, ultimate crunch, and free priority delivery.",
-    packImage: "/packets/himalayan-salt.png",
+    packImage: "/combos/mega-crunch-party-stash.png",
     frontImage: "/packaging/pink-salt-front.jpg",
     backImage: "/packaging/pink-salt-back.jpg",
     galleryImages: [
+      "/combos/mega-crunch-party-stash.png",
       "/packets/himalayan-salt.png",
       "/packets/cheddar-cheese.png",
       "/packets/peri-peri.png",

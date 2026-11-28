@@ -1206,22 +1206,12 @@ export default function BiteJoyPage() {
                     4-PACK DISCOVERY
                   </span>
 
-                  {/* Clean 3-Flavour Trio Presentation */}
-                  <div className="relative flex items-end justify-center h-full w-full pb-1">
+                  {/* Clean Bundle Showcase */}
+                  <div className="relative flex items-center justify-center h-full w-full p-1">
                     <img
-                      src="/packets/cheddar-cheese.png"
-                      alt="Cheddar Cheese"
-                      className="h-[95px] sm:h-[105px] w-auto max-h-full object-contain drop-shadow-md -rotate-[10deg] -mr-4 translate-y-1 z-10 transition-transform duration-300 group-hover:-translate-x-1"
-                    />
-                    <img
-                      src="/packets/peri-peri.png"
+                      src="/combos/all-4-flavours-box.png"
                       alt="All 4 Flavours Discovery Box"
-                      className="h-[120px] sm:h-[132px] w-auto max-h-full object-contain drop-shadow-xl z-20 transition-transform duration-300 group-hover:scale-105"
-                    />
-                    <img
-                      src="/packets/cream-n-onion.png"
-                      alt="Cream & Onion"
-                      className="h-[95px] sm:h-[105px] w-auto max-h-full object-contain drop-shadow-md rotate-[10deg] -ml-4 translate-y-1 z-10 transition-transform duration-300 group-hover:translate-x-1"
+                      className="h-full w-auto max-h-[130px] object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                 </div>
@@ -1283,21 +1273,11 @@ export default function BiteJoyPage() {
                     POPULAR • 6 PACKS
                   </span>
 
-                  <div className="relative flex items-end justify-center h-full w-full pb-1">
+                  <div className="relative flex items-center justify-center h-full w-full p-1">
                     <img
-                      src="/packets/peri-peri.png"
-                      alt="Peri Peri"
-                      className="h-[95px] sm:h-[105px] w-auto max-h-full object-contain drop-shadow-md -rotate-[10deg] -mr-4 translate-y-1 z-10 transition-transform duration-300 group-hover:-translate-x-1"
-                    />
-                    <img
-                      src="/packets/cheddar-cheese.png"
+                      src="/combos/bestseller-crunch-bundle.png"
                       alt="Bestseller Crunch Bundle"
-                      className="h-[120px] sm:h-[132px] w-auto max-h-full object-contain drop-shadow-xl z-20 transition-transform duration-300 group-hover:scale-105"
-                    />
-                    <img
-                      src="/packets/cream-n-onion.png"
-                      alt="Cream & Onion"
-                      className="h-[95px] sm:h-[105px] w-auto max-h-full object-contain drop-shadow-md rotate-[10deg] -ml-4 translate-y-1 z-10 transition-transform duration-300 group-hover:translate-x-1"
+                      className="h-full w-auto max-h-[130px] object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                 </div>
@@ -1359,16 +1339,11 @@ export default function BiteJoyPage() {
                     FIESTA • 8 PACKS
                   </span>
 
-                  <div className="relative flex items-end justify-center h-full w-full pb-1">
+                  <div className="relative flex items-center justify-center h-full w-full p-1">
                     <img
-                      src="/packets/cheddar-cheese.png"
-                      alt="Cheddar Cheese"
-                      className="h-[100px] sm:h-[110px] w-auto max-h-full object-contain drop-shadow-md -rotate-[10deg] -mr-4 translate-y-1 z-10 transition-transform duration-300 group-hover:-translate-x-1"
-                    />
-                    <img
-                      src="/packets/peri-peri.png"
+                      src="/combos/cheese-and-spice-fiesta.png"
                       alt="Cheese & Spice Fiesta"
-                      className="h-[120px] sm:h-[132px] w-auto max-h-full object-contain drop-shadow-xl z-20 transition-transform duration-300 group-hover:scale-105"
+                      className="h-full w-auto max-h-[130px] object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                 </div>
@@ -1430,21 +1405,11 @@ export default function BiteJoyPage() {
                     MEGA STASH • 12 PACKS
                   </span>
 
-                  <div className="relative flex items-end justify-center h-full w-full pb-1">
+                  <div className="relative flex items-center justify-center h-full w-full p-1">
                     <img
-                      src="/packets/cheddar-cheese.png"
-                      alt="Cheddar Cheese"
-                      className="h-[95px] sm:h-[105px] w-auto max-h-full object-contain drop-shadow-md -rotate-[10deg] -mr-4 translate-y-1 z-10 transition-transform duration-300 group-hover:-translate-x-1"
-                    />
-                    <img
-                      src="/packets/himalayan-salt.png"
+                      src="/combos/mega-crunch-party-stash.png"
                       alt="Mega Crunch Party Stash"
-                      className="h-[120px] sm:h-[132px] w-auto max-h-full object-contain drop-shadow-xl z-20 transition-transform duration-300 group-hover:scale-105"
-                    />
-                    <img
-                      src="/packets/peri-peri.png"
-                      alt="Peri Peri"
-                      className="h-[95px] sm:h-[105px] w-auto max-h-full object-contain drop-shadow-md rotate-[10deg] -ml-4 translate-y-1 z-10 transition-transform duration-300 group-hover:translate-x-1"
+                      className="h-full w-auto max-h-[130px] object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                 </div>

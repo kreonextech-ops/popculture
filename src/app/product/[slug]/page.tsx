@@ -424,97 +424,17 @@ export default function ProductDetailPage() {
                       />
 
                       {/* Main Product Image (Pouch, Combo Variety Stage, or Flat Packaging Design) */}
-                      {isRenderPouch ? (
-                        staticCombo ? (
-                          /* Variety Combo Multi-Pack Presentation */
-                          <div className="relative z-10 flex items-end justify-center h-full w-full max-h-[360px] pb-4">
-                            {slug === "cheese-and-spice-fiesta" ? (
-                              <div className="relative flex items-end justify-center h-full w-full pb-2">
-                                <img
-                                  src="/packets/cheddar-cheese.png"
-                                  alt="Cheddar Cheese"
-                                  className="h-[180px] sm:h-[220px] w-auto max-h-full object-contain drop-shadow-xl -rotate-[10deg] -mr-8 translate-y-3 z-10 transition-transform duration-300 group-hover:-translate-x-2"
-                                />
-                                <img
-                                  src="/packets/peri-peri.png"
-                                  alt="Peri Peri"
-                                  className="h-[210px] sm:h-[250px] w-auto max-h-full object-contain drop-shadow-2xl rotate-[10deg] -ml-8 z-20 transition-transform duration-300 group-hover:scale-105"
-                                />
-                              </div>
-                            ) : slug === "bestseller-crunch-bundle" ? (
-                              <div className="relative flex items-end justify-center h-full w-full pb-2">
-                                <img
-                                  src="/packets/peri-peri.png"
-                                  alt="Peri Peri"
-                                  className="h-[160px] sm:h-[195px] w-auto max-h-full object-contain drop-shadow-lg -rotate-[14deg] -mr-8 translate-y-3 z-10 transition-transform duration-300 group-hover:-translate-x-2"
-                                />
-                                <img
-                                  src="/packets/cheddar-cheese.png"
-                                  alt="Cheddar Cheese"
-                                  className="h-[210px] sm:h-[250px] w-auto max-h-full object-contain drop-shadow-2xl z-20 transition-transform duration-300 group-hover:scale-105"
-                                />
-                                <img
-                                  src="/packets/cream-n-onion.png"
-                                  alt="Cream & Onion"
-                                  className="h-[160px] sm:h-[195px] w-auto max-h-full object-contain drop-shadow-lg rotate-[14deg] -ml-8 translate-y-3 z-10 transition-transform duration-300 group-hover:translate-x-2"
-                                />
-                              </div>
-                            ) : slug === "mega-crunch-party-stash" ? (
-                              <div className="relative flex items-end justify-center h-full w-full pb-2">
-                                <img
-                                  src="/packets/cheddar-cheese.png"
-                                  alt="Cheddar Cheese"
-                                  className="h-[145px] sm:h-[175px] w-auto max-h-full object-contain drop-shadow-md -rotate-[16deg] -mr-7 translate-y-4 z-10 transition-transform duration-300 group-hover:-translate-x-2"
-                                />
-                                <img
-                                  src="/packets/himalayan-salt.png"
-                                  alt="Himalayan Salt"
-                                  className="h-[200px] sm:h-[240px] w-auto max-h-full object-contain drop-shadow-2xl z-30 transition-transform duration-300 group-hover:scale-105"
-                                />
-                                <img
-                                  src="/packets/peri-peri.png"
-                                  alt="Peri Peri"
-                                  className="h-[175px] sm:h-[210px] w-auto max-h-full object-contain drop-shadow-xl -ml-6 z-20"
-                                />
-                                <img
-                                  src="/packets/cream-n-onion.png"
-                                  alt="Cream & Onion"
-                                  className="h-[145px] sm:h-[175px] w-auto max-h-full object-contain drop-shadow-md rotate-[16deg] -ml-7 translate-y-4 z-10 transition-transform duration-300 group-hover:translate-x-2"
-                                />
-                              </div>
-                            ) : (
-                              /* All 4 Flavours Discovery Box */
-                              <div className="relative flex items-end justify-center h-full w-full pb-2">
-                                <img
-                                  src="/packets/cheddar-cheese.png"
-                                  alt="Cheddar Cheese"
-                                  className="h-[150px] sm:h-[185px] w-auto max-h-full object-contain drop-shadow-md -rotate-[14deg] -mr-7 translate-y-3 z-10 transition-transform duration-300 group-hover:-translate-x-2"
-                                />
-                                <img
-                                  src="/packets/peri-peri.png"
-                                  alt="Peri Peri"
-                                  className="h-[200px] sm:h-[240px] w-auto max-h-full object-contain drop-shadow-2xl z-30 transition-transform duration-300 group-hover:scale-105"
-                                />
-                                <img
-                                  src="/packets/cream-n-onion.png"
-                                  alt="Cream & Onion"
-                                  className="h-[175px] sm:h-[210px] w-auto max-h-full object-contain drop-shadow-xl -ml-6 z-20"
-                                />
-                                <img
-                                  src="/packets/himalayan-salt.png"
-                                  alt="Himalayan Salt"
-                                  className="h-[150px] sm:h-[185px] w-auto max-h-full object-contain drop-shadow-md rotate-[14deg] -ml-7 translate-y-3 z-10 transition-transform duration-300 group-hover:translate-x-2"
-                                />
-                              </div>
-                            )}
-                          </div>
-                        ) : (
+                      {currentImg.includes("/packets/") || currentImg.includes("/combos/") ? (
+                        <div
+                          onClick={() => setZoomModalOpen(true)}
+                          className="relative z-10 w-full h-full max-h-[360px] flex items-center justify-center cursor-zoom-in"
+                        >
                           <img
-                            src={product.packImage}
+                            src={currentImg}
                             alt={product.name}
-                            className="relative z-10 w-auto h-full max-h-[360px] object-contain drop-shadow-[0_20px_35px_rgba(120,40,0,0.3)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 will-change-transform"
+                            className="w-auto h-full max-h-[360px] max-w-[82%] object-contain drop-shadow-[0_20px_35px_rgba(120,40,0,0.3)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 will-change-transform"
                           />
-                        )
+                        </div>
                       ) : (
                         <div
                           onClick={() => setZoomModalOpen(true)}
@@ -523,7 +443,7 @@ export default function ProductDetailPage() {
                           <img
                             src={currentImg}
                             alt={`${product.name} packaging`}
-                            className="w-auto h-full max-h-[370px] object-contain rounded-2xl shadow-xl border border-[#522C28]/15 bg-white"
+                            className="w-auto h-full max-h-[370px] max-w-[85%] object-contain rounded-2xl shadow-xl border border-[#522C28]/15 bg-white"
                           />
                         </div>
                       )}
@@ -532,9 +452,7 @@ export default function ProductDetailPage() {
                       <div className="absolute top-4 left-4 z-20">
                         <span className="px-3 py-1 rounded-full bg-[#25100E] text-white text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-sm">
                           <span>
-                            {isRenderPouch && staticCombo
-                              ? "✨"
-                              : isRenderPouch
+                            {selectedImageIndex === 0 && staticCombo
                               ? "✨"
                               : currentImg.includes("peri-peri")
                               ? "🌶️"
@@ -544,12 +462,12 @@ export default function ProductDetailPage() {
                               ? "🍃"
                               : currentImg.includes("salt")
                               ? "🌸"
-                              : "🎨"}
+                              : "✨"}
                           </span>
                           <span>
-                            {isRenderPouch && staticCombo
+                            {selectedImageIndex === 0 && staticCombo
                               ? "Full Variety Bundle"
-                              : isRenderPouch
+                              : selectedImageIndex === 0
                               ? "3D Pack Pouch"
                               : currentImg.includes("front")
                               ? "Packet Front"
@@ -563,7 +481,7 @@ export default function ProductDetailPage() {
                               ? "Cream & Onion Pouch"
                               : currentImg.includes("salt")
                               ? "Pink Salt Pouch"
-                              : "Flavour Pouch"}
+                              : `View ${selectedImageIndex + 1}`}
                           </span>
                         </span>
                       </div>
@@ -612,86 +530,29 @@ export default function ProductDetailPage() {
                       )}
                     </div>
 
-                    {/* Interactive Thumbnail Gallery Strip - Horizontal Scroll on Mobile */}
+                    {/* Interactive Thumbnail Gallery Strip - Clean Square Image Thumbnails */}
                     {galleryList.length > 1 && (
                       <div className="flex overflow-x-auto scrollbar-none gap-2 sm:gap-2.5 w-full max-w-[460px] mt-3 pb-1 snap-x">
                         {galleryList.map((img, idx) => {
                           const isSelected = selectedImageIndex === idx;
-                          let label = "Pouch";
-                          let subLabel = "Flavour View";
-
-                          if (idx === 0 && staticCombo) {
-                            label = "Full Bundle";
-                            subLabel = "All Flavours";
-                          } else if (idx === 0) {
-                            label = "3D Pouch";
-                            subLabel = "Pouch View";
-                          } else if (img.includes("peri-peri")) {
-                            label = "Peri Peri";
-                            subLabel = img.includes("front")
-                              ? "Front Art"
-                              : img.includes("back")
-                              ? "Nutrition"
-                              : "55g Pouch";
-                          } else if (img.includes("cheese")) {
-                            label = "Cheese";
-                            subLabel = img.includes("front")
-                              ? "Front Art"
-                              : img.includes("back")
-                              ? "Nutrition"
-                              : "55g Pouch";
-                          } else if (img.includes("cream")) {
-                            label = "Cream & Onion";
-                            subLabel = img.includes("front")
-                              ? "Front Art"
-                              : img.includes("back")
-                              ? "Nutrition"
-                              : "55g Pouch";
-                          } else if (img.includes("salt")) {
-                            label = "Pink Salt";
-                            subLabel = img.includes("front")
-                              ? "Front Art"
-                              : img.includes("back")
-                              ? "Nutrition"
-                              : "55g Pouch";
-                          } else if (img.includes("front")) {
-                            label = "Front Art";
-                            subLabel = "Packaging";
-                          } else if (img.includes("back")) {
-                            label = "Nutrition";
-                            subLabel = "Back Panel";
-                          }
 
                           return (
                             <button
                               key={idx}
                               type="button"
                               onClick={() => setSelectedImageIndex(idx)}
-                              className={`flex items-center gap-2 p-1.5 sm:p-2 rounded-2xl border-2 transition-all cursor-pointer shrink-0 snap-start min-w-[105px] sm:min-w-[115px] ${
+                              aria-label={`View ${idx + 1}`}
+                              className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl border-2 transition-all cursor-pointer shrink-0 snap-start p-1.5 flex items-center justify-center overflow-hidden bg-white ${
                                 isSelected
-                                  ? "border-[#D73B3A] bg-white shadow-md ring-2 ring-[#D73B3A]/25 scale-[1.02]"
-                                  : "border-[#522C28]/15 bg-white/70 hover:bg-white hover:border-[#522C28]/35"
+                                  ? "border-[#D73B3A] shadow-md ring-2 ring-[#D73B3A]/30 scale-105"
+                                  : "border-[#522C28]/15 hover:border-[#522C28]/35 bg-white/80 hover:bg-white opacity-80 hover:opacity-100"
                               }`}
                             >
-                              <div className="w-9 h-11 sm:w-11 sm:h-14 rounded-lg bg-[#FFF8EE] flex items-center justify-center overflow-hidden shrink-0 border border-[#522C28]/10 p-0.5">
-                                {idx === 0 && staticCombo ? (
-                                  <span className="text-base sm:text-lg">🎁</span>
-                                ) : (
-                                  <img
-                                    src={img}
-                                    alt={label}
-                                    className="w-full h-full object-contain"
-                                  />
-                                )}
-                              </div>
-                              <div className="text-left overflow-hidden min-w-0">
-                                <span className="block text-[11px] font-black uppercase text-[#25100E] leading-tight truncate">
-                                  {label}
-                                </span>
-                                <span className="block text-[9px] text-[#522C28]/60 font-bold uppercase truncate">
-                                  {subLabel}
-                                </span>
-                              </div>
+                              <img
+                                src={img}
+                                alt={`Thumbnail ${idx + 1}`}
+                                className="w-full h-full object-contain"
+                              />
                             </button>
                           );
                         })}
@@ -1234,19 +1095,20 @@ export default function ProductDetailPage() {
 
             {/* Modal Bottom Switcher */}
             {product.galleryImages && product.galleryImages.length > 1 && (
-              <div className="flex items-center gap-2 mt-4 bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20">
-                {product.galleryImages.map((_, idx) => (
+              <div className="flex items-center gap-2 mt-4 bg-black/60 backdrop-blur-md p-2 rounded-2xl border border-white/20 overflow-x-auto max-w-full">
+                {product.galleryImages.map((img, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => setSelectedImageIndex(idx)}
-                    className={`px-3 py-1 rounded-full text-xs font-black uppercase transition-all cursor-pointer ${
+                    aria-label={`View ${idx + 1}`}
+                    className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl p-1 bg-white/90 transition-all cursor-pointer shrink-0 flex items-center justify-center overflow-hidden border-2 ${
                       selectedImageIndex === idx
-                        ? "bg-[#D73B3A] text-white shadow-sm scale-105"
-                        : "bg-white/20 text-white/80 hover:bg-white/30"
+                        ? "border-[#D73B3A] shadow-md scale-105"
+                        : "border-transparent opacity-60 hover:opacity-100"
                     }`}
                   >
-                    {idx === 0 ? "3D Pouch" : idx === 1 ? "Packet Front" : "Packet Back (Nutrition)"}
+                    <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-contain" />
                   </button>
                 ))}
               </div>
