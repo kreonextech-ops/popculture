@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Send, Loader2, CheckCircle2, Mail, Phone, MapPin, Clock } from "lucide-react";
+import { Send, Loader2, CheckCircle2, Mail, Phone, MapPin, Clock, Sparkles } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { useAuth } from "@/components/AuthContext";
 
@@ -39,17 +39,38 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFF8EE] text-[#522C28] flex flex-col">
+    <div className="min-h-screen bg-[#FFF8EE] text-[#522C28] flex flex-col relative overflow-hidden">
       <Navbar />
-      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+
+      {/* Responsive Dunes & Landscape Background Artwork Layer */}
+      <div className="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden">
+        <picture className="w-full h-full block opacity-35 mix-blend-multiply">
+          <source media="(max-width: 640px)" srcSet="/shop/shop-hero-mobile-bg.png" />
+          <img
+            src="/shop/shop-hero-bg.png"
+            alt=""
+            className="w-full h-full object-cover object-bottom"
+          />
+        </picture>
+        {/* Soft atmospheric gradient scrim for pristine contrast */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#FFF8EE]/90 via-[#FFF8EE]/60 to-[#FFF8EE]/95" />
+      </div>
+
+      {/* Ambient Brand Color Glows */}
+      <div className="absolute -top-24 -left-24 w-80 h-80 rounded-full bg-[#D73B3A]/10 blur-3xl pointer-events-none" />
+      <div className="absolute top-1/3 -right-24 w-96 h-96 rounded-full bg-[#FAC537]/20 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-24 left-1/4 w-80 h-80 rounded-full bg-[#D73B3A]/08 blur-3xl pointer-events-none" />
+
+      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 relative z-10">
         <div className="text-center mb-10">
-          <span className="text-[11px] font-black uppercase tracking-widest text-[#D73B3A]">
-            ✦ SAY HELLO ✦
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#D73B3A]/10 text-[#D73B3A] text-[11px] font-black uppercase tracking-widest border border-[#D73B3A]/20 mb-3 shadow-2xs">
+            <Sparkles className="w-3.5 h-3.5 text-[#D73B3A]" />
+            <span>SAY HELLO</span>
           </span>
-          <h1 className="font-display text-4xl sm:text-5xl uppercase text-[#25100E] mt-1">
+          <h1 className="font-display text-4xl sm:text-6xl uppercase text-[#25100E] mt-1 tracking-tight">
             Contact Pop Culture
           </h1>
-          <p className="text-sm font-semibold text-[#522C28]/75 mt-2 max-w-lg mx-auto">
+          <p className="text-sm sm:text-base font-semibold text-[#522C28]/80 mt-2 max-w-lg mx-auto">
             Questions about your snack order, bulk corporate hampers, or wholesale distribution? Drop
             us a line — it routes straight to our Gmail inbox.
           </p>
@@ -57,7 +78,7 @@ export default function ContactPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-4">
-            <div className="bg-white rounded-3xl border border-[#522C28]/15 p-5 shadow-xs flex items-start gap-3 transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-md hover:border-[#D73B3A]/35">
+            <div className="bg-white/95 backdrop-blur-xs rounded-3xl border-2 border-[#522C28]/15 p-5 shadow-xs flex items-start gap-3 transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-md hover:border-[#D73B3A]/35">
               <Mail className="w-5 h-5 text-[#D73B3A] shrink-0 mt-0.5" />
               <div>
                 <h3 className="font-black text-sm text-[#25100E]">Email Support</h3>
@@ -69,7 +90,7 @@ export default function ContactPage() {
                 </a>
               </div>
             </div>
-            <div className="bg-white rounded-3xl border border-[#522C28]/15 p-5 shadow-xs flex items-start gap-3 transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-md hover:border-[#D73B3A]/35">
+            <div className="bg-white/95 backdrop-blur-xs rounded-3xl border-2 border-[#522C28]/15 p-5 shadow-xs flex items-start gap-3 transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-md hover:border-[#D73B3A]/35">
               <Phone className="w-5 h-5 text-[#D73B3A] shrink-0 mt-0.5" />
               <div>
                 <h3 className="font-black text-sm text-[#25100E]">Phone / WhatsApp</h3>
@@ -81,7 +102,7 @@ export default function ContactPage() {
                 </a>
               </div>
             </div>
-            <div className="bg-white rounded-3xl border border-[#522C28]/15 p-5 shadow-xs flex items-start gap-3 transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-md hover:border-[#D73B3A]/35">
+            <div className="bg-white/95 backdrop-blur-xs rounded-3xl border-2 border-[#522C28]/15 p-5 shadow-xs flex items-start gap-3 transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-md hover:border-[#D73B3A]/35">
               <Clock className="w-5 h-5 text-[#D73B3A] shrink-0 mt-0.5" />
               <div>
                 <h3 className="font-black text-sm text-[#25100E]">Response Window</h3>
@@ -90,7 +111,7 @@ export default function ContactPage() {
                 </p>
               </div>
             </div>
-            <div className="bg-white rounded-3xl border border-[#522C28]/15 p-5 shadow-xs flex items-start gap-3 transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-md hover:border-[#D73B3A]/35">
+            <div className="bg-white/95 backdrop-blur-xs rounded-3xl border-2 border-[#522C28]/15 p-5 shadow-xs flex items-start gap-3 transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-md hover:border-[#D73B3A]/35">
               <MapPin className="w-5 h-5 text-[#D73B3A] shrink-0 mt-0.5" />
               <div>
                 <h3 className="font-black text-sm text-[#25100E]">Registered Entity &amp; Facility</h3>
@@ -104,7 +125,7 @@ export default function ContactPage() {
                 </p>
               </div>
             </div>
-            <div className="bg-[#FFF8EE] rounded-3xl border border-[#522C28]/15 p-5 shadow-xs flex items-start gap-3">
+            <div className="bg-[#FFF8EE]/90 backdrop-blur-xs rounded-3xl border-2 border-[#522C28]/15 p-5 shadow-xs flex items-start gap-3">
               <CheckCircle2 className="w-5 h-5 text-[#2E7D32] shrink-0 mt-0.5" />
               <div>
                 <h3 className="font-black text-sm text-[#25100E]">FSSAI &amp; Food Quality</h3>
@@ -118,7 +139,7 @@ export default function ContactPage() {
 
           <form
             onSubmit={handleSubmit}
-            className="md:col-span-2 bg-white rounded-3xl border-2 border-[#522C28]/15 p-6 sm:p-8 shadow-sm space-y-4"
+            className="md:col-span-2 bg-white/95 backdrop-blur-xs rounded-3xl border-2 border-[#522C28]/15 p-6 sm:p-8 shadow-sm space-y-4"
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
