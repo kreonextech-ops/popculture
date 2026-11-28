@@ -112,8 +112,9 @@ export default function PrivacyPolicyPage() {
           <section className="space-y-3">
             <h2 className="font-display text-xl uppercase text-[#25100E]">7. Privacy Officer Contact Details</h2>
             <div className="p-4 rounded-2xl bg-[#FFF8EE] border border-[#522C28]/15 space-y-1.5 text-xs sm:text-sm font-semibold">
-              <p><span className="text-[#522C28]/60 uppercase font-black text-[11px] block">Entity Name</span> Pop Culture Snacks</p>
-              <p><span className="text-[#522C28]/60 uppercase font-black text-[11px] block">Operational Office</span> Siliguri, West Bengal - 734001, India</p>
+              <p><span className="text-[#522C28]/60 uppercase font-black text-[11px] block">Entity Name</span> COREPINE VENTURES LLP (Brand: Pop Culture Snacks)</p>
+              <p><span className="text-[#522C28]/60 uppercase font-black text-[11px] block">GSTIN</span> 19AAXFC0336J1Z2</p>
+              <p><span className="text-[#522C28]/60 uppercase font-black text-[11px] block">Registered Address</span> Ghoshpukur Kharibari Road, Near Dhamvita Bus Stand, Village Dhamvita, PO Buraganj, Foudigachh, District Darjeeling, West Bengal - 734434, India</p>
               <p><span className="text-[#522C28]/60 uppercase font-black text-[11px] block">Privacy Inquiries</span> <a href="mailto:contact@snackpopculture.com" className="text-[#D73B3A] underline">contact@snackpopculture.com</a></p>
               <p><span className="text-[#522C28]/60 uppercase font-black text-[11px] block">Support Telephone</span> +91 90023 88080 (Monday – Saturday, 10:00 AM – 6:00 PM IST)</p>
             </div>

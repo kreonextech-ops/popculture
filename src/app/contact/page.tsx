@@ -93,10 +93,14 @@ export default function ContactPage() {
             <div className="bg-white rounded-3xl border border-[#522C28]/15 p-5 shadow-xs flex items-start gap-3 transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-md hover:border-[#D73B3A]/35">
               <MapPin className="w-5 h-5 text-[#D73B3A] shrink-0 mt-0.5" />
               <div>
-                <h3 className="font-black text-sm text-[#25100E]">Registered &amp; Operating HQ</h3>
+                <h3 className="font-black text-sm text-[#25100E]">Registered Entity &amp; Facility</h3>
                 <p className="text-xs font-semibold text-[#522C28]/75 mt-0.5">
-                  Pop Culture Snacks (Dayal Constructions &amp; Co. / Pop Culture LLP)<br />
-                  Siliguri, West Bengal - 734001, India
+                  <strong className="text-[#25100E] font-bold">COREPINE VENTURES LLP</strong><br />
+                  (Brand: Pop Culture Snacks)<br />
+                  Ghoshpukur Kharibari Road, Near Dhamvita Bus Stand<br />
+                  Village Dhamvita, PO Buraganj, Foudigachh<br />
+                  Darjeeling, West Bengal - 734434, India<br />
+                  <span className="text-[10px] text-[#522C28]/60 font-mono font-bold">GSTIN: 19AAXFC0336J1Z2</span>
                 </p>
               </div>
             </div>

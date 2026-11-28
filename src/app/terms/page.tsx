@@ -29,7 +29,7 @@ export default function TermsPage() {
           <section className="space-y-2">
             <h2 className="font-display text-xl uppercase text-[#25100E]">1. Merchant Identity &amp; Platform Operation</h2>
             <p>
-              This website is owned and operated by <strong>Pop Culture Snacks</strong> (operating under registered business entity <em>Dayal Constructions &amp; Co. / Pop Culture LLP</em>), having its principal operational establishment in Siliguri, West Bengal, India. Throughout these terms, &ldquo;we&rdquo;, &ldquo;us&rdquo;, and &ldquo;our&rdquo; refer to Pop Culture.
+              This website is owned and operated by <strong>COREPINE VENTURES LLP</strong> (operating brand: <strong>Pop Culture Snacks</strong>, GSTIN: <strong>19AAXFC0336J1Z2</strong>), a Limited Liability Partnership registered under the laws of India, having its principal place of business at Ghoshpukur Kharibari Road, Near Dhamvita Bus Stand, Village Dhamvita, PO Buraganj, Foudigachh, District Darjeeling, West Bengal - 734434, India. Throughout these terms, &ldquo;we&rdquo;, &ldquo;us&rdquo;, and &ldquo;our&rdquo; refer to Pop Culture Snacks / COREPINE VENTURES LLP.
             </p>
           </section>
 
@@ -126,7 +126,7 @@ export default function TermsPage() {
           <section className="space-y-2">
             <h2 className="font-display text-xl uppercase text-[#25100E]">9. Governing Law &amp; Jurisdiction</h2>
             <p>
-              These Terms &amp; Conditions and any dispute or claim arising out of your purchase or use of the website shall be governed by and construed in accordance with the laws of <strong>India</strong>. The courts at <strong>Siliguri, West Bengal</strong> shall have exclusive jurisdiction over all matters arising hereunder.
+              These Terms &amp; Conditions and any dispute or claim arising out of your purchase or use of the website shall be governed by and construed in accordance with the laws of <strong>India</strong>. The courts at <strong>Darjeeling / Siliguri, West Bengal</strong> shall have exclusive jurisdiction over all matters arising hereunder.
             </p>
           </section>
 
@@ -139,8 +139,9 @@ export default function TermsPage() {
               In compliance with the Information Technology Act, 2000 and the Consumer Protection (E-Commerce) Rules, 2020, the contact details of the Grievance Officer are set forth below:
             </p>
             <div className="p-4 rounded-2xl bg-[#FFF8EE] border border-[#522C28]/15 space-y-1.5 text-xs sm:text-sm font-semibold">
-              <p><span className="text-[#522C28]/60 uppercase font-black text-[11px] block">Officer Name</span> Grievance Officer, Pop Culture Snacks</p>
-              <p><span className="text-[#522C28]/60 uppercase font-black text-[11px] block">Operational Address</span> Siliguri, West Bengal - 734001, India</p>
+              <p><span className="text-[#522C28]/60 uppercase font-black text-[11px] block">Entity Name</span> COREPINE VENTURES LLP (Brand: Pop Culture Snacks)</p>
+              <p><span className="text-[#522C28]/60 uppercase font-black text-[11px] block">GSTIN</span> 19AAXFC0336J1Z2</p>
+              <p><span className="text-[#522C28]/60 uppercase font-black text-[11px] block">Principal Registered Address</span> Ghoshpukur Kharibari Road, Near Dhamvita Bus Stand, Village Dhamvita, PO Buraganj, Foudigachh, District Darjeeling, West Bengal - 734434, India</p>
               <p><span className="text-[#522C28]/60 uppercase font-black text-[11px] block">Email</span> <a href="mailto:contact@snackpopculture.com" className="text-[#D73B3A] underline">contact@snackpopculture.com</a></p>
               <p><span className="text-[#522C28]/60 uppercase font-black text-[11px] block">Helpline</span> +91 90023 88080 (Monday – Saturday, 10:00 AM – 6:00 PM IST)</p>
             </div>
