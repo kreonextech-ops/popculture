@@ -42,19 +42,19 @@ export default function ContactPage() {
     <div className="min-h-screen bg-[#FFF8EE] text-[#522C28] flex flex-col relative overflow-hidden">
       <Navbar />
 
-      {/* Responsive Dunes & Landscape Background Artwork Layer */}
-      <div className="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden">
-        <picture className="w-full h-full block opacity-35 mix-blend-multiply">
-          <source media="(max-width: 640px)" srcSet="/shop/shop-hero-mobile-bg.png" />
-          <img
-            src="/shop/shop-hero-bg.png"
-            alt=""
-            className="w-full h-full object-cover object-bottom"
-          />
-        </picture>
-        {/* Soft atmospheric gradient scrim for pristine contrast */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#FFF8EE]/90 via-[#FFF8EE]/60 to-[#FFF8EE]/95" />
-      </div>
+      {/* Full-bleed Pop Culture Sunset Waves Background Artwork */}
+      <picture className="pointer-events-none select-none absolute inset-0 z-0 w-full h-full">
+        <source media="(max-width: 639px)" srcSet="/hero/mobile-sunset-wave.jpg" />
+        <img
+          src="/hero/sunset-wave.jpg"
+          alt="Pop Culture Background"
+          aria-hidden="true"
+          loading="eager"
+          className="w-full h-full object-cover object-top opacity-85"
+        />
+      </picture>
+      {/* Soft atmospheric gradient scrim for pristine contrast */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#FFF8EE]/20 via-[#FFF8EE]/40 to-[#FFF8EE]/85 pointer-events-none z-0" />
 
       {/* Ambient Brand Color Glows */}
       <div className="absolute -top-24 -left-24 w-80 h-80 rounded-full bg-[#D73B3A]/10 blur-3xl pointer-events-none" />
