@@ -180,7 +180,7 @@ export default function Navbar() {
     { href: "/shop", label: "Shop All" },
     { href: "/build-a-box", label: "Build a Bag" },
     { href: "/about", label: "Our Story" },
-    { href: "/play", label: "Play" },
+    { href: "/#discover", label: "Play" },
   ];
 
   const isActive = (href: string) => {

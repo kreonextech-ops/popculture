@@ -1142,7 +1142,7 @@ export default function BiteJoyPage() {
       {/* =========================================================================
           SECTION 5: DISCOVER SOMETHING NEW (Game Arena - Full Bleed Seamless Sky)
           ========================================================================= */}
-      <section id="discover" className="relative w-full overflow-hidden">
+      <section id="discover" className="relative w-full overflow-hidden scroll-mt-16 sm:scroll-mt-20">
         {/* Seamless Fox Game (Edge-to-edge sky, no box boundary) */}
         <DiscoverFoxGame />
 
